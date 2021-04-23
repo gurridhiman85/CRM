@@ -1,0 +1,245 @@
+.sticky {
+    margin-right: 0 !important;
+
+    /*position: fixed;*/
+    /*top: 106px;*/
+    /*right: 0;*/
+    /*width: 30%;*/
+    /*height: 370px;*/
+    /*max-height: 70vh;*/
+    /*background-color: #FFCD5A;*/
+    /*transform: translateX(100%);*/
+    /*transition: transform 0.5s;*/
+}
+
+.sticky_inner {
+       position: absolute;
+    width: 310px;
+    /* right: 40px; */
+    left: -143px;
+    height: 600px;
+    top: 0;
+    transform: scale(0);
+    transition: transform 0.3s;
+    transform-origin: 100% 0;
+    pointer-events: none;
+}
+
+.sticky_open .sticky_inner {
+    transform: scale(1);
+    pointer-events: initial;
+}
+
+.sticky_inner form {
+    height: 100%;
+}
+
+.sticky_inner textarea {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: 0;
+    font-family: cursive;
+    font-size: 13px;
+    color: #000;
+    font-weight: 100;
+    line-height: 19px;
+    /*resize: none;*/
+    max-height: 350px;
+    min-height: 200px;
+    max-width: 800px;
+    min-width: 200px;
+}
+
+.sticky .sticky_open_btn:hover, .sticky.sticky_open .sticky_open_btn {
+
+}
+.sticky_open_btn {   
+	margin-top: -1px;
+    float: left;
+	}
+
+.sticky .saved_text {
+    pointer-events: none;
+    display: none !important;
+    position: absolute;
+    right: 0;
+    padding: 2px 5px;
+    background: #fff;
+    color: #000;
+    top: 0;
+    font-size: 11px;
+    opacity: 0.5;
+}
+
+/*********** Sticky Notes CSS **********/
+
+.sticky-note{
+     width: 100%;
+    box-shadow: -2px 5px 20px 0px #d3d3d3;
+    padding: 10px 20px;
+    position: absolute;
+    right: 0;
+    height: 575px;
+    top: 47px;
+}
+
+
+.sticky-add {
+    background: transparent;
+    border: none;
+    font-size: 13px;
+    color: #03a9f3;
+    font-weight: 500;
+    margin-top: -3px;
+    padding-right: 12px;
+    float: left;
+}
+.stickey-header a i {
+    font-size: 18px !important;
+        color: #7e7e7e !important;
+}
+
+.stickey-header a.u-dropdown {
+	padding: 0;
+    margin-top: -3px;
+    float: left;
+}
+.sticky-content p {
+    font-size: 14px;
+    color: #30323d;
+    line-height: 22px;
+}
+.stickey-header {
+    margin-bottom: 10px;
+}
+.sticky-sidebar {
+    position: absolute;
+    left: -28%;
+}
+.sticky-sidebar ul {   padding-left: 0;}
+
+.sticky-sidebar li {
+    list-style: none;
+    width: 85px;
+    margin-bottom: 7px;
+    padding: 3px 2px 3px 2px;
+    height: 38px;
+    text-align: center;
+}
+.sticky-sidebar li a { 
+	color: #505156;
+    font-size: 11px;
+    padding: 3px 3px !important;
+    font-weight: 600;
+    text-align: center;
+	word-break: break-all;
+}
+.sticky-sidebar li.active{ box-shadow: -2px 0px 8px 0px #babfc9;}
+
+/*
+.sticky-content {
+    float: left;
+}*/
+
+.sticky-white {
+	background: #fff;
+	border: 1px solid #fff;
+	}
+.sticky-green {
+	background: #c5f1ea;
+	border: 1px solid #c5f1ea;
+	}
+.sticky-purple {
+	background: #e2e4fd;
+	border: 1px solid #e2e4fd;
+	}
+.sticky-blue {
+	background: #d4e3ff;   
+	border: 1px solid #d4e3ff;
+}
+.sticky-gray {
+	background: #d3d3db;
+	border: 1px solid #d3d3db;
+	}
+.sticky-orange {
+	background: #faefe0;
+	border: 1px solid #faefe0;
+	}
+.sticky-pink {
+	background: #ffd7de;
+	border: 1px solid #ffd7de;
+	}
+
+.sticky-sidebar ul li .ti-close {
+        display: none;
+    font-size: 6px;
+    margin-left: -3px;
+    margin-top: -4px;
+    background: #797979;
+    color: #fff;
+    width: 11px;
+    position: absolute;
+    float: left;
+    padding: 2px 3px 3px 3px;
+	
+}
+.sticky-sidebar ul li:hover .ti-close{display:block;cursor:pointer;}
+.color-choose {
+   border: 1px solid #e0dddd !important;
+    padding: 10px;
+    background: #fff !important;
+    min-width: 35px !important;
+    float: left;
+    left: -44px !important;
+    margin-right: -4px;
+    top: 25px !important;
+}
+.color-choose li {
+    margin-bottom: 10px !important;
+    float: left;
+    width: 100%;
+}
+.color-choose li a.selected:before {
+    content: "\f00c";
+    font-family: "FontAwesome";
+    font-size: 10px;
+    line-height: 0px;
+    width: 50px;
+    position: absolute;
+    top: auto;
+    left: 0;
+    color: #3b3939;
+    text-align: center;
+}
+.color-choose li:hover a {
+    background: transparent;
+}
+.color-choose .sticky-white {
+    border: 1px solid #e2e6ea;
+}
+.add-sticky {
+   border: 1px solid #989898;
+    color: #686879;
+    font-size: 11px;
+    padding-left: 4px;
+    background: transparent;
+    float: left;
+    margin-right: 10px;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.add-sticky i{
+	
+	border-left: 1px solid #989898;
+    padding: 4px 3px 2px 3px;
+    font-size: 10px !important;
+}
+.add-sticky:hover i {
+    background: #808083;
+    color: #fff;
+}
+
+/****************** End CSS ************/

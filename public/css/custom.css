@@ -1,0 +1,60 @@
+.setting-page-whole {
+    width: 100%;
+    float: left;
+    background-color: #ffffff;
+    padding: 25px;
+    height: 508px;
+    overflow: auto;
+}
+
+.main-setting-tab {
+    width: 100%;
+    float: left;
+}
+
+.personal-settings-tab {
+    width: 100%;
+    float: left;
+    border-bottom: 1px solid #4c4b4e85;
+    margin-bottom: 0;
+    padding-bottom: 4px;
+}
+
+.personal-settings-tab i {
+    font-size: 18px;
+    color: #7678a0;
+    margin-right: 5px;
+}
+
+.personal-settings-tab label {
+    font-size: 18px;
+    color: #7678a0;
+}
+
+.column-master-setting {
+    width: 100%;
+    float: left;
+    min-height: 264px;
+}
+
+.section-setting-heading {
+    float: left;
+    width: 100%;
+    border-bottom: 1px solid #4c4b4e85;
+    margin-bottom: 15px;
+    padding-bottom: 9px;
+}
+
+.main-setting-tab ul {
+    padding: 0;
+}
+
+.main-setting-tab ul > li {
+    display: block;
+}
+
+.main-setting-tab a {
+    font-size: 14px;
+    color: #4d505f;
+    line-height: 1.7;
+}
