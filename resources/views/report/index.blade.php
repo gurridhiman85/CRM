@@ -37,7 +37,15 @@
                     <div class="filter-open-close">
                         <div class="filter collapse" id="collapseFilters" aria-expanded="false">
                             <form id="filter_form" class="filter-scroll-js filter-inner respo-filter-myticket" data-title="tickets#24#536" autocomplete="off">
-
+                                <div class="form-body">
+                                    <div class="card-body pt-0">
+                                        <div class="form-actions pull-right d-none" >
+                                            <input type="hidden" name="searchterm" class="form-control form-control-sm" placeholder="" data-placeholder="">
+                                            <button type="submit" class="btn btn-info">Apply</button>
+                                            <button type="button" class="btn border-secondary waves-effect waves-light btn-outline-secondary " onclick="clearFilters();" style="border-color: #dee2e6;">Clear</button>
+                                        </div>
+                                    </div>
+                                </div>
 
                             </form>
                         </div>
@@ -47,6 +55,7 @@
                         <input type="text" id="libflag_name">
                         <input type="text" id="libcamp_name">
                         <input type="text" id="libcamp_id">
+                        <input type="text" id="libcId">
 
                         <input type="hidden" id="previewSql">
                         <input type="hidden" id="previewDownloadFileName">
@@ -96,6 +105,7 @@
                             <iframe name='iframeExecute' src='' frameborder=0 style='width:100%;height:600px; border: 0 !important;'></iframe>
                         </div>
                     </div>
+
                     <div class="row mb-2" style="border-bottom: 1px solid #dee2e6;">
                         <div class="col-md-8">
                             <ul class="nav nav-tabs customtab2 mt-2 border-bottom-0 font-14 tab-hash tab-ajax"role="tablist" data-href="report/get" data-method="get" data-default-tab="tab_22">
@@ -121,6 +131,13 @@
                                     </a>
                                 </li>
 
+                                <li class="nav-item older-version" style="border-bottom: 1px solid #dee2e6;display: none;">
+                                    <a class="nav-link" data-row_id="" data-toggle="tab" data-tabid="25" href="#tab_25" role="tab" aria-selected="true">
+                                        <span class="hidden-sm-up"></span>
+                                        <span class="hidden-xs-down">Older Versions</span>
+                                    </a>
+                                </li>
+
                                 <li class="nav-item create-new" style="display: none;border-bottom: 1px solid #dee2e6;">
                                     <a class="nav-link" data-toggle="tab" data-tabid="23" href="#tab_23" role="tab" aria-selected="true">
                                         <span class="hidden-sm-up"></span>
@@ -134,6 +151,12 @@
                                         <span class="hidden-xs-down">View Report</span>
                                     </a>
                                 </li>
+                                <li class="nav-item create-new view-report" style="display: none;border-bottom: 1px solid #dee2e6;">
+                                    <a class="nav-link" data-toggle="tab" data-tabid="26" href="#tab_26" role="tab" aria-selected="true">
+                                        <span class="hidden-sm-up"></span>
+                                        <span class="hidden-xs-down">Execute</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                         <div class="col-md-4" onclick="if($('[data-tabid=23]').hasClass('active') || $('[data-tabid=24]').hasClass('active')) { $('#showSqlBtn').toggle() }">
@@ -141,20 +164,36 @@
                                 <div class="input-group">
                                     <div class="all-pagination" style="vertical-align: middle;margin: 10px;"></div>
 
-                                    <button type="button" style="display: none;" class="btn btn-light border-right-0 font-16 ds-c3" title="SQL" id='showSqlBtn' onclick="create_query_onclick()"><i class="fas fa-database"></i></button>
+                                    <input type="text" id="filtersearch" class="form-control ajax-search search-btn" placeholder="Search" aria-label="Input group example" aria-describedby="btnGroupAddon">
+                                    <div class="input-group-append search-btn">
+                                        <div class="input-group-text border-right-0 border-left-0" title="Search" id="btnGroupAddon" onclick="$('.ajax-search').trigger('keyup');">
+                                            <i class="fas fa-search ds-c"></i>
+                                        </div>
+                                    </div>
+
+                                    <button type="button" style="display: none;" class="btn btn-light border-right-0 font-16" title="SQL" id='showSqlBtn' onclick="create_query_onclick()"><i class="fas fa-database ds-c"></i></button>
 
                                     <button type="button" style="display: none;" class="btn btn-light border-right-0 font-16 s-f dmpdf" title="Download Multiple PDF" onclick="downloadMutliplePDF()"><i class="fas fa-file-pdf ds-c" style="color: #e92639;"></i></button>
-                                    <button type="button" style="" class="btn btn-light border-right-0 font-16 s-f emreport" title="Run Report" onclick="ExeMutlipleRep()"><i class="fas fa-arrow-circle-right ds-c"></i></button>
+
+                                    <button type="button" class="btn btn-light border-right-0 font-16 s-f schreport" style="display: none;" title="Schedule Report" onclick="SchMutlipleRep()"><i class="fas fa-clock ds-c"></i></button>
+
+                                    <button type="button" class="btn btn-light border-right-0 font-16 s-f emreport" style="display: none;" title="Run Report" onclick="ExeMutlipleRep()"><i class="fas fa-forward ds-c"></i></button>
                                     <div class="c-btn" style="display: none;"></div>
 
-                                    <button type="button" style="display: none;" class="btn btn-light border-right-0 font-16 s-f cnt-btn cl-report-btn ds-c3" title="Count" onclick="check_sql_count();"><i class="fas fa-calculator"></i></button>
-                                    <button type="button" style="display: none;"  class="btn btn-light border-right-0 font-16 s-f cl-report-btn ds-c3" title="Preview" onclick="loadpreview();"><i class="fas fa-eye" ></i></button>
-                                    <button type="button"style="display: none;"  class="btn btn-light border-right-0 font-16 s-f cl-report-btn ds-c3" title="Download 10K" onclick="downloadFile50k('xlsx');"><i class="fas fa-download"></i></button>
+                                    <button type="button" style="display: none;" class="btn btn-light border-right-0 font-16 s-f cnt-btn cl-report-btn" title="Count" onclick="check_sql_count();"><i class="fas fa-calculator ds-c"></i></button>
+                                    <button type="button" style="display: none;"  class="btn btn-light border-right-0 font-16 s-f cl-report-btn " title="Preview" onclick="loadpreview();"><i class="fas fa-eye ds-c"></i></button>
+                                    <button type="button"style="display: none;"  class="btn btn-light border-right-0 font-16 s-f cl-report-btn " title="Download 10K" onclick="downloadFile50k('xlsx');"><i class="fas fa-download ds-c"></i></button>
                                     <button type="button" class="btn btn-light font-16 s-f cn-report-btn" title="Create New"><i class="fas fa-plus ds-c"></i></button>
-                                    <button type="button" style="display: none;" class="btn btn-light font-16 s-f clr-btn cl-report-btn ds-c3" title="Close"><i class="fas fa-times-circle"></i></button>
+                                    <button type="button" style="display: none;" class="btn btn-light font-16 s-f clr-btn cl-report-btn" title="Close"><i class="fas fa-times-circle ds-c"></i></button>
                                 </div>
                             </div>
 
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="after-filter mt-1"></div>
                         </div>
                     </div>
 
@@ -165,6 +204,8 @@
                         <div class="tab-pane customtab active" id="tab_22" role="tabpanel"></div>
                         <div class="tab-pane customtab" id="tab_23" role="tabpanel"></div>
                         <div class="tab-pane customtab" id="tab_24" role="tabpanel"></div>
+                        <div class="tab-pane customtab" id="tab_25" role="tabpanel"></div>
+                        <div class="tab-pane customtab" id="tab_26" role="tabpanel"></div>
                     </div>
 
                     <div class="row">
@@ -197,10 +238,11 @@
     <!-- End Modals -->
     <!-- ============================================================== -->
 </div>
-    <script src="elite/js/custom.js?ver=1582015557" type="text/javascript"></script>
+    <script src="elite/js/custom.js?ver={{time()}}" type="text/javascript"></script>
     <script>
         var dDate = '{!! date('Ymd_Hi') !!}';
         var up_flag = 'new';
+        parent.location.hash = ''
 
     </script>
 @stop

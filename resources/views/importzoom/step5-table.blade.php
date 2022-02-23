@@ -1,4 +1,4 @@
-<table class="table table-bordered table-hover color-table lkp-table">
+<table class="table table-bordered table-hover color-table lkp-table" id="basic_table_without_dynamic_pagination">
     <thead>
     <tr>
         <th>
@@ -21,7 +21,7 @@
             <td>
                 <!--<input type="checkbox" class="checkbox" value="1"/>-->
                 <label class="custom-control custom-checkbox m-b-0">
-                    <input type="checkbox" class="custom-control-input checkbox" name="rowid[]" value="{{ $sStep2TableRow['rowid'] }}" id="step5checkbox_{{ $sStep2TableRow['rowid'] }}" onclick="singleCheckbox();" >
+                    <input type="checkbox" class="custom-control-input checkbox" name="rowid[]" value="{{ $sStep2TableRow['rowid'] }}" id="step5checkbox_{{ $sStep2TableRow['rowid'] }}" onclick="singleCheckbox();addInsertRecord($(this));" >
                     <span class="custom-control-label"></span>
                 </label>
             </td>
@@ -76,6 +76,25 @@
                 } );
             }
         } );
+    }
+
+    function addInsertRecord(obj) {
+        var is_checked = obj.is(':checked') ? 1 : 0;
+        obj.val()
+
+        $.ajax( {
+            url: "importzoom/step5addinsertrecord",
+            dataType: "json",
+            data: {
+                is_checked : is_checked,
+                itemSelId : obj.val(),
+                itemSelVal : $('#'+obj.val()).val()
+            },
+            success: function( data ) {
+                $('#DS_MKC_ContactID_' + obj.val()).text(data.sStep5TableRow.DS_MKC_ContactID != null ? data.sStep5TableRow.DS_MKC_ContactID : '');
+            }
+        } );
+
     }
 </script>
 

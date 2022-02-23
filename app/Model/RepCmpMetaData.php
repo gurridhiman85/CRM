@@ -9,4 +9,6 @@ class RepCmpMetaData extends Model
 {
     protected $table = 'UL_RepCmp_MetaData';
     public $timestamps = false;
+
+    protected $primaryKey = 'RowID';
 }

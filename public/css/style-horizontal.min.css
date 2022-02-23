@@ -18909,7 +18909,7 @@ a.btn.disabled, fieldset:disabled a.btn {
 }
 
 .btn-info.focus, .btn-info:focus, .btn-info:not(:disabled):not(.disabled).active:focus, .btn-info:not(:disabled):not(.disabled):active:focus, .show > .btn-info.dropdown-toggle:focus {
-    box-shadow: 0 0 0 .2rem rgba(41, 182, 245, .5)
+    /*box-shadow: 0 0 0 .2rem rgba(41, 182, 245, .5)*/
 }
 
 .btn-info {
@@ -18991,7 +18991,7 @@ a.btn.disabled, fieldset:disabled a.btn {
 }
 
 .btn-light.focus, .btn-light:focus, .btn-light:not(:disabled):not(.disabled).active:focus, .btn-light:not(:disabled):not(.disabled):active:focus, .show > .btn-light.dropdown-toggle:focus {
-    box-shadow: 0 0 0 .2rem rgba(216, 217, 219, .5)
+    /*box-shadow: 0 0 0 .2rem rgba(216, 217, 219, .5)*/
 }
 
 .btn-light {
@@ -20960,16 +20960,16 @@ a.btn.disabled, fieldset:disabled a.btn {
     padding: .5rem .75rem;
     margin-left: -1px;
     line-height: 1.25;
-    color: #fb9678;
+    color: #5e92b1;
     background-color: #fff;
-    border: 1px solid #dee2e6
+    border: 1px solid #bfe6f6
 }
 
 .page-link:hover {
     z-index: 2;
-    color: #f95c2e;
-    background-color: #e9ecef;
-    border-color: #dee2e6
+    color: #5e92b1;
+    background-color: #bfe6f6;
+    border-color: #bfe6f6
 }
 
 .page-link:focus {
@@ -20991,17 +20991,17 @@ a.btn.disabled, fieldset:disabled a.btn {
 
 .page-item.active .page-link {
     z-index: 1;
-    color: #fff;
-    background-color: #fb9678;
-    border-color: #fb9678
+    color: #5e92b1;
+    background-color: #bfe6f6;
+    border-color: #bfe6f6
 }
 
 .page-item.disabled .page-link {
-    color: #6c757d;
+    color: #5e92b1;
     pointer-events: none;
     cursor: auto;
     background-color: #fff;
-    border-color: #dee2e6
+    border-color: #bfe6f6
 }
 
 .pagination-lg .page-link {
@@ -21157,7 +21157,7 @@ a.badge-danger.focus, a.badge-danger:focus {
 
 .badge-light {
     color: #212529;
-    background-color: #f8f9fa
+    background-color: #e0e7ed
 }
 
 a.badge-light:focus, a.badge-light:hover {
@@ -38548,7 +38548,7 @@ ul.list-style-none li a:hover {
 .topbar .top-navbar .navbar-header {
     background: #bfe6f6;
     line-height: 65px;
-    padding-left: 10px;
+    padding-left: 7px;
     min-width: 70px
 }
 
@@ -40633,7 +40633,7 @@ html body .waves-notransition {
     }
 
     .horizontal-nav .sidebar-nav #sidebarnav > li {
-        line-height: 27px;
+        line-height: 14px; /*line-height: 27px;*/
         margin-bottom: 0;
         margin-top: 0
     }
@@ -41749,8 +41749,9 @@ html body .navbar-dark .mailbox .message-center a .mail-contnet .mail-desc, html
 }
 
 .customtab li a.nav-link.active, .profile-tab li a.nav-link.active {
-    border-bottom: 2px solid #fb9678;
-    color: #fb9678
+    border-bottom: 2px solid #75aed0;
+    color: #75aed0 !important;
+    font-weight: 400;
 }
 
 .customtab li a.nav-link:hover, .profile-tab li a.nav-link:hover {
@@ -41885,18 +41886,18 @@ input{
 .t6 {
     font-size:10px;
     width:504px;
-    background-color: rgb(239, 246, 255) !important;
+    /*background-color: rgb(239, 246, 255) !important;*/
 }
 
 .t8 {
     width: 95%;
-    background-color: rgb(239, 246, 255);
+    /*background-color: rgb(239, 246, 255);*/
     font-size: 10px;
 }
 
 .t7 {
     width: 72% !important;
-    background-color: rgb(239, 246, 255);
+    /*background-color: rgb(239, 246, 255);*/
 }
 
 .arrow-up {
@@ -41937,13 +41938,13 @@ input{
 .sel2 {
     width: 33%;
     height: 13pt;
-    background-color: rgb(239, 246, 255);
+    /*background-color: rgb(239, 246, 255);*/
     font-size: 10px;
 }
 
 .t7 {
     width: 60% !important;
-    background-color: rgb(239, 246, 255);
+    /*background-color: rgb(239, 246, 255);*/
     height: 13pt;
     font-size: 10px;
 }
@@ -41952,7 +41953,7 @@ input{
     width: 100% !important;
 }
 .dis{
-    background-color: rgba(143, 143, 143, 0.14) !important;
+    background-color: rgb(204 201 201 / 14%) !important;
     font-size: 10px;
 }
 
@@ -42041,7 +42042,7 @@ i.fa-trash:hover {
 
 @media (min-width: 768px) {
     .navbar-header {
-        width: 220px;
+        width: 120px;
         flex-shrink: 0
     }
 

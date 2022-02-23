@@ -74,13 +74,7 @@ if($record->TouchDate != null){
         {!! $record->TouchCampaign !!}
     </td>
 
-    <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
-        {!! $record->Last_3Yrs_GiftsAmt !!}
-    </td>
 
-    <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
-        {!! $record->Life_BHse_GiftsAmt !!}
-    </td>
 
     <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
         {!! $record->DS_MKC_ContactID !!}
@@ -97,13 +91,8 @@ if($record->TouchDate != null){
     <td>
         <a href="tel:{!! $record->phone !!}" >{!! $record->phone !!}</a>
     </td>
-
     <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
         {!! $record->Email !!}
-    </td>
-
-    <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
-        {!! $record->EmailSegment !!}
     </td>
 
     <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
@@ -133,8 +122,21 @@ if($record->TouchDate != null){
     <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
         {!! $record->update_date !!}
     </td>
+
     <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
         {!! $record->ZSS_Segment !!}
+    </td>
+
+    <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
+        {!! $record->Last_3Yrs_GiftsAmt !!}
+    </td>
+
+    <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
+        {!! $record->Life_BHse_GiftsAmt !!}
+    </td>
+
+    <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
+        {!! $record->EmailSegment !!}
     </td>
 
     <td>

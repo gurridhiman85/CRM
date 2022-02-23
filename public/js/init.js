@@ -23,8 +23,10 @@ function initJS($outer) {
 
     if ($outer.find('#table_task').length) {
         $outer.find('#table_task').dataTable({
-            scrollY: 407,
-            scrollX: true,
+            scrollCollapse: true,
+            fixedColumns:   true,
+            scrollY: 607,
+            scrollX: false,
             "dom": 'l<"top-data"<"data-search"f><"data-page"p>>rti',
             stateSaveCallback: function (oSettings, oData) {
                 // console.log(oData);
@@ -40,9 +42,7 @@ function initJS($outer) {
             "ordering": false,
             "colReorder": true,
             "stateSave": true,
-            "buttons": [
-                'colvis'
-            ]
+            "buttons": false
         })
     }
 
@@ -63,7 +63,7 @@ function initJS($outer) {
             "paging": false,
             "displayLength": 5,
             'searching': false,
-            "ordering": false,
+            "ordering": true,
             "stateSave": true,
             "language": {
                  "emptyTable": $outer.find('#basic_table2').data('message') ? $outer.find('#basic_table2').data('message') : "No data available in table"
@@ -114,6 +114,63 @@ function initJS($outer) {
             "stateSave": true,
             //"dom": 'l<"top-data"<"data-search"f><"data-page"p>>rti',
             //responsive: true
+        });
+
+    }
+
+    if($outer.find('#basic_table_without_dynamic_pagination').length){
+        var fetVisibleCols = function (visibleCols) {
+            console.log('visibleCols--',visibleCols);
+            if($('#basic_table_without_dynamic_pagination').length){
+                $.each(visibleCols,function (i,v) {
+                    $('#basic_table_without_dynamic_pagination').attr('data-columns-visible',JSON.stringify(v));
+                })
+            }
+        }
+        var dtable = $outer.find('#basic_table_without_dynamic_pagination').DataTable({
+            "width" : "100%",
+            "dom": '<"top">rt<"bottom"ip><"clear">',
+            "paging": true,
+            "displayLength": 15,
+            'searching': false,
+            "order": [[ 0, 'desc' ]],
+            "stateSave": false,
+            "buttons": [{
+                extend: 'colvis',
+                text: '<i class="fas fa-table ds-c"></i>',
+                collectionLayout: 'fixed two-column'
+            }],
+        });
+
+        fetVisibleCols(dtable.columns(':visible'));
+
+        $('.c-btn').html('');
+        dtable.buttons().container()
+            .appendTo( $('.c-btn') );
+
+        $('#basic_table_without_dynamic_pagination').on('column-visibility.dt', function (e, settings, column, state) {
+            var visibleCols = $('#basic_table_without_dynamic_pagination').DataTable().columns(':visible');
+            var numCols = visibleCols.nodes().length;
+            fetVisibleCols(visibleCols);
+
+            $('#basic_table_without_dynamic_pagination').attr('style','width:100% !important')
+        });
+
+        setTimeout(function () {
+            $('.dt-buttons').css({'padding-top' : '0px','margin-bottom' : '0px'});
+            $('.dt-button').prop('title','Set Columns');
+            $('.dt-button').prop('class','').addClass('btn btn-light d-none d-lg-block font-16');
+
+            $('.c-btn').show();
+        },1000);
+
+        $('#select_all').click(function(e) {
+            var cells = dtable.column(0).nodes(), // Cells from 1st column
+                state = this.checked;
+
+            for (var i = 0; i < cells.length; i += 1) {
+                cells[i].querySelector("input[type='checkbox']").checked = state;
+            }
         });
 
     }
@@ -480,6 +537,31 @@ function initJS($outer) {
         });
     }
 
+    if ($outer.find('#row_variable').length) {
+        var MS = [
+            'row_variable'
+        ];
+
+        $.each(MS, function (index, value) {
+            if ($("#" + value).length) {
+                $("#" + value).multiselect({
+                    appendTo: '#modal-popup',
+                    close: function () {
+                    },
+                    header: true, //"Region",
+                    selectedList: 1, // 0-based index
+                    nonSelectedText: 'Select Values',
+                    enableFiltering: true,
+                    filterBehavior: 'text',
+                }).multiselectfilter({label: 'Search'});
+
+                $("#" + value + "_ms").attr('style', 'width:245.156px !important;height: 28px; background-color: white !important;height: calc(1.5em + .5rem + 2px);padding: .25rem .5rem;border-radius: .2rem;background-clip: padding-box;border: 1px solid #e9ecef;font-size: .76563rem;min-height: 27px;');
+                //$("#" + value).multiselect('refresh');
+            }
+        });
+    }
+
+
     if ($outer.find('.ajax-Tooltip').length) {
         // $outer.find('.ajax-Tooltip').on('mouseenter', function () {
         //     var url = $(this).data('href');
@@ -527,6 +609,20 @@ function initJS($outer) {
             $(element).clockpicker({
                 donetext: 'Done',
                 twelvehour: true,
+                'default': '09:00'
+            }).find('input').click(function() {
+                console.log(this.value);
+
+            });
+        });
+    }
+
+    if ($outer.find('.js-clockpicker-24h').length) {
+        // console.log('datepicker Found');
+        $.each($outer.find('.js-clockpicker-24h'), function (index, element) {
+            $(element).clockpicker({
+                donetext: 'Done',
+                twelvehour: false,
                 'default': '09:00'
             }).find('input').click(function() {
                 console.log(this.value);
@@ -617,7 +713,8 @@ function initJS($outer) {
             todayBtn: "linked",
             format: $('.startDateId').data('date-format') ? $('.startDateId').data('date-format') : 'yyyy-mm-dd',
             autoclose: true,
-            todayHighlight: true
+            todayHighlight: true,
+            orientation: "bottom"
         }).on('changeDate', function(e) {
             console.log("sdfgs");
             validateStartEndDate();
@@ -629,7 +726,8 @@ function initJS($outer) {
             todayBtn: "linked",
             format: $('.endDateId').data('date-format') ? $('.endDateId').data('date-format') : 'yyyy-mm-dd',
             autoclose: true,
-            todayHighlight: true
+            todayHighlight: true,
+            orientation: "bottom"
         }).on('changeDate', function(e) {
             validateStartEndDate();
         });
@@ -1261,6 +1359,76 @@ var PageTitleNotification = {
     }
 }
 
+function limitText(limitField, limitCount, limitNum) {
+    if (limitField.value.length > limitNum) {
+        limitField.value = limitField.value.substring(0, limitNum);
+    } else {
+        limitCount.value = limitNum - limitField.value.length;
+    }
+}
+
+
+
+
+
+function yajraDatatables(elem,params = {}, url, type, postdata, dataType, columns, columnDefs, order = [[ 0, "desc" ]]){
+    if(elem.length > 0){
+        var getVisibleCols = function (visibleCols) {
+            $.each(visibleCols,function (i,v) {
+                elem.attr('data-columns-visible',JSON.stringify(v));
+            })
+        }
+
+        var ytable = elem.DataTable({
+            processing: false,//params.processing,
+            serverSide: params.serverSide,
+            searching: params.searching,
+            paging: params.paging,
+            lengthChange: params.lengthChange,
+            pageLength: params.pageLength,
+            dom: 'Bfrtip',
+            buttons: [{
+                extend: 'colvis',
+                text: '<i class="fas fa-table ds-c"></i>',
+                collectionLayout: 'fixed two-column'
+            }],
+            ajax: {
+                url: url,
+                'headers': {
+                    'X-CSRF-TOKEN': $('[name="_token"]').val()
+                },
+                type: type,
+                data: postdata,
+                dataType: "JSON"
+            },
+            columns: columns,
+            order : order,
+            'columnDefs': columnDefs
+        });
+
+        getVisibleCols(ytable.columns(':visible'));
+
+        $('.c-btn').html('');
+        ytable.buttons().container()
+            .appendTo( $('.c-btn') );
+
+        elem.on('column-visibility.dt', function (e, settings, column, state) {
+            var visibleCols = elem.DataTable().columns(':visible');
+            var numCols = visibleCols.nodes().length;
+            getVisibleCols(visibleCols);
+
+            elem.attr('style','width:100% !important')
+        });
+
+        //setTimeout(function () {
+            $('.dt-buttons').css({'padding-top' : '0px','margin-bottom' : '0px'});
+            $('.dt-button').prop('title','Set Columns');
+            $('.dt-button').prop('class','').addClass('btn btn-light d-none d-lg-block font-16');
+
+            $('.c-btn').show();
+        //},1000);
+    }
+}
 
 var CopyToClipboardFunctions = function () {
     this.exceptions = [];

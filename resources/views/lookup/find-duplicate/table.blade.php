@@ -1,4 +1,4 @@
-<table id="basic_table2" class="table table-bordered table-hover color-table lkp-table">
+<table id="basic_table_without_dynamic_pagination" class="table table-bordered table-hover color-table lkp-table">
     <thead>
     <tr>
         <th>Tag</th>
@@ -37,15 +37,13 @@
         @if ($checkDupes == $record['ds_contactid_s2'])
             <tr>
                 <td>
-                    <!--<input type="checkbox" class="checkbox" value="1"/>-->
                     <label class="custom-control custom-checkbox m-b-0">
-                        <input type="checkbox" class="custom-control-input checkbox" onclick="reviewDupsContact($(this),{!! $record['ds_mkc_contactid'] !!});" {!! $record['tag'] == 1 ? 'checked' : '' !!} value="1">
+                        <input type="checkbox" class="custom-control-input " onclick="reviewDupsContact($(this),{!! $record['ds_mkc_contactid'] !!});" {!! $record['tag'] == 1 ? 'checked' : '' !!} value="1">
                         <span class="custom-control-label"></span>
                     </label>
                 </td>
 
                 <td>
-                    <!--<input type="checkbox" class="checkbox" value="1"/>-->
                     <label class="custom-control custom-checkbox m-b-0">
                         <input type="checkbox" class="custom-control-input checkbox" name="mids[{!! $record['ds_mkc_contactid'] !!}]" onclick="singleCheckbox();" value="{!! $record['ds_contactid_s2'] !!}">
                         <span class="custom-control-label"></span>
@@ -67,7 +65,9 @@
                 <td>{!! $record['dqcode_address'] !!}</td>
             </tr>
 
+
         @elseif ($checkDupes != $record['ds_contactid_s2'])
+
             <tr style="background-color: #f9f9f9;">
                 <td></td>
                 <td></td>
@@ -89,7 +89,13 @@
 
             <tr>
                 <td>
-                    <!--<input type="checkbox" class="checkbox" value="1"/>-->
+                    <label class="custom-control custom-checkbox m-b-0">
+                        <input type="checkbox" class="custom-control-input" onclick="reviewDupsContact($(this),{!! $record['ds_mkc_contactid'] !!});" {!! $record['tag'] == 1 ? 'checked' : '' !!} value="1">
+                        <span class="custom-control-label"></span>
+                    </label>
+                </td>
+
+                <td>
                     <label class="custom-control custom-checkbox m-b-0">
                         <input type="checkbox" class="custom-control-input checkbox" name="mids[{!! $record['ds_mkc_contactid'] !!}]" onclick="singleCheckbox();" value="{!! $record['ds_contactid_s2'] !!}">
                         <span class="custom-control-label"></span>
@@ -99,17 +105,16 @@
                 <td>{!! $record['ds_mkc_contactid'] !!}</td>
                 <td>{!! $record['ds_mkc_householdid'] !!}</td>
                 <td>{!! $record['email'] !!}</td>
+                <td>{!! $record['email2'] !!}</td>
                 <td>{!! $record['dqcode_email'] !!}</td>
                 <td>{!! $record['phone'] !!}</td>
                 <td>{!! $record['extendedname'] !!}</td>
                 <td>{!! $record['Company'] !!}</td>
-                <td>{!! $record['LetterName'] !!}</td>
                 <td>{!! $record['address'] !!}</td>
                 <td>{!! $record['city'] !!}</td>
                 <td>{!! $record['state'] !!}</td>
                 <td>{!! $record['zip'] !!}</td>
                 <td>{!! $record['dqcode_address'] !!}</td>
-                <td>{!! $record['zss_segment'] !!}</td>
             </tr>
             @php $checkDupes = 0; @endphp
         @endif

@@ -22,7 +22,7 @@ return [
     |
     | This value determines the "environment" your application is currently
     | running in. This may determine how you prefer to configure various
-    | services the application utilizes. Set this in your ".env" file.
+    | services your application utilizes. Set this in your ".env" file.
     |
     */
 
@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'debug' => env('APP_DEBUG', true),
+    'debug' => env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -53,8 +53,6 @@ return [
     */
 
     'url' => env('APP_URL', 'https://crmsquare.com'),
-
-    'asset_url' => env('ASSET_URL', null),
 
     /*
     |--------------------------------------------------------------------------
@@ -94,19 +92,6 @@ return [
     */
 
     'fallback_locale' => 'en',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Faker Locale
-    |--------------------------------------------------------------------------
-    |
-    | This locale will be used by the Faker PHP library when generating fake
-    | data for your database seeds. For example, this will be used to get
-    | localized telephone numbers, street address information and more.
-    |
-    */
-
-    'faker_locale' => 'en_US',
 
     /*
     |--------------------------------------------------------------------------
@@ -161,7 +146,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class,
+
         /*
          * Package Service Providers...
          */
@@ -174,11 +159,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-		Maatwebsite\Excel\ExcelServiceProvider::class,
-		Barryvdh\DomPDF\ServiceProvider::class,
-		LynX39\LaraPdfMerger\PdfMergerServiceProvider::class,
-		//Barryvdh\Snappy\ServiceProvider::class,
-	
+        Barryvdh\DomPDF\ServiceProvider::class,
+
     ],
 
     /*
@@ -227,13 +209,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'Helper' => App\Helpers\InputSenitizer::class,
-        'Image' => Intervention\Image\Facades\Image::class,
-		'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-		'PDF' => Barryvdh\DomPDF\Facade::class,
-		'PdfMerger' => LynX39\LaraPdfMerger\Facades\PdfMerger::class,
-		//'SPDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
-		//'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
     ],
 
 ];

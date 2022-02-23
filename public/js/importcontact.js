@@ -179,13 +179,14 @@ $(document).ready(function () {
                 extradata = data.extra, R = data.response;
             if(R.success){
                 $('#overviewImport').html(R.html);
+                $('#hidden_fields').html(R.hidden_fields_html);
                 localStorage.removeItem('fieldMapping');
                 localStorage.setItem('fieldMapping',JSON.stringify(R.columns));
                 $('#Import_Filename').val(R.Import_Filename);
                 $('#Import_Id').val(R.Import_Id);
                 initJS($('#overviewImport'))
                 $('.continue').trigger('click');
-                $('#basic_table2').attr('style','width:100% !important');
+                $('#basic_table_without_dynamic_pagination').attr('style','width:100% !important');
                 if($('#is_no_address').is(':checked')){
                     $('#no_address').val(1);
                 }
@@ -214,16 +215,26 @@ $(document).ready(function () {
         $docs_input_files.fileinput('clear');
     });
 
+    $('#is_no_address').on('click',function () {
+        if($(this).is(':checked')) {
+            $('#waitingText').html("Please wait..........<br/>File Import and Cleansing is in progress.<br/> Your input will be required in approximately 1 minute.");
+            $('#cd_seconds').val(60)
+            $('[name="no_address"]').val(1)
+        }else{
+            $('#waitingText').html("Please wait..........<br/>File Import and Cleansing is in progress.<br/> Your input will be required in approximately 3-5 minutes.")
+            $('#cd_seconds').val(300)
+            $('[name="no_address"]').val(0);
+        }
+
+    })
+
     ACFn.ajax_import_execute = function (F, R) {
         if(R.success){
             if(R.no_address){
                 localStorage.setItem('stepsCompleted',5);
-                $('#updateNameList').html(R.html);
-                initJS($('#updateNameList'));
-                JumpOnStep(5);
-                if(!R.recCount){
-                    $('#updatename').submit();
-                }
+                $('#updateAddressList').html(R.html);
+                initJS($('#updateAddressList'));
+                $('.continue').trigger('click');
 
             }else{
                 localStorage.removeItem('step');
@@ -339,7 +350,7 @@ function IntervalTimer(callback, interval) {
     this.timeoutCallback = function () {
         if (state != 3) return;
 
-        checkFile();
+        //checkFile();
 
         startTime = new Date();
         timerId = window.setInterval(checkFile, interval);

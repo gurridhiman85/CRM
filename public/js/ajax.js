@@ -483,6 +483,7 @@ function AjaxCompleteFunctions() {
     }
 
     this.general_form = function (F, R) {
+        NProgress.done(true);
         if (R.success) {
             if (R.form_reset == false) {
 

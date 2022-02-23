@@ -5,11 +5,10 @@
     <div class="col-md-2 pl-0">
         <div class="form-group">
             <small class="form-control-feedback ml-2 pl-1 ds-l">Row Variable</small>
-            <select name="row_variable" @if(isset($popup)) id="row_variable" @endif class="form-control form-control-sm row_variable">
-                <option value="">Select</option>
+            <select name="row_variable" @if(isset($popup)) multiple="multiple" id="row_variable" @endif class="form-control form-control-sm row_variable">
                 @if(count($lkpOptions))
                     @foreach($lkpOptions as $lkpOption)
-                        <option {!! $params['row_variable'] == $lkpOption ? 'selected' : '' !!} value="{!! $lkpOption !!}">{!! $lkpOption !!}</option>
+                        <option {!! is_array($params['row_variable']) ? (in_array($lkpOption,$params['row_variable']) ? 'selected' : '') : $params['row_variable'] == $lkpOption ? 'selected' : '' !!} value="{!! $lkpOption !!}">{!! $lkpOption !!}</option>
                     @endforeach
                 @endif
             </select>

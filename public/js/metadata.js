@@ -90,15 +90,16 @@ function sessionMeta() {
     params.meta_description = r5;
     localStorage.setItem('params',JSON.stringify(params));
     parent.promoexportchk = 'N';
-    $('#schedulePopup').modal('show');
+    /*$('#schedulePopup').modal('show');
     document.frmExec.action = "campaign/reschedule";
     document.frmExec.sSQL.value = params.sSQL;
     document.frmExec.target = "iframeSchedule";
-    document.frmExec.submit();
+    document.frmExec.submit();*/
+    $('[href="#tab_30"]').trigger('click');
 }
 
 
-function dispReportMeta() {
+function dispReportMeta() { //alert('dispReportMeta');
     var CGStart, index = 1, noRows;
     var LSD = new Array();
     if (parent.addsubgroupchk == 'Y') {
@@ -161,7 +162,7 @@ function dispReportMeta() {
         var r14 = document.getElementById('txtSKU').value;
         var r15 = document.getElementById('txtCoupon').value;
 
-        var strHTML = '<table class="table table-bordered table-hover color-table lkp-table"><thead><tr><th><label>Objective</label></th><th><label>Brand</label></th><th><label>Channel</label></th>';
+        var strHTML = '<div class="table-responsive"><table class="table table-bordered table-hover color-table lkp-table"><thead><tr><th><label>Objective</label></th><th><label>Brand</label></th><th><label>Channel</label></th>';
         strHTML += '<th><label>Category</label></th><th><label>List Description</label></th><th><label>Wave</label></th><th><label>Cost</label></th>';
         strHTML += '<th><label>Start Yr</label></th><th><label>Mth</label></th><th><label>Day</label></th><th><label>Interval</label></th>';
         strHTML += '<th><label>Product Cat1</label></th><th><label>Product Cat2</label></th><th><label>SKU</label></th><th><label>Coupon</label></th><th><label>Segment ID</label></th>';
@@ -184,12 +185,14 @@ function dispReportMeta() {
         }
 
 
-        strHTML += row + '</table>';
+        strHTML += row + '</table></div>';
         d1.innerHTML = strHTML;
-        d1.style.display = 'block';
-    } else if ((parent.oldcampclk == 'Y') && (parent.addsubgroupchk == 'N'))
+       // d1.innerHTML = '';
+        console.log('if----',parent.addsubgroupchk)
+    } else if ((parent.oldcampclk == 'Y') && (parent.addsubgroupchk == 'N')){
+        console.log('else----',parent.addsubgroupchk)
         viewDispReportMeta();
-
+    }
 }
 
 
@@ -236,7 +239,7 @@ function viewDispReportMeta() {
 
 
     //alert(metaArray[18]);
-    var strHTML = '<table class="table table-bordered table-hover color-table lkp-table"><thead><tr><th><label>Objective</label></th><th><label>Brand</label></th><th><label>Channel</label></th>';
+    var strHTML = '<div class="table-responsive"><table class="table table-bordered table-hover color-table lkp-table"><thead><tr><th><label>Objective</label></th><th><label>Brand</label></th><th><label>Channel</label></th>';
     strHTML += '<th><label>Campaign Detail</label></th><th><label>List Description</label></th><th><label>Wave</label></th><th><label>Cost</label></th>';
     strHTML += '<th><label>Start Yr</label></th><th><label>Mth</label></th><th><label>Day</label></th><th><label>Interval</label></th>';
     strHTML += '<th><label>Product Cat1</label></th><th><label>Product Cat2</label></th><th><label>SKU</label></th><th><label>Coupon</label></th><th><label>Segment ID</label></th>';
@@ -255,11 +258,9 @@ function viewDispReportMeta() {
 
         }
     }
-    strHTML += row + '</table>';
+    strHTML += row + '</table></div>';
     d1.innerHTML = strHTML;
-    d1.style.display = 'block';
-
-
+    //d1.innerHTML = '';
 }
 
 function disableEleMeta() {
@@ -269,13 +270,13 @@ function disableEleMeta() {
     var disable_flag = 0;
     if (parent.up_flag == 'view') {
 
-        document.getElementById("btnGo").disabled = true;
+        //document.getElementById("btnGo").disabled = true;
         disable_flag = 1;
     } else if (parent.up_flag == 'update') {
         document.getElementById('savebottom').innerHTML = 'Update';
     } else if (parent.up_flag = 'new') {
         if (params.saveCD == 'N') {
-            document.getElementById("btnGo").disabled = true;
+            //document.getElementById("btnGo").disabled = true;
             disable_flag = 1;
         }
     }
@@ -331,9 +332,9 @@ function oldcampMeta() {
         document.getElementById('txtCoupon').value = params.Coupon;
 
         if (params.CGOpt == 'N') {
-            document.getElementById("btnGo").disabled = true;
+            //document.getElementById("btnGo").disabled = true;
         } else {
-            document.getElementById("btnGo").disabled = false;
+            //document.getElementById("btnGo").disabled = false;
         }
 
         document.getElementById('cmbStartYr').value = yy;
@@ -359,7 +360,7 @@ function oldcampMeta() {
                         document.getElementById('cmbObj').value = metaResponse.rpmeta.Objective;
                         document.getElementById('cmbBand').value = metaResponse.rpmeta.Band;
                         document.getElementById('cmbChannel').value = metaResponse.rpmeta.Channel;
-                        document.getElementById('txtCat').value = metaResponse.rpmeta.Category;
+                        document.getElementById('txtCat').value = $.trim(metaResponse.rpmeta.Category) != $.trim(params.Category) ?  $.trim(params.Category) : $.trim(metaResponse.rpmeta.Category)
                         document.getElementById('txtListDis').value = metaResponse.rpmeta.ListDes;
                         document.getElementById('cmbWave').value = metaResponse.rpmeta.Wave;
                         var Start_Date = (metaResponse.rpmeta.Start_Date).split('-');
@@ -376,9 +377,9 @@ function oldcampMeta() {
                         document.getElementById('txtCoupon').value = metaResponse.rpmeta.Coupon;
 
                         if (metaResponse.promoexpo_cd_opt == 'N') {
-                            document.getElementById("btnGo").disabled = true;
+                            //document.getElementById("btnGo").disabled = true;
                         } else {
-                            document.getElementById("btnGo").disabled = false;
+                            //document.getElementById("btnGo").disabled = false;
                         }
                     }
                     if (parent.up_flag == 'new') {
@@ -392,7 +393,7 @@ function oldcampMeta() {
     } else {
         if (params.saveCD == 'N') {
 
-            document.getElementById("btnGo").disabled = true;
+            //document.getElementById("btnGo").disabled = true;
             disableEleMeta();
         }
     }

@@ -78,34 +78,136 @@
     }
 
 </style>
-<table id="basic_table2" class="table table-bordered table-hover color-table lkp-table" data-message="No reports available">
+<table id="yajra-table" class="table table-bordered table-hover color-table lkp-table" style="width: 100%;" data-message="No campaign available">
     <thead>
-        <tr>
-            <th>ID</th>
-            <th>Level</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th class="text-center">StartTime</th>
-            <th class="text-center">RunTime</th>
-            <th class="text-center">FTP</th>
-            <th class="text-center">Public</th>
-            <th class="text-center">Share</th>
-            <th class="text-center">Code</th>
-            <th class="text-center">Records</th>
-            <th class="text-center">List</th>
-            <th class="text-center">List</th>
-            <th class="text-center">Rpt</th>
-            <th class="text-center">Rpt</th>
-            <th class="text-center">Run</th>
-           {{-- <th class="text-center">Int</th>--}}
-            <th class="text-center">Action</th>
-        </tr>
+    <tr>
+        <th>Tag</th>
+        <th>ID</th>
+        <th>Level</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th class="text-center">Last Run</th>
+        <th class="text-center">Time</th>
+        <th class="text-center">FTP</th>
+        <th class="text-center">Public</th>
+        <th class="text-center">Share</th>
+        <th class="text-center">Code</th>
+        <th class="text-center">Records</th>
+        <th class="text-center">List <i class="fas fa-file-excel" style = "color: #06b489;" ></i ></th>
+        <th class="text-center">List <i class="fas fa-file-pdf" style="color: #e92639;" ></i ></th>
+        <th class="text-center">Ver</th>
+        <th class="text-center">Rpt <i class="fas fa-file-excel" style = "color: #06b489;" ></i ></th>
+        <th class="text-center">Rpt <i class="fas fa-file-pdf" style="color: #e92639;" ></i ></th>
+        <th class="text-center">Run</th>
+        {{-- <th class="text-center">Int</th>--}}
+        <th class="text-center">Action</th>
+    </tr>
     </thead>
-    <tbody>
-        @if(count($records) > 0)
-            @foreach($records as $record)
-                @include('campaign.tabs.completed.table-single-row')
-            @endforeach
-        @endif
-    </tbody>
 </table>
+
+<script>
+    $(function() {
+        yajraDatatables($('#yajra-table'),                                              //element
+            {                                                                               //params
+                processing: true,
+                serverSide: true,
+                searching:  false,
+                paging: true,
+                lengthChange: false,
+                pageLength: 15,
+            },
+            "{!! route('campaign_completed.data') !!}",                                      //url
+            'POST',                                                                         //type
+            {                                                                               //data
+                sort_column : "{!! $sort_column !!}",
+                sort_dir : "{!! $sort_dir !!}",
+            },
+            "JSON",                                                                         //dataType
+            [
+                { data: 'Tag', name: 'Tag',sortable : false}, //columns
+                { data: 't_id', name: 't_id',sortable : false},
+                { data: 'list_level', name: 'list_level'},
+                { data: 'list_short_name', name: 'list_short_name'},
+                { data: 'Description', name: 'Description'},
+                { data: 'StartTime', name: 'StartTime'},
+                { data: 'RunTime', name: 'RunTime'},
+                { data: 'FTP', name: 'FTP'},
+                { data: 'is_public', name: 'is_public'},
+                { data: 'is_share', name: 'is_share'},
+                { data: 'Custom_SQL', name: 'Custom_SQL'},
+                { data: 'total_records', name: 'total_records'},
+                { data: 'listXLSX', name: 'listXLSX'},
+                { data: 'listPDF', name: 'listPDF'},
+                { data: 'ver', name: 'ver'},
+                { data: 'SummaryXLSX', name: 'SummaryXLSX'},
+                { data: 'SummaryPDF', name: 'SummaryPDF'},
+                { data: 'run', name: 'run'},
+                { data: 'action', name: 'action'},
+
+            ],
+            [                                                                               //columnDefs
+                {
+                    "targets": 0,
+                    "className": "text-center",
+                },
+                {
+                    "targets": 1,
+                    "className": "text-center"
+                },
+                {
+                    "targets": 5,
+                    "className": "text-center"
+                },
+                {
+                    "targets": 6,
+                    "className": "text-right pr-3",
+                },
+                {
+                    "targets": 7,
+                    "className": "text-center",
+                },
+                {
+                    "targets": 8,
+                    "className": "text-center",
+                },
+                {
+                    "targets": 9,
+                    "className": "text-center",
+                },
+                {
+                    "targets": 10,
+                    "className": "text-center",
+                },
+                {
+                    "targets": 11,
+                    "className": "text-right pr-3",
+                },
+                {
+                    "targets": 12,
+                    "className": "text-center",
+                },
+                {
+                    "targets": 13,
+                    "className": "text-center",
+                },
+                {
+                    "targets": 14,
+                    "className": "text-center",
+                },
+                {
+                    "targets": 15,
+                    "className": "text-center",
+                },
+                {
+                    "targets": 16,
+                    "className": "text-center",
+                },
+                {
+                    "targets": 17,
+                    "className": "text-center",
+                }
+            ]);
+
+    });
+</script>
+

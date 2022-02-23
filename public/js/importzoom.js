@@ -182,6 +182,7 @@ $(document).ready(function () {
                 $('#Import_Id').val(R.Import_Id);
                 localStorage.setItem('stepsCompleted',2);
                 $('#zoomstep2table').html(R.html);
+                initJS($('#zoomstep2table'))
                 $('.continue').trigger('click');
 
             }else{
@@ -210,6 +211,7 @@ $(document).ready(function () {
         if(R.success){
             localStorage.setItem('stepsCompleted',2);
             $('#zoomstep2table').html(R.html);
+            initJS($('#zoomstep2table'))
         }else{
             var data = {
                 'title': R.messageTitle,
@@ -224,7 +226,9 @@ $(document).ready(function () {
     ACFn.ajax_Step3 = function (F, R) {
         if(R.success){
             localStorage.setItem('stepsCompleted',3);
+            emptyHTMLTill(2);
             $('#zoomstep3table').html(R.html);
+            initJS($('#zoomstep3table'))
         }else{
             var data = {
                 'title': R.messageTitle,
@@ -239,7 +243,9 @@ $(document).ready(function () {
     ACFn.ajax_Step4 = function (F, R) {
         if(R.success){
             localStorage.setItem('stepsCompleted',4);
+            emptyHTMLTill(3);
             $('#zoomstep4table').html(R.html);
+            initJS($('#zoomstep4table'))
         }else{
             var data = {
                 'title': R.messageTitle,
@@ -254,8 +260,9 @@ $(document).ready(function () {
     ACFn.ajax_Step5 = function (F, R) {
         if(R.success){
             localStorage.setItem('stepsCompleted',5);
+            emptyHTMLTill(4);
             $('#zoomstep5table').html(R.html);
-            
+            initJS($('#zoomstep5table'))
         }else{
             var data = {
                 'title': R.messageTitle,
@@ -270,8 +277,9 @@ $(document).ready(function () {
     ACFn.ajax_Step6 = function (F, R) {
         if(R.success){
             localStorage.setItem('stepsCompleted',6);
+            emptyHTMLTill(5);
             $('#zoomstep6table').html(R.html);
-            
+            initJS($('#zoomstep6table'))
         }else{
             var data = {
                 'title': R.messageTitle,
@@ -286,7 +294,9 @@ $(document).ready(function () {
     ACFn.ajax_Step7 = function (F, R) {
         if(R.success){
             localStorage.setItem('stepsCompleted',7);
-            $('#zoomstep7table').html(R.html);  
+            emptyHTMLTill(6);
+            $('#zoomstep7table').html(R.html);
+            initJS($('#zoomstep7table'))
         }else{
             var data = {
                 'title': R.messageTitle,
@@ -298,6 +308,13 @@ $(document).ready(function () {
         }
     };
 
+    ACFn.ajax_update_step7 = function (F , R) {
+        if(R.success){
+            $('#s7dflname_' + R.rowid).text(R.aData.DFLName);
+            $('#checkbox_' + R.rowid).attr('checked',true);
+        }
+    }
+
     ACFn.importZoomCompleted = function (F,R) {
         localStorage.setItem('stepsCompleted',0);
         $("#modal-popup").remove();
@@ -307,12 +324,18 @@ $(document).ready(function () {
             initJS($("#modal-popup"));
         }, 50);
         resetIMP();
-        redirectLKP();
+        //redirectLKP();
     }
 });
 
 function redirectLKP() {
     window.location.href = 'lookup';
+}
+
+function emptyHTMLTill(number) {
+    for(var i= 2; i<=number;i++){
+        $('#zoomstep'+i+'table').html('');
+    }
 }
 
 function colChange(obj,key){

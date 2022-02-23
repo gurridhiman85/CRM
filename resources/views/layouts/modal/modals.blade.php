@@ -38,6 +38,19 @@
                                     <div class="row">
                                         <div class="col-md-12 p-0">
                                             <div class="form-group row">
+                                                <label class="control-label col-md-4">Add to Phone:</label>
+                                                <div class="col-md-8">
+                                                    <label class="custom-control custom-checkbox m-b-0" style="width: fit-content;">
+                                                        <input type="checkbox" class="custom-control-input checkbox" value="1" id="chkAddToPhone" name="chkAddToPhone" onclick="addToPhone($(this));">
+                                                        <span class="custom-control-label"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 p-0">
+                                            <div class="form-group row">
                                                 <label class="control-label col-md-4">Users:</label>
                                                 <div class="col-md-8">
                                                     <select  name="users[]" id="userFieldList" class="form-control form-control-sm" multiple="multiple">
@@ -177,8 +190,8 @@
                                             <div class="form-group">
                                                 <label class="control-label">Attachment</label>
                                                 <select id="Email_Attachment" name="Email_Attachment" class="form-control form-control-sm">
-                                                    <option value="onlylist">List Only</option>
                                                     <option value="onlyreport">Report Only</option>
+                                                    <option value="onlylist">List Only</option>
                                                     <option value="both">Both</option>
                                                     <option value="none">None</option>
                                                 </select>

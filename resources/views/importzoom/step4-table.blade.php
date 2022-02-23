@@ -1,4 +1,4 @@
-<table class="table table-bordered table-hover color-table lkp-table">
+<table class="table table-bordered table-hover color-table lkp-table" id="basic_table_without_dynamic_pagination">
     <thead>
     <tr>
         <th>

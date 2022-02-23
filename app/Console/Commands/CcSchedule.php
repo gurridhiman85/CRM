@@ -110,9 +110,18 @@ class CcSchedule extends Command
             //SMTP Details
         }
 
-        $CampSQL = DB::select("SELECT [t_id],[t_name],[list_short_name],[sql],[seg_def],[seg_method],[seg_criteria],[seg_selected_criteria],[seg_grp_no],[seg_ctrl_grp_opt],[seg_camp_grp_dtls]
-		    ,[seg_sample],[promoexpo_cd_opt],[promoexpo_file_opt],[promoexpo_folder],[promoexpo_file],[promoexpo_ext]
-		    ,[promoexpo_ecg_opt],[promoexpo_data],[SR_Attachment],[List_Format] FROM [UC_Campaign_Templates] Where row_id = '" . $CampID . "' AND t_type='C'");
+        $SQLSSM = DB::select("Select * from [UL_RepCmp_Sch_status_mapping] Where sch_id = '$sch_id' AND t_type = 'C' ORDER BY row_id DESC");
+        $aDataSSM = collect($SQLSSM)->map(function ($x) {
+            return (array)$x;
+        })->toArray();
+        if(!empty($aDataSSM)){
+            $SchStatusID = $aDataSSM[0]['sch_status_id'];
+        }
+
+        $CampSQL = DB::select("SELECT [t_id],[list_short_name],[list_level],[t_name],[sql],[seg_def],[seg_method],[seg_criteria],[seg_selected_criteria],[seg_grp_no],[seg_ctrl_grp_opt],[seg_camp_grp_dtls]
+		    ,[seg_sample],[seg_filters_criteria],[seg_filter_condition],[promoexpo_cd_opt],[promoexpo_file_opt],[promoexpo_folder],[promoexpo_file],[promoexpo_ext]
+		    ,[promoexpo_ecg_opt],[promoexpo_data],[selected_fields],[selected_fields],[sql],[Report_Row],[Report_Column],[Report_Function],[Report_Sum],[Report_Show],[Report_Orientation],[Custom_SQL],[SR_Attachment],[List_Format],[Lookup_Type] 
+		     FROM [UC_Campaign_Templates] Where row_id = '" . $CampID . "' AND t_type='C'");
         $aData = collect($CampSQL)->map(function($x){ return (array) $x; })->toArray();
 
         if (!empty($aData)) {
@@ -120,13 +129,14 @@ class CcSchedule extends Command
             foreach ($aData as $k => $row) {
 
                 $CID = $aData[0]['t_id'];
-                $sSQL = $aData[0]['sql'];
                 $list_short_name = $aData[0]['list_short_name'];
                 $t_name = $aData[0]['t_name'];
+                $sSQL = $aData[0]['sql'];
                 $segDef = $aData[0]['seg_def'];
                 $segMethod = $aData[0]['seg_method'];
                 $segCriteria = $aData[0]['seg_criteria'];
-
+                $segFiltersCriteria = $aData[0]['seg_filters_criteria'];
+                $segFilterCondition = $aData[0]['seg_filter_condition'];
                 $criteria = $aData[0]['seg_selected_criteria'];
 
                 $noCG = $aData[0]['seg_grp_no'];
@@ -139,10 +149,20 @@ class CcSchedule extends Command
                 $folder_Name = $aData[0]['promoexpo_folder'];
                 $file_Name = $aData[0]['promoexpo_file'];
                 $file_Ext = $aData[0]['promoexpo_ext'];
+                //$metaData = $aData[0]['meta_data'];
                 $CGDetail = $aData[0]['seg_camp_grp_dtls'];
                 $promoExpo_ecg_opt = $aData[0]['promoexpo_ecg_opt'];
+                $list_level = $aData[0]['list_level'];
+                $Report_Row = $aData[0]['Report_Row'];
+                $Report_Column = $aData[0]['Report_Column'];
+                $Report_Function = $aData[0]['Report_Function'];
+                $Report_Sum = $aData[0]['Report_Sum'];
+                $Report_Show = $aData[0]['Report_Show'];
+                $Report_Orientation = $aData[0]['Report_Orientation'];
+                $Custom_SQL = $aData[0]['Custom_SQL'];
                 $SR_Attachment = $aData[0]['SR_Attachment'];
                 $List_Format = $aData[0]['List_Format'];
+                $Lookup_Type = $aData[0]['Lookup_Type'];
             }
         }
         $metadata_date = date('Y-m-d');
@@ -150,10 +170,12 @@ class CcSchedule extends Command
         if($metaData){
             $metadata_date = $metaData->Start_Date;
         }
+        $file_Name1 = $list_short_name;
+        $file_Name = $list_short_name . "_" . date("Ymd", time());
+
         if ($SchType == 'RP') {
 
-            $file_Name1 = $file_Name;
-            $file_Name = $file_Name . "_" . $rp_count . "_" . date("Ymd", time());
+
             $date = date("m/d/y  H:i:s", time());
             // $date = substr($date,0,strpos($date,'.'));
 
@@ -183,15 +205,43 @@ class CcSchedule extends Command
 
         if ((trim($file_Opt) == 'Y' && trim($sSQL) != '') || ((trim($CD_Opt) == 'Y') && trim($sSQL) != '')) {
             $date = date("m/d/y  H:i:s", time());    //Schedule stating date and time
-            if (($SchType == 'RP') || ($SchType == 'RA'))
-                DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Running', [start_time] = '" . $date . "' Where row_id = '" . $SchStatusID . "' AND t_type = 'C'");
-            else
-                DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Running' Where row_id = '" . $SchStatusID . "' AND t_type = 'C'");
+            if (($SchType == 'RP') || ($SchType == 'RA')){
+                //DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Running', [start_time] = '" . $date . "' Where row_id = '" . $SchStatusID . "' AND t_type = 'C'");
+            }
+            //else
+            //DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Running' Where row_id = '" . $SchStatusID . "' AND t_type = 'C'");
 
             $sampleArray = explode("^", $sample);
             $sampleRecords = explode(":", $sampleArray[1]);
+            if($Custom_SQL == 'Y'){
+                if (strpos($sSQL, "*") !== false) {
+                    $cSQL = str_replace("*", "TOP 1 * ", $sSQL);
+                } else {
+                    $cSQL = substr($sSQL, 0, 6) . " top 1 " . substr($sSQL, 7, strlen($sSQL));
+                }
 
-            $expcolsarray = explode("|", $promoexpo_data);
+                if(stripos($cSQL, "blank") !== false){
+                    $cSQL = str_replace("blank", "", $cSQL);
+                }
+
+                $getColumns = DB::select($cSQL);
+                $getColumns = collect($getColumns)->map(function($x){ return (array) $x; })->toArray();
+                $cColumns = array();
+                array_push($cColumns,'SegmentID:true');
+                array_push($cColumns,'GroupID:true');
+                if(count($getColumns) > 0){
+                    foreach ($getColumns[0] as $cname=> $cvalue){
+                        $cColumns[]  = $cname.':true';
+                    }
+                    $expcolsarray = $cColumns;
+                }
+
+
+
+            }else{
+                $expcolsarray = explode("|", $promoexpo_data);
+            }
+
             $flag = 0;
             $expcols = '';
             foreach ($expcolsarray as $k => $v) {
@@ -204,25 +254,27 @@ class CcSchedule extends Command
                             if ($flag != 1) {
                                 $expcols = $expcols . "" . $kk[0];
                                 $flag = 1;
-                            } else
+                            } else{
                                 $expcols = $expcols . "," . $kk[0];
+                            }
+
                         }
                     }
                 }
 
             }
-
             //  create_temp_table($sql1,$cname,$CID,$expcols);
             $flag = 0;
             $cols = "";
             $SQLCols = "";
+
             foreach ($expcolsarray as $k => $v) {
                 if(!empty($v)){
                     $kk = explode(":", $v);
 
                     if (trim($kk[1]) == 'true') {
 
-                        if (!(($kk[0] == 'CampaignID') || ($kk[0] == 'GroupID') || ($kk[0] == 'SegmentID'))) {
+                        //if (!(($kk[0] == 'CampaignID') || ($kk[0] == 'GroupID') || ($kk[0] == 'SegmentID'))) {
 
                             if ($flag != 1) {
                                 $SQLCols = $cols . "[" . $kk[0] . "]";
@@ -233,10 +285,11 @@ class CcSchedule extends Command
                                 $cols = $cols . "," . $kk[0];
                             }
 
-                        }
+                       // }
                     }
                 }
             }
+
             $CustIDPos = -1;
             if ($cols != '') {
                 $CustIDA = explode(",", $cols);
@@ -260,6 +313,7 @@ class CcSchedule extends Command
             }
 
             $pos = strpos($sSQL, "Order By");
+
             if ($pos != false) {
                 $sSQLTemp = substr($sSQL, 0, $pos - 1);
                 $orderStr = substr($sSQL, $pos + 9);
@@ -284,7 +338,12 @@ class CcSchedule extends Command
                 $sSQLTemp = $sSQL;
                 $sort = "";
             }
-            $tblName = "tmp_" . time() . "_" . date("Ymd", time());
+
+            if(stripos($sSQLTemp, "blank") !== false){
+                $sSQLTemp = str_replace("blank", "", $sSQLTemp);
+            }
+            //echo $sSQLTemp; die;
+            $tblName = "tmp_". rand(0,100) . "_" . time() . "_" . date("Ymd", time());
             $tempSQL = "Select * into $tblName From ( " . $sSQLTemp . " ) as t";
             DB::statement("SET ANSI_NULLS OFF; SET ANSI_WARNINGS OFF;".$tempSQL);
 
@@ -292,14 +351,14 @@ class CcSchedule extends Command
             $sampleArray = explode("^", $sample);
             $samplePercentage = explode(":", $sampleArray[0]);
             $sSper = $samplePercentage[0];
-            if ($segDef == 'none' && $segCriteria == '') {
+            if ($segDef == 'none' && $segFiltersCriteria == '') {
                 DB::statement("alter table $tblName add campaignid int null , groupid int null , segmentid int null,numgroups smallint null");
 
                 DB::update("update $tblName set campaignid=$CID ,numgroups = $noCG");
 
                 $sSql = "update $tblName set groupid=";
-
-                $sSql .= $seg_CG_Opt == 'Y' ? "case when (ABS(CAST((BINARY_CHECKSUM(*) *RAND()) as int)) % 100) < $sSper and numgroups= $noCG then 0 else 1 end" : "1";
+                echo '$seg_CG_Opt----'.$seg_CG_Opt.'---$sSper---'.$sSper.'---$noCG--'.$noCG;
+                $sSql .= $seg_CG_Opt == 'Y' ? "case when (ABS(CAST((BINARY_CHECKSUM(*) *RAND()) as int)) % 100) <= $sSper and numgroups= $noCG then 0 else 1 end" : "1";
                 DB::update($sSql);
 
                 DB::update("update $tblName set segmentid=1");
@@ -311,7 +370,7 @@ class CcSchedule extends Command
 
                 DB::insert("insert into UC_Campaign_Data (DS_MKC_Contactid, campaignid, groupid, segmentid, email) select DS_MKC_ContactID, campaignid, groupid, segmentid, $emailCol from $tblName");
 
-            } else if ($segDef == 'byfield' && $segCriteria != '') {
+            } else if ($segDef == 'byfield' && $segCriteria != '' && $segFiltersCriteria == '') {
                 $sampleArray = explode("^", $sample);
                 $samplePercentage = explode(":", $sampleArray[0]);
                 $sSper = $samplePercentage[0];
@@ -342,7 +401,8 @@ class CcSchedule extends Command
 
                 $sSql = "update $tblName set groupid=";
 
-                $sSql .= $seg_CG_Opt == 'Y' ? "case when (ABS(CAST((BINARY_CHECKSUM(*) *RAND()) as int)) % 100) < $sSper and numgroups= $noCG then 0 else 1 end" : "1";
+                $sSql .= $seg_CG_Opt == 'Y' ? "case when (ABS(CAST((BINARY_CHECKSUM(*) *RAND()) as int)) % 100) <= $sSper and numgroups= $noCG then 0 else 1 end" : "1";
+                echo $sSql;
                 DB::update($sSql);
 
                 $sSqlCheck = DB::select("select top 1 * from $tblName");
@@ -350,7 +410,7 @@ class CcSchedule extends Command
 
                 $emailCol = isset($aDataCheck[0]['Email']) && !empty($aDataCheck[0]['Email']) ? "Email" : "'Null' as Email";
                 DB::insert("insert into UC_Campaign_Data (DS_MKC_Contactid, campaignid, groupid, segmentid, email) select DS_MKC_ContactID, campaignid, groupid, segmentid, $emailCol from $tblName");
-            } else if ($segDef == 'custom' && $segCriteria != '') {
+            } else if ($segDef == 'custom' && $segFiltersCriteria != '') {
                 $cCon = explode('^', $criteria);
                 $cConTwo = explode(":", $cCon[0]);
                 array_shift($cConTwo);
@@ -369,7 +429,7 @@ class CcSchedule extends Command
 
                 $sSql = "update $tblName set groupid=";
 
-                $sSql .= $seg_CG_Opt == 'Y' ? "case when (ABS(CAST((BINARY_CHECKSUM(*) *RAND()) as int)) % 100) < $sSper and numgroups= $noCG then 0 else 1 end" : "1";
+                $sSql .= $seg_CG_Opt == 'Y' ? "case when (ABS(CAST((BINARY_CHECKSUM(*) *RAND()) as int)) % 100) <= $sSper and numgroups= $noCG then 0 else 1 end" : "1";
                 DB::update($sSql);
             }
             /***************************** Changes 2017-04-11 End ***********************************/
@@ -385,16 +445,18 @@ class CcSchedule extends Command
                     }
                 }
             }
-            if ($campFlag == 1) {
+            /*if ($campFlag == 1) {
                 $SQLCols = "[CampaignID]," . $SQLCols;
-            }
+            }*/
+
+            //Todo
             //Check Campaign ID Exists or not
-            $lastPart = explode($list_short_name,$t_name);
-            $filename = count($lastPart) > 0 ? $file_Name.$lastPart[1] : $t_name;
+            //$lastPart = explode($list_short_name,$t_name);
+            //$filename = count($lastPart) > 0 ? $file_Name.$lastPart[1] : $t_name;
             // open file and Write the header
             if (trim($file_Opt) == 'Y') {
                 if(in_array($SR_Attachment,['onlylist','both'])) {
-                    $fhead = fopen($this->filePath . 'public\\' . $folder_Name . "\\" . $this->prefix . "CAL_" . $filename . "." . $file_Ext, 'a');
+                    $fhead = fopen($this->filePath . 'public\\' . $folder_Name . "\\" . $this->prefix . "CAL_" . $file_Name . "." . $file_Ext, 'a');
                     $expcols = $expcols . "\n";
                     fwrite($fhead, $expcols);
                     fclose($fhead);
@@ -445,18 +507,18 @@ class CcSchedule extends Command
                         switch ($segMethod) {
                             case 'topNum':
                             case 'topPer':
-                                $newsql = "Select top " . $sPer[1] . " percent " . $expcols . " From " . $tblName . " Where " . $where[0];
+                                $newsql = "Select top " . $sPer[1] . " percent " . $SQLCols . " From " . $tblName . " Where " . $where[0];
                                 $newsql .= $seg_CG_Opt == 'Y' ? " and groupid = 1 " . $sort : " " . $sort;
                                 break;
                             case 'ranPer':
                             case 'ranNum':
-                                $newsql = "Select * From ( Select top " . $sPer[1] . " percent " . $expcols . " From " . $tblName . " Where " . $where[0];
+                                $newsql = "Select * From ( Select top " . $sPer[1] . " percent " . $SQLCols . " From " . $tblName . " Where " . $where[0];
                                 $newsql .= $seg_CG_Opt == 'Y' ? " and groupid = 1 " . $sort : " " . $sort;
 
                                 $newsql .= " ) as t order by NEWID()";
                                 break;
                             case 'none':
-                                $newsql = "Select top " . $sPer[1] . " percent " . $expcols . " From " . $tblName . " Where " . $where[0];
+                                $newsql = "Select top " . $sPer[1] . " percent " . $SQLCols . " From " . $tblName . " Where " . $where[0];
                                 $newsql .= $seg_CG_Opt == 'Y' ? " and groupid = 1 " . $sort : " " . $sort;
                                 break;
                         }
@@ -476,17 +538,17 @@ class CcSchedule extends Command
                         switch ($segMethod) {
                             case 'topNum':
                             case 'topPer':
-                                $newsql = "Select top " . $sPer[$p] . " percent " . $expcols . " From " . $tblName . " Where " . $where[$i] . " and Not " . $W;
+                                $newsql = "Select top " . $sPer[$p] . " percent " . $SQLCols . " From " . $tblName . " Where " . $where[$i] . " and Not " . $W;
                                 $newsql .= $seg_CG_Opt == 'Y' ? " and groupid = 1 " . $sort : " " . $sort;
                                 break;
                             case 'ranPer':
                             case 'ranNum':
-                                $newsql = "Select * From ( Select top " . $sPer[$p] . " percent " . $expcols . " From " . $tblName . " Where " . $where[$i] . " and Not " . $W;
+                                $newsql = "Select * From ( Select top " . $sPer[$p] . " percent " . $SQLCols . " From " . $tblName . " Where " . $where[$i] . " and Not " . $W;
                                 $newsql .= $seg_CG_Opt == 'Y' ? " and groupid = 1 " . $sort : " " . $sort;
                                 $newsql .= " ) as t order by NEWID()";
                                 break;
                             case 'none':
-                                $newsql = "Select top " . $sPer[$p] . " percent " . $expcols . " From " . $tblName . " Where " . $where[$i] . " and Not " . $W;
+                                $newsql = "Select top " . $sPer[$p] . " percent " . $SQLCols . " From " . $tblName . " Where " . $where[$i] . " and Not " . $W;
                                 $newsql .= $seg_CG_Opt == 'Y' ? " and groupid = 1 " . $sort : " " . $sort;
                                 break;
                         }
@@ -498,48 +560,48 @@ class CcSchedule extends Command
                     switch ($segMethod) {
                         case 'topNum':
                         case 'topPer':
-                            $newsql = "Select top " . $sPer[1] . " percent " . $expcols . " From " . $tblName;
+                            $newsql = "Select top " . $sPer[1] . " percent " . $SQLCols . " From " . $tblName;
                             $newsql .= $seg_CG_Opt == 'Y' ? " WHERE groupid = 1 " . $sort : " " . $sort;
                             break;
                         case 'ranPer':
                         case 'ranNum':
-                            $newsql = "Select * From ( Select top " . $sPer[1] . " percent " . $expcols . " From " . $tblName;
+                            $newsql = "Select * From ( Select top " . $sPer[1] . " percent " . $SQLCols . " From " . $tblName;
                             $newsql .= $seg_CG_Opt == 'Y' ? " WHERE groupid = 1 " . $sort : " " . $sort;
                             $newsql .= " ) as t order by NEWID()";
                             break;
                         case 'none':
-                            $newsql = "Select top " . $sPer[1] . " percent " . $expcols . " From " . $tblName;
+                            $newsql = "Select top " . $sPer[1] . " percent " . $SQLCols . " From " . $tblName;
                             $newsql .= $seg_CG_Opt == 'Y' ? " WHERE groupid = 1 " . $sort : " " . $sort;
                             break;
                     }
                     // $newsql = "Select top ".$sPer[0]." percent ". $cols." From ".$tblName ;
                     // $segID = 1;
                 }
-                //echo "-----------------------".$newsql."----------------";
+                echo "-----------------------".$newsql."----------------";
                 //$aData = $oDb->executeSelect($newsql);
 
                 /***************************** Changes 2017-04-11 Start ***********************************/
-
                 if ((trim($file_Opt) == 'Y') && (trim($file_Ext) == "csv")) {
                     //$sampleRecords = explode(":",$sampleArray[1]);
                     $newsql1 = DB::select($newsql);
                     $aDataSql = collect($newsql1)->map(function($x){ return (array) $x; })->toArray();
-                    DB::statement("insert into openrowset  ('Microsoft.ACE.OLEDB.12.0','Text;Database=" . $this->filePath .'public\\'. $folder_Name . "\\;HDR=YES;FMT=Delimited','SELECT $expcols FROM [".$this->prefix."CAL_$filename.csv]' ) $newsql");
+                    DB::statement("insert into openrowset  ('Microsoft.ACE.OLEDB.12.0','Text;Database=" . $this->filePath .'public\\'. $folder_Name . "\\;HDR=YES;FMT=Delimited','SELECT $SQLCols FROM [".$this->prefix."CAL_$file_Name.csv]' ) $newsql");
                     //var_dump($aData);
                     if (strpos($newsql, 'order by NEWID()') !== false) {
                         $newsql = str_replace('order by NEWID()', '', $newsql);
                     }
 
-                    $CSVTotalRec = count(file($this->filePath .'public\\'. $folder_Name . "\\".$this->prefix."CAL_$filename.csv", FILE_SKIP_EMPTY_LINES)) - 1;
+                    //$CSVTotalRec = count(file($this->filePath .'public\\'. $folder_Name . "\\".$this->prefix."CAL_$filename.csv", FILE_SKIP_EMPTY_LINES)) - 1;
+                    $CSVTotalRec = count($aDataSql);
 
                     if(!in_array($SR_Attachment,['onlylist','both'])){
-                        unlink($this->filePath .'public\\'. $folder_Name . "\\".$this->prefix."CAL_$filename.csv");
+                        unlink($this->filePath .'public\\'. $folder_Name . "\\".$this->prefix."CAL_$file_Name.csv");
                     }
 
                 } else if ((trim($file_Opt) == 'Y') && (trim($file_Ext) == "xlsx")) {
                     $newsql1 = DB::select($newsql);
                     $aDataSql = collect($newsql1)->map(function($x){ return (array) $x; })->toArray();
-                    $CSVTotalRec = count($aData);
+                    $CSVTotalRec = count($aDataSql);
                     if(in_array($SR_Attachment,['onlylist','both'])) {
                         $headerCells = $this->headerCells;
                         $spreadsheet = new Spreadsheet();
@@ -552,9 +614,9 @@ class CcSchedule extends Command
                         }
 
                         $writer = new Xlsx($spreadsheet);
-                        $writer->save(public_path() . '\\' . $folder_Name . "\\" . $this->prefix . "CAL_" . $filename . ".xlsx");
+                        $writer->save(public_path() . '\\' . $folder_Name . "\\" . $this->prefix . "CAL_" . $file_Name . ".xlsx");
 
-                        DB::statement("insert into OPENROWSET('Microsoft.ACE.OLEDB.12.0', 'Excel 12.0;Database=" . $this->filePath . 'public\\' . $folder_Name . "\\" . $this->prefix . "CAL_" . $filename . ".xlsx;','SELECT * FROM [Worksheet$]') $newsql");
+                        DB::statement("insert into OPENROWSET('Microsoft.ACE.OLEDB.12.0', 'Excel 12.0;Database=" . $this->filePath . 'public\\' . $folder_Name . "\\" . $this->prefix . "CAL_" . $file_Name . ".xlsx;','SELECT * FROM [Worksheet$]') $newsql");
                     }
 
                 }
@@ -576,6 +638,7 @@ class CcSchedule extends Command
                 } else  // if($seg_CG_Opt == 'N')
                 {
                     unset($count);
+                    $count = [];
                     $universe = 0;
                     for ($c = ($i * $noCG); $c < ($i * $noCG + $noCG); $c++) {
                         if (isset($sampleRecords[$c])) {
@@ -615,7 +678,7 @@ class CcSchedule extends Command
 
                     // $fhead=fopen($filpath,'a');
                     // if($file_Opt == 'Y')
-                    
+
 
 
                     //   }   // IF CSV
@@ -676,11 +739,15 @@ class CcSchedule extends Command
                 $noRec = $gs + $noCG;
 
                 $sampleRecords = explode(":", $sampleArray[1]);  //SampleArray take from $sample
+                //echo '<pre>--'.$noRows; print_r($sampleRecords); die;
                 $Arry_start = 0;
                 for ($j = 1; $j <= $noRows; $j++)
                     for ($i = $gs; $i <= $noCG; $i++) {
-                        $sample_Seg[$i][$j] = $sampleRecords[$Arry_start];
-                        $Arry_start = $Arry_start + 1;
+                        if(isset($sampleRecords[$Arry_start])){
+                            $sample_Seg[$i][$j] = $sampleRecords[$Arry_start];
+                            $Arry_start = $Arry_start + 1;
+                        }
+
                     }
                 // Take Samples For MetaData
 
@@ -691,21 +758,24 @@ class CcSchedule extends Command
                 echo $gs . ' --noCg=' . $noCG . '---noRows' . $noRows;
                 for ($i = $gs; $i <= $noCG; $i++) {
                     for ($j = 1; $j <= $noRows; $j++) {
-                        $s = $sample_Seg[$i][$j];
-                        if (empty($cost[$i])) {
-                            $cCost = 0;
-                        } else {
-                            $cCost = $cost[$i];
-                        }
-                        if (strpos($seg_des[$j], "'") !== FALSE){
-                            $seg_des[$j] = str_replace("'","''",$seg_des[$j]);
+                        if(isset($sample_Seg[$i][$j])){
+                            $s = $sample_Seg[$i][$j];
+                            if (empty($cost[$i])) {
+                                $cCost = 0;
+                            } else {
+                                $cCost = $cost[$i];
+                            }
+                            if (strpos($seg_des[$j], "'") !== FALSE){
+                                $seg_des[$j] = str_replace("'","''",$seg_des[$j]);
+                            }
+
+                            DB::insert("INSERT INTO [UC_Campaign_Metadata] ([CampaignID] ,[Objective],[Brand],[Channel],[Category] 
+							   ,[ListDes] ,[Wave] ,[Start_Date]  ,[Interval],[ProductCat1],[ProductCat2],[SKU],[Coupon],[SegmentID]
+							   ,[SegmentDes],[GroupID],[GroupDes] ,[SummaryID],[Cost],[Quantity],[File_Name])
+								 VALUES ('$CID','$metaData->Objective','$metaData->Brand','$metaData->Channel','$metaData->Category','$metaData->ListDes'
+							   ,'$metaData->Wave','$metadata_date','$metaData->Interval','$metaData->ProductCat1','$metaData->ProductCat2','$metaData->SKU','$metaData->Coupon','$j','$seg_des[$j]','$i','$camp_des[$i]','$summaryID[$i]','$cCost','$s','$fileName')");
                         }
 
-                        DB::insert("INSERT INTO [UC_Campaign_Metadata] ([CampaignID] ,[Objective],[Brand],[Channel],[Category] 
-                           ,[ListDes] ,[Wave] ,[Start_Date]  ,[Interval],[ProductCat1],[ProductCat2],[SKU],[Coupon],[SegmentID]
-                           ,[SegmentDes],[GroupID],[GroupDes] ,[SummaryID],[Cost],[Quantity],[File_Name])
-                             VALUES ('$CID','$metaData->Objective','$metaData->Brand','$metaData->Channel','$metaData->Category','$metaData->ListDes'
-                           ,'$metaData->Wave','$metadata_date','$metaData->Interval','$metaData->ProductCat1','$metaData->ProductCat2','$metaData->SKU','$metaData->Coupon','$j','$seg_des[$j]','$i','$camp_des[$i]','$summaryID[$i]','$cCost','$s','$fileName')");
 
                     }
                 }
@@ -713,6 +783,8 @@ class CcSchedule extends Command
                 DB::update("update m set m.quantity=d.quantity from uc_campaign_metadata m inner join (select count(*) as quantity,  campaignid ,groupid,segmentid from uc_campaign_data   group by  campaignid ,groupid,segmentid) d on 
   m.campaignid=d.campaignid and m.segmentid=d.segmentid and m.groupid=d.groupid
   where d.campaignid=$CID");
+
+                DB::select("EXEC sp_CRM_Campaign_to_Phone ".$CID.", '".$list_short_name."'");
             }
 
             //To Drop Temp table
@@ -740,8 +812,8 @@ class CcSchedule extends Command
                     $login_result = ftp_login($conn_id, $userName, $password);
 
                     if (($conn_id) && ($login_result)) {
-                        $local_file = $this->filePath .'public\\' .$folder_Name . "\\CAL_$filename." . "$file_Ext";
-                        $remote_file = "RPL_$file_Name." . "$file_Ext";
+                        $local_file = $this->filePath .'public\\' .$folder_Name . "\\CAL_$file_Name." . "$file_Ext";
+                        $remote_file = "CAL_$file_Name." . "$file_Ext";
                         ftp_pasv($conn_id, true);
                         ftp_chdir($conn_id, $folder);
 
@@ -770,13 +842,13 @@ class CcSchedule extends Command
 
                     $line1 = $line2 = $line3 = $line4 = '';
                     if(in_array($SFTP_Attachment,['onlylist','both'])){
-                        $line1 = "put ".$this->prefix."CAL_" . $filename . "." . $file_Ext . "\n";
-                        $line3 = "mv ".$this->prefix."CAL_" . $filename . "." . $file_Ext . " $folder\n ";
+                        $line1 = "put ".$this->prefix."CAL_" . $file_Name . "." . $file_Ext . "\n";
+                        $line3 = "mv ".$this->prefix."CAL_" . $file_Name . "." . $file_Ext . " $folder\n ";
                     }
 
                     if(in_array($SFTP_Attachment,['onlyreport','both']) && !empty($Report_Row)){
-                        $line2 = "put ".$this->prefix."CAM_" . $filename . ".pdf" . "\n";
-                        $line4 = "mv ".$this->prefix."CAM_" . $filename . ".pdf" . " $folder\n ";
+                        $line2 = "put ".$this->prefix."CAM_" . $file_Name . ".pdf" . "\n";
+                        $line4 = "mv ".$this->prefix."CAM_" . $file_Name . ".pdf" . " $folder\n ";
                     }
 
                     $fhead = fopen($this->filePath . "psftpscript_sample2.txt", 'a');
@@ -851,13 +923,23 @@ class CcSchedule extends Command
 
                 $command = 'schtasks /delete /tn ' . $this->schtasks_dir . '\\' . $SchName . ' /f';
                 $result = shell_exec($command);
-                DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Completed',[completed_time] = '" . $date . "' ,[succ_flag] = 'Y' Where row_id = '" . $SchStatusID . "' AND t_type = 'C'");
+                DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Completed',[completed_time] = '" . $date . "' ,[succ_flag] = 'Y',[file_name] = '" . $file_Name . "',total_records= '$CSVTotalRec' Where row_id = '" . $SchStatusID . "' AND t_type = 'C'");
             } else if ($SchType == 'RP') {
-                $nextSQL = DB::select("SELECT [next_runtime] from [UL_RepCmp_Status] Where row_id = '" . $SchStatusID . "' AND t_type = 'C'");
+                $nextSQL = DB::select("SELECT * from [UL_RepCmp_Status] Where row_id = '" . $SchStatusID . "' AND t_type = 'C'");
                 $aData = collect($nextSQL)->map(function($x){ return (array) $x; })->toArray();
 
                 if (!empty($aData)) {
                     $old_runtime = $aData[0]['next_runtime'];
+                    $sche_name = $aData[0]['sche_name'];
+                    $templ_name = $aData[0]['templ_name'];
+                    $start_time = $aData[0]['start_time'];
+                    $completed_time = $aData[0]['completed_time'];
+                    $file_name = $aData[0]['file_name'];
+                    $succ_flag = $aData[0]['succ_flag'];
+                    $status = $aData[0]['status'];
+                    $file_path = $aData[0]['file_path'];
+                    $ftp_flag = !empty($aData[0]['ftp_flag']) ? $aData[0]['ftp_flag'] : 'N';
+                    $t_type = $aData[0]['t_type'];
                     $last_runtime = date('Y/m/d', strtotime($old_runtime));
                 }
 
@@ -914,19 +996,62 @@ class CcSchedule extends Command
 
                 }
 
-                if (date("Y-m-d", strtotime($next_runtime)) < date("Y-m-d", strtotime($rp_end_date)))
+                if (date("Y-m-d", strtotime($next_runtime)) < date("Y-m-d", strtotime($rp_end_date))){
+                    $prevStatus = 'Child';
+                }elseif (date("Y-m-d", strtotime($next_runtime)) == date("Y-m-d", strtotime($rp_end_date))){
+                    $prevStatus = 'Completed';
+
+                    $command = 'schtasks /delete /tn ' . $this->schtasks_dir . '\\' . $SchName . ' /f';
+                    Helper::schtask_curl($command);
+                }
+                DB::update("UPDATE [UL_RepCmp_Status] SET[status] = '".$prevStatus."',[completed_time] = '" . $date . "',[succ_flag] = 'Y',[file_name] = '" . $file_Name . "',total_records= '$CSVTotalRec' Where row_id = '" . $SchStatusID . "'");
+
+                if (date("Y-m-d", strtotime($next_runtime)) < date("Y-m-d", strtotime($rp_end_date))){
+                    DB::insert("INSERT INTO [UL_RepCmp_Status]([sche_name],[templ_name],[start_time]
+                                   ,[completed_time],[file_name],[succ_flag],[status],[last_runtime],[next_runtime],[file_path],[ftp_flag],[t_type])
+                                   VALUES ('$sche_name','$templ_name','$start_time','','-','','Scheduled','" . $last_runtime . "','" . $next_runtime . "','".$file_path."','$ftp_flag','C')");
+
+                    $SQL = DB::select("Select [row_id] from [UL_RepCmp_Status] Where sche_name = '$sche_name' AND t_type = 'C' order by row_id desc");
+
+                    $aData = collect($SQL)->map(function($x){ return (array) $x; })->toArray();
+                    if (!empty($aData)) {
+                        $Sch_row_id = $aData[0]['row_id'];
+                    }
+
+                    DB::insert("INSERT INTO [UL_RepCmp_Sch_status_mapping] ([sch_id],[sch_status_id],[t_type]) VALUES ('".$sch_id."','".$Sch_row_id."', 'C')");
+                }
+
+                $rv = $Report_Row;
+                $cv = $Report_Column;
+                $fu = ucfirst($Report_Function);
+                $sv = $Report_Sum;
+                $sa = $Report_Show;
+
+                $imgTag = '';
+                $imgPath = '';
+
+                $sqlMetaData = DB::select("SELECT Category FROM UL_RepCmp_MetaData WHERE CampaignID = '$CID'");
+                $aDataMetaData = collect($sqlMetaData)->map(function($x){ return (array) $x; })->toArray();
+                $rpDesc = '';
+                if (!empty($aDataMetaData)) {
+                    $rpDesc = $aDataMetaData[0]['Category'];
+                }
+
+                Helper::generateSrPDF($rv,$cv,$fu,$sv,$sa,$sSQL,$list_level,$list_short_name,$imgTag,$imgPath,$file_path,$file_Name,$this->prefix  . 'CAM_',$SR_Attachment,$rpDesc,$Report_Orientation);
+
+                /*if (date("Y-m-d", strtotime($next_runtime)) < date("Y-m-d", strtotime($rp_end_date)))
                     $updateStatusSQL = "UPDATE [UL_RepCmp_Status] SET[status] = 'Scheduled',[last_runtime] = '" . $last_runtime . "',[completed_time] = '" . $date . "',[next_runtime] = '" . $next_runtime . "',[succ_flag] = 'Y',[file_name] = '" . $file_Name . "' Where row_id = '" . $SchStatusID . "'";
                 else
                     $updateStatusSQL = "UPDATE [UL_RepCmp_Status] SET [status] = 'Completed',[last_runtime] = '" . $last_runtime . "',[completed_time] = '" . $date . "',[next_runtime] = '" . $next_runtime . "',[succ_flag] = 'Y',[file_name] = '" . $file_Name . "' Where row_id = '" . $SchStatusID . "' AND t_type = 'C'";
 
 
-                DB::update($updateStatusSQL);
+                DB::update($updateStatusSQL);*/
 
 
             } else if ($SchType == 'RI') {
                 $command = 'schtasks /delete /tn ' . $this->schtasks_dir . '\\' . $SchName . ' /f';
                 $result = shell_exec($command);
-                DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Completed',[completed_time] = '" . $date . "' ,[succ_flag] = 'Y',[file_name] = '" . $file_Name . '.' . $file_Ext . "' Where row_id = '" . $SchStatusID . "' AND t_type = 'C'");
+                DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Completed',[completed_time] = '" . $date . "' ,[succ_flag] = 'Y',[file_name] = '" . $file_Name . "',total_records= '$CSVTotalRec' Where row_id = '" . $SchStatusID . "' AND t_type = 'C'");
             }
 
             // Delete the Schedule
@@ -987,7 +1112,7 @@ class CcSchedule extends Command
             DB::insert("Insert into [UL_RepCmp_Completed]([sche_name],[templ_name],[start_time],[next_runtime],[completed_time]
                      ,[file_name],[succ_flag],[ftp_flag],[status],[file_path],[camp_id],[total_records],[t_type])
                     SELECT [sche_name],[templ_name],[start_time],[next_runtime],'$date','$outfile','$sucess','$ftp_flag'
-		     ,'Completed',[file_path],'$CID','$CSVTotalRec',t_type FROM [UL_RepCmp_Status] Where row_id = '" . $SchStatusID . "' AND t_type = 'C'");
+		     ,'Completed',[file_path],'$CID','$CSVTotalRec',t_type FROM [UL_RepCmp_Status] Where row_id = '" . $SchStatusID . "' AND t_type = 'C' ORDER BY row_id DESC");
 
 
         }
@@ -1008,7 +1133,7 @@ class CcSchedule extends Command
                     'charthtml' => '',
                     'filename' => $file_Name.'.pdf',
                     'selections' => ''
-                ])->setPaper('letter',$List_Format)->setWarnings(false)->save(public_path($folder_Name.'\\'.$this->prefix.'CAL_'.$filename.'.pdf'));
+                ])->setPaper('letter',$List_Format)->setWarnings(false)->save(public_path($folder_Name.'\\'.$this->prefix.'CAL_'.$file_Name.'.pdf'));
 
             } catch (\Exception $exception){
                 dd($exception->getMessage());

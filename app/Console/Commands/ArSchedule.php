@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Helpers\Helper;
 use App\Mail\SendCampaignEmail;
 use App\Model\RepCmpMetaData;
+use App\Model\RepCmpStatus;
 use App\User;
 use Illuminate\Console\Command;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -115,6 +116,14 @@ class ArSchedule extends Command
 
             //SMTP Details
         }
+
+        $SQLSSM = DB::select("Select * from [UL_RepCmp_Sch_status_mapping] Where sch_id = '$sch_id' AND t_type = 'A' ORDER BY row_id DESC");
+        $aDataSSM = collect($SQLSSM)->map(function ($x) {
+            return (array)$x;
+        })->toArray();
+        if(!empty($aDataSSM)){
+            $SchStatusID = $aDataSSM[0]['sch_status_id'];
+        }
 //  $CGD = $aData[0]['asg_camp_dtls'];
 
         /*   $CampSQL ="Select export_to_file,sql,promo_save,asg_camp_grp_dtls ,export_data, asg_lseg_dtls,
@@ -123,9 +132,9 @@ class ArSchedule extends Command
                              meta_data,t_name,t_type,camp_id,byfield_count, asg_camp_dtls
             From Campaign_Templates Where template_id = '".$CampID."'"; */
 
-        $CampSQL = DB::select("SELECT [t_id],[list_short_name],[t_name],[sql],[seg_def],[seg_method],[seg_criteria],[seg_selected_criteria],[seg_grp_no],[seg_ctrl_grp_opt],[seg_camp_grp_dtls]
+        $CampSQL = DB::select("SELECT [t_id],[list_short_name],[list_level],[t_name],[sql],[seg_def],[seg_method],[seg_criteria],[seg_selected_criteria],[seg_grp_no],[seg_ctrl_grp_opt],[seg_camp_grp_dtls]
 		    ,[seg_sample],[promoexpo_cd_opt],[promoexpo_file_opt],[promoexpo_folder],[promoexpo_file],[promoexpo_ext]
-		    ,[promoexpo_ecg_opt],[promoexpo_data],[selected_fields],[Report_Row],[Custom_SQL],[SR_Attachment],[List_Format] FROM [UR_Report_Templates] Where row_id = '" . $CampID . "' AND t_type='A'");
+		    ,[promoexpo_ecg_opt],[promoexpo_data],[selected_fields],[selected_fields],[sql],[Report_Row],[Report_Column],[Report_Function],[Report_Sum],[Report_Show],[Report_Orientation],[Custom_SQL],[SR_Attachment],[List_Format] FROM [UR_Report_Templates] Where row_id = '" . $CampID . "' AND t_type='A'");
 
 
         $aData = collect($CampSQL)->map(function ($x) {
@@ -138,6 +147,7 @@ class ArSchedule extends Command
 
                 $CID = $aData[0]['t_id'];
                 $list_short_name = $aData[0]['list_short_name'];
+                $t_name = $aData[0]['t_name'];
                 $sSQL = $aData[0]['sql'];
                 $segDef = $aData[0]['seg_def'];
                 $segMethod = $aData[0]['seg_method'];
@@ -158,7 +168,13 @@ class ArSchedule extends Command
                 //$metaData = $aData[0]['meta_data'];
                 $CGDetail = $aData[0]['seg_camp_grp_dtls'];
                 $promoExpo_ecg_opt = $aData[0]['promoexpo_ecg_opt'];
+                $list_level = $aData[0]['list_level'];
                 $Report_Row = $aData[0]['Report_Row'];
+                $Report_Column = $aData[0]['Report_Column'];
+                $Report_Function = $aData[0]['Report_Function'];
+                $Report_Sum = $aData[0]['Report_Sum'];
+                $Report_Show = $aData[0]['Report_Show'];
+                $Report_Orientation = $aData[0]['Report_Orientation'];
                 $Custom_SQL = $aData[0]['Custom_SQL'];
                 $SR_Attachment = $aData[0]['SR_Attachment'];
                 $List_Format = $aData[0]['List_Format'];
@@ -190,10 +206,13 @@ class ArSchedule extends Command
         if($metaData){
             $metadata_date = $metaData->Start_Date;
         }
+        $file_Name1 = $list_short_name;
+        $file_Name = $list_short_name . "_" . date("Ymd", time());
         if ($SchType == 'RP') {
 
-            $file_Name1 = $file_Name;
-            $file_Name = $file_Name . "_" . $rp_count . "_" . date("Ymd", time());
+            //$file_Name1 = $file_Name;
+            //$file_Name = $file_Name . "_" . $rp_count . "_" . date("Ymd", time());
+
             $date = date("m/d/y  H:i:s", time());
 
             if ($rp_count > 1) {
@@ -218,10 +237,13 @@ class ArSchedule extends Command
 
         if ((trim($file_Opt) == 'Y' && trim($sSQL) != '') || ((trim($CD_Opt) == 'Y') && trim($sSQL) != '')) {
             $date = date("m/d/y  H:i:s", time());    //Schedule stating date and time
-            if (($SchType == 'RP') || ($SchType == 'RA'))
-                DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Running', [start_time] = '" . $date . "' Where row_id = '" . $SchStatusID . "' AND t_type = 'A'");
+            if ($SchType == 'RA'){
+                //DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Running', [start_time] = '" . $date . "' Where row_id = '" . $SchStatusID . "' AND t_type = 'A'");
+            }elseif ($SchType == 'RP'){
+                //DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Running', [start_time] = '" . $date . "' Where row_id = '" . $SchStatusID . "' AND t_type = 'A'");
+            }
             else
-                DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Running' Where row_id = '" . $SchStatusID . "' AND t_type = 'A'");
+                //DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Running' Where row_id = '" . $SchStatusID . "' AND t_type = 'A'");
             $sampleArray = !empty($sample) ? explode("^", $sample) : [];
             $sampleRecords = !empty($sampleArray[1]) ? explode(":", $sampleArray[1]) : [];
             $expcolsarray = !empty($promoexpo_data) ? explode("|", $promoexpo_data) : [];
@@ -231,7 +253,8 @@ class ArSchedule extends Command
             $flag = 0;
             $cols = "";
 
-            $pos = strpos($sSQL, "Order By");
+            $pos = stripos($sSQL, "Order By");
+
             if ($pos != false) {
                 $sSQLTemp = substr($sSQL, 0, $pos - 1);
                 $orderStr = substr($sSQL, $pos + 9);
@@ -239,7 +262,7 @@ class ArSchedule extends Command
                 $index = 0;
                 for ($i = 0; $i < count($orderWords); $i++) {
 
-                    $dotPos = strpos($orderWords[$i], '.');
+                    $dotPos = stripos($orderWords[$i], '.');
                     if ($dotPos != false) {
                         $orderColArray = explode(".", $orderWords[$i]);
                         $colIndex = count($orderColArray) - 1;
@@ -256,8 +279,13 @@ class ArSchedule extends Command
                 $sSQLTemp = $sSQL;
                 $sort = "";
             }
-            $tblName = "tmp_" . time() . "_" . date("Ymd", time());
-            $pos = strpos($sSQLTemp, "Order By");
+
+            if(stripos($sSQLTemp, "blank") !== false){
+                $sSQLTemp = str_replace("blank", " ", $sSQLTemp);
+            }
+
+            $tblName = "tmp_" . rand(0,100) . "_" .time() . "_" . date("Ymd", time());
+            $pos = stripos($sSQLTemp, "Order By");
 
             if ($pos != false) {
                 $ordrByArr = explode('Order By', $sSQLTemp);
@@ -284,6 +312,9 @@ class ArSchedule extends Command
             // open file and Write the header
             if (trim($file_Opt) == 'Y') {
                 if(in_array($SR_Attachment,['onlylist','both'])) {
+                    if(file_exists($this->filePath . 'public\\' . $folder_Name . "\\" . $this->prefix . "RPL_" . $file_Name . ".xlsx")){
+                        unlink($this->filePath . 'public\\' . $folder_Name . "\\" . $this->prefix . "RPL_" . $file_Name . ".xlsx");
+                    }
                     $fhead = fopen($this->filePath . 'public\\' . $folder_Name . "\\" . $this->prefix . "RPL_" . $file_Name . ".xlsx", 'a');
                     $expcols = $expcols . "\n";
                     fwrite($fhead, $expcols);
@@ -364,6 +395,10 @@ class ArSchedule extends Command
                     }
                 }
 
+                //To Drop Temp table
+                DB::statement("Drop table " . $tblName);
+                //To Drop Temp table
+
                 /***************************** Changes 2017-04-11 End ***********************************/
                 $c1 = 0;
                 $totCount = 0;
@@ -406,26 +441,21 @@ class ArSchedule extends Command
                     $metadata_date = $metadata_date;
                 } else if (($SchType == 'RP') && ($rp_count > 2)) {
 
-                    $nextSQL = DB::select("SELECT [last_runtime] from [UL_RepCmp_Status] Where row_id = '" . $SchStatusID . "' AND t_type = 'A'");
+                    $nextSQL = DB::select("SELECT [last_runtime] from [UL_RepCmp_Status] Where row_id = '" . $SchStatusID . "' AND t_type = 'A' ORDER BY row_id desc");
 
                     $aData = collect($nextSQL)->map(function($x){ return (array) $x; })->toArray();
 
                     if (!empty($aData)) {
                         $last_runtime = $aData[0]['last_runtime'];
-
                     }
 
                     $day_diff = self::dateDiff(date("Y/m/d", strtotime($last_runtime)), date('Y/m/d', time()));
-
                     $metadata_date = date("Y/m/d", strtotime(self::add_date($metadata_date, $day_diff)));
-
                 }
 
                 $metadata_date = date("Y-m-d", strtotime($metadata_date));
                 DB::update("UPDATE [UL_RepCmp_Schedules] SET [metadata_date] = '$metadata_date' Where row_id = '$sch_id' AND t_type = 'A'");
                 //$startDate = $date;
-
-
                 // $startDate = date("m/d/y  H:i:s", time());
                 $segTemp = explode("^", $criteria);
                 $seg_des = explode(':', $segTemp[1]);
@@ -453,11 +483,6 @@ class ArSchedule extends Command
                 //Get File Name
 
             }
-
-            //To Drop Temp table
-            DB::statement("Drop table " . $tblName);
-            //To Drop Temp table
-
 
             // FTP
             if ($ftp_id != 0) {
@@ -551,7 +576,7 @@ class ArSchedule extends Command
                     fwrite($fhead, $command);
                     fclose($fhead);
 
-                    echo "-------------------------" . $password . "-------------------------";
+                    //echo "-------------------------" . $password . "-------------------------";
                     $fhead = fopen($this->filePath . "psftpexecution_gc_sam.bat", 'a');
                     $command = "psftp -b " . $this->filePath . "psftpscript_sample2.txt $userName@$server -pw $password\n";
                     fwrite($fhead, $command);
@@ -576,12 +601,9 @@ class ArSchedule extends Command
                     DB::update("Update UL_RepCmp_Completed set [ftp_flag] = 'Y' Where row_id = '" . $sch_id . "' AND t_type = 'A'");
                     $smtp_flag = 'Y';
                 }
-
-
             } else {
                 $ftp_flag = 'N';
                 $smtp_flag = 'Y';
-
             }
 
             // Delete the Schedule
@@ -591,16 +613,27 @@ class ArSchedule extends Command
                 $command = 'schtasks /delete /tn ' . $this->schtasks_dir . '\\' . $SchName . ' /f';
                 Helper::schtask_curl($command);
 
-                DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Completed',[completed_time] = '" . $date . "' ,[succ_flag] = 'Y' Where row_id = '" . $SchStatusID . "' AND t_type = 'A'");
+                DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Completed',[completed_time] = '" . $date . "' ,[succ_flag] = 'Y',[file_name] = '" . $file_Name ."',total_records= '$CSVTotalRec' Where row_id = '" . $SchStatusID . "' AND t_type = 'A'");
 
             }
             else if ($SchType == 'RP') {
-                $nextSQL = DB::select("SELECT [next_runtime] from [UL_RepCmp_Status] Where row_id = '" . $SchStatusID . "' AND t_type = 'A'");
+                $nextSQL = DB::select("SELECT * from [UL_RepCmp_Status] Where row_id = '" . $SchStatusID . "' AND t_type = 'A'");
                 $aData = collect($nextSQL)->map(function($x){ return (array) $x; })->toArray();
 
                 if (!empty($aData)) {
                     $old_runtime = $aData[0]['next_runtime'];
+                    $sche_name = $aData[0]['sche_name'];
+                    $templ_name = $aData[0]['templ_name'];
+                    $start_time = $aData[0]['start_time'];
+                    $completed_time = $aData[0]['completed_time'];
+                    $file_name = $aData[0]['file_name'];
+                    $succ_flag = $aData[0]['succ_flag'];
+                    $status = $aData[0]['status'];
+                    $file_path = $aData[0]['file_path'];
+                    $ftp_flag = !empty($aData[0]['ftp_flag']) ? $aData[0]['ftp_flag'] : 'N';
+                    $t_type = $aData[0]['t_type'];
                     $last_runtime = date('Y/m/d', strtotime($old_runtime));
+
                 }
 
                 switch ($rp_run_sch) {
@@ -659,16 +692,61 @@ class ArSchedule extends Command
                 }
 
                 if (date("Y-m-d", strtotime($next_runtime)) < date("Y-m-d", strtotime($rp_end_date))){
+                    $prevStatus = 'Child';
+                }elseif (date("Y-m-d", strtotime($next_runtime)) == date("Y-m-d", strtotime($rp_end_date))){
+                    $prevStatus = 'Completed';
+
+                    $command = 'schtasks /delete /tn ' . $this->schtasks_dir . '\\' . $SchName . ' /f';
+                    Helper::schtask_curl($command);
+                }
+                DB::update("UPDATE [UL_RepCmp_Status] SET[status] = '".$prevStatus."',[completed_time] = '" . $date . "',[succ_flag] = 'Y',[file_name] = '" . $file_Name . "',total_records= '$CSVTotalRec' Where row_id = '" . $SchStatusID . "'");
+
+                /*    DB::insert("INSERT INTO [UL_RepCmp_Status] ([status],[last_runtime],[completed_time],[next_runtime],[succ_flag],[file_name],[t_type]) VALUES ('".$status."','" . $last_runtime . "','" . $date . "','" . $next_runtime . "','Y','" . $file_Name . "','A'");*/
+
+                if (date("Y-m-d", strtotime($next_runtime)) < date("Y-m-d", strtotime($rp_end_date))){
+                    DB::insert("INSERT INTO [UL_RepCmp_Status]([sche_name],[templ_name],[start_time]
+                                   ,[completed_time],[file_name],[succ_flag],[status],[last_runtime],[next_runtime],[file_path],[ftp_flag],[t_type])
+                                   VALUES ('$sche_name','$templ_name','$start_time','','-','','Scheduled','" . $last_runtime . "','" . $next_runtime . "','".$file_path."','$ftp_flag','A')");
+
+                    $SQL = DB::select("Select [row_id] from [UL_RepCmp_Status] Where sche_name = '$sche_name' AND t_type = 'A' order by row_id desc");
+
+                    $aData = collect($SQL)->map(function($x){ return (array) $x; })->toArray();
+                    if (!empty($aData)) {
+                        $Sch_row_id = $aData[0]['row_id'];
+                    }
+
+                    DB::insert("INSERT INTO [UL_RepCmp_Sch_status_mapping] ([sch_id],[sch_status_id],[t_type]) VALUES ('".$sch_id."','".$Sch_row_id."', 'A')");
+                }
+
+                $rv = $Report_Row;
+                $cv = $Report_Column;
+                $fu = ucfirst($Report_Function);
+                $sv = $Report_Sum;
+                $sa = $Report_Show;
+
+                $imgTag = '';
+                $imgPath = '';
+
+                $sqlMetaData = DB::select("SELECT Category FROM UL_RepCmp_MetaData WHERE CampaignID = '$CID'");
+                $aDataMetaData = collect($sqlMetaData)->map(function($x){ return (array) $x; })->toArray();
+                $rpDesc = '';
+                if (!empty($aDataMetaData)) {
+                    $rpDesc = $aDataMetaData[0]['Category'];
+                }
+
+                Helper::generateSrPDF($rv,$cv,$fu,$sv,$sa,$sSQL,$list_level,$list_short_name,$imgTag,$imgPath,$file_path,$file_Name,$this->prefix  . 'RPS_',$SR_Attachment,$rpDesc,$Report_Orientation);
+
+                /*if (date("Y-m-d", strtotime($next_runtime)) < date("Y-m-d", strtotime($rp_end_date))){
                     DB::update("UPDATE [UL_RepCmp_Status] SET[status] = 'Scheduled',[last_runtime] = '" . $last_runtime . "',[completed_time] = '" . $date . "',[next_runtime] = '" . $next_runtime . "',[succ_flag] = 'Y',[file_name] = '" . $file_Name . "' Where row_id = '" . $SchStatusID . "'");
                 }
                 else
-                    DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Completed',[last_runtime] = '" . $last_runtime . "',[completed_time] = '" . $date . "',[next_runtime] = '" . $next_runtime . "',[succ_flag] = 'Y',[file_name] = '" . $file_Name . "' Where row_id = '" . $SchStatusID . "' AND t_type = 'A'");
+                    DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Completed',[last_runtime] = '" . $last_runtime . "',[completed_time] = '" . $date . "',[next_runtime] = '" . $next_runtime . "',[succ_flag] = 'Y',[file_name] = '" . $file_Name. '.' . $file_Ext  . "' Where row_id = '" . $SchStatusID . "' AND t_type = 'A'");*/
 
             } else if ($SchType == 'RI') {
                 $command = 'schtasks /delete /tn ' . $this->schtasks_dir . '\\' . $SchName . ' /f';
                 Helper::schtask_curl($command);
 
-                DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Completed',[completed_time] = '" . $date . "' ,[succ_flag] = 'Y',[file_name] = '" . $file_Name . '.' . $file_Ext . "' Where row_id = '" . $SchStatusID . "' AND t_type = 'A'");
+                DB::update("UPDATE [UL_RepCmp_Status] SET [status] = 'Completed',[completed_time] = '" . $date . "' ,[succ_flag] = 'Y',[file_name] = '" . $file_Name . "',total_records= '$CSVTotalRec' Where row_id = '" . $SchStatusID . "' AND t_type = 'A'");
             }
 
             // Delete the Schedule
@@ -731,7 +809,7 @@ class ArSchedule extends Command
             DB::insert("Insert into [UL_RepCmp_Completed]([sche_name],[templ_name],[start_time],[next_runtime],[completed_time]
                      ,[file_name],[succ_flag],[ftp_flag],[status],[file_path],[camp_id],[total_records],[t_type])
                     SELECT [sche_name],[templ_name],[start_time],[next_runtime],'$date','$outfile','$sucess','$ftp_flag'
-		     ,'Completed',[file_path],'$CID','$CSVTotalRec',t_type FROM [UL_RepCmp_Status] Where row_id = '" . $SchStatusID . "' AND t_type = 'A'");
+		     ,'Completed',[file_path],'$CID','$CSVTotalRec',t_type FROM [UL_RepCmp_Status] Where row_id = '" . $SchStatusID . "' AND t_type = 'A' ORDER BY row_id DESC");
 
             $sSqlSRE = DB::select("SELECT * FROM UL_RepCmp_Email WHERE camp_tmpl_id = '" . $CID . "' AND t_type='A'");
             $result = collect($sSqlSRE)->map(function($x){ return (array) $x; })->toArray();
@@ -768,11 +846,12 @@ class ArSchedule extends Command
                         $objDemo->receiver = $user['User_FName'] . ' ' . $user['User_LName'];
                         $objDemo->clientname = $this->clientname;
                         $objDemo->listShortName = $list_short_name;
+                        $objDemo->file_Name = $file_Name;
                         $objDemo->sharedByName = $senderUser['User_FName'] . ' ' . $senderUser['User_LName'];
                         $objDemo->sharedByEmail = $senderUser['User_Email'];
                         $objDemo->senderEmail = 'esupport@datasquare.com';
 
-                        Mail::to($ToUser)->send(new SendCampaignEmail($objDemo));
+                        Mail::to($ToUser)->send(new SendReportEmail($objDemo));
 
                         if (count(Mail::failures()) > 0) {
 
@@ -797,17 +876,20 @@ class ArSchedule extends Command
                 foreach ($records as $record){
                     $user = User::where('User_ID',$record['Shared_With_User_id'])->first();
                     if($user){
-                        Helper::sendShareEmail($record,$user,$this->clientname,$record['Custom_Message'],$list_short_name,'A');
+                        Helper::sendShareEmail($record,$user,$this->clientname,$record['Custom_Message'],$file_Name,'A');
                     }
                 }
             }
 
             if($List_Format != 'default'){
-                
+                if(file_exists(public_path('\\' .$folder_Name.'\\'.$this->prefix.'RPL_'.$file_Name.'.pdf'))){
+                    unlink(public_path('\\' .$folder_Name.'\\'.$this->prefix.'RPL_'.$file_Name.'.pdf'));
+                }
+                //echo '<pre>'; print_r($aDataSql); die;
                 $tableHtml = View::make('layouts.table',['records' => $aDataSql])->render();
                 //$upMetaStr = explode('^',$metaData);
                 $header = ucfirst($metaData->Category);
-                $footer = ucfirst($list_short_name); //ucfirst('test');
+                $footer = ucfirst($file_Name); //ucfirst('test');
                 try{
 
                     PDF::loadView('layouts.pdf-v2', [
@@ -823,6 +905,8 @@ class ArSchedule extends Command
                 }
             }
         }
+
+
 
     }
 

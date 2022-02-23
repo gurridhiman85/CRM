@@ -70,6 +70,8 @@
 					<button type="button" title="Merge" class="btn btn-light border-right-0 d-none d-lg-block font-12" style="float: right;box-shadow: none;" onclick="doMerge();"><i class="fas fa-boxes ds-c"></i></button>
 					-->
 					@if($option == 'lookup')
+
+					<button type="button" title="Campaign" class="btn btn-light border-right-0 d-none d-lg-block font-12" style="float: right;box-shadow: none;" onclick="showCreateCampaign()"><i class="fas fa-phone ds-c"></i></button>
 						<div class="btn-group">
 							<button type="button" title="Merge" class="btn btn-light no-border dropdown-toggle font-12" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="float: right;box-shadow: none;"><i class="fas fa-boxes ds-c"></i></button>
 							<div class="dropdown-menu">
@@ -85,12 +87,15 @@
 						<div class="btn-group">
 							<button type="button" title="Report download" class="btn btn-light no-border dropdown-toggle font-12" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="float: right;box-shadow: none;"><i class="ti-bar-chart font-weight-bold font-16 ds-c"></i></button>
 							<div class="dropdown-menu">
-								<a class="dropdown-item" href="javascript:void(0)" onclick="implementReportWithPhone('report','{!! Config::get('constant.phone_report_row_id') !!}');"><i class="fas fa-file-pdf" style="color: #e92639;"></i> PDF Report</a>
-								<a class="dropdown-item" href="javascript:void(0)" onclick="implementReportWithPhone('list','{!! Config::get('constant.phone_report_row_id') !!}');"><i class="fas fa-file-excel" style="color: #06b489;"></i> Xlsx Report</a>
+								<a class="dropdown-item" href="javascript:void(0)" onclick="implementReportWithPhone('report','{!! $report_row_id !!}');"><i class="fas fa-file-pdf" style="color: #e92639;"></i> PDF Report</a>
+								<a class="dropdown-item" href="javascript:void(0)" onclick="implementReportWithPhone('list','{!! $report_row_id !!}');"><i class="fas fa-file-excel" style="color: #06b489;"></i> Xlsx Report</a>
 							</div>
 						</div>
 					@endif
 					<button type="button" title="Download" class="btn btn-light no-border font-12" onclick="downloadCMLink($(this))" data-href="lookup/downloadreport" data-prefix="{{$option}}" data-screen="first" aria-expanded="false" style="float: right;box-shadow: none;"><i class="fas fa-download ds-c"></i></button>
+					@if($option == 'phone')
+						<button type="button" title="Add to Phone" class="btn btn-light font-12 ajax-Link" data-href="phone/add" aria-expanded="false" style="float: right;box-shadow: none;"><i class="fas fa-plus ds-c"></i></button>
+					@endif
 				</div>
 
 			</div>

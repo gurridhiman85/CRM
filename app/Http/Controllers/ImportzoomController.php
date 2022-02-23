@@ -16,6 +16,7 @@ use Session;
 use \Illuminate\Support\Facades\View as View;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Yajra\Datatables\Datatables;
 
 class ImportzoomController extends Controller {
 
@@ -164,10 +165,11 @@ class ImportzoomController extends Controller {
             Session::put('IM_File_Records', isset($uiCount[0]['count']) ? $uiCount[0]['count'] : 0);
         }
 
-        $stmt = $this->db->getPdo()->prepare("EXEC dbo.sp_CRM_Update_Zoomimport_S0_Insert");
+        $db = $this->db->getPdo();
+        $stmt = $db->prepare("EXEC dbo.sp_CRM_Update_Zoomimport_S0_Insert");
         $stmt->execute();
 
-        $stmt2 = $this->db->getPdo()->prepare("exec sp_CRM_Update_ZoomImport_S1_MatchNoAddr");
+        $stmt2 = $db->prepare("exec sp_CRM_Update_ZoomImport_S1_MatchNoAddr");
         $stmt2->execute();
 
         //Step 2
@@ -281,10 +283,12 @@ order by  s.rowid, s.customer_s2, x.online_attendee desc, x.dflname, s.email");
 
             //Step 5
             DB::update("update   contact_temp set dflname_Suggested = case when isnull(substring(customer_s1,1,CHARINDEX('(',customer_s1)),'')  <> '' then substring(customer_s1,1,CHARINDEX('(',customer_s1)-1) else customer_s1 end where isnull(ds_mkc_contactid,'') =''");
-          
-            $sStep5TableRows = DB::select("select distinct rowid,customer_s2 , dflname_Suggested,dflname, email, DS_MKC_ContactID from contact_temp where ds_mkc_contactid is null and isnull(customer_s2,'') <> ''
-group by rowid,customer_s2 , dflname_Suggested,dflname, email, DS_MKC_ContactID
-order by rowid,customer_s2 , dflname_Suggested,dflname, email, DS_MKC_ContactID");
+
+            $db = $this->db->getPdo();
+            $stmt = $db->prepare("EXEC dbo.sp_CRM_Update_Zoomimport_S1_Sort");
+            $stmt->execute();
+
+            $sStep5TableRows = DB::select("select distinct rowid,customer_s2 , dflname_Suggested,dflname, email, DS_MKC_ContactID,countspaces_lname  from contact_temp where ds_mkc_contactid is null and isnull(customer_s2,'') <> '' group by rowid,  countspaces_lname, customer_s2 , dflname_Suggested,dflname, email, DS_MKC_ContactID order by countspaces_lname, customer_s2 , dflname_Suggested,dflname,  DS_MKC_ContactID desc, email");
             $sStep5TableRows = collect($sStep5TableRows)->map(function($x) {
                         return (array) $x;
                     })->toArray();
@@ -321,8 +325,8 @@ order by rowid,customer_s2 , dflname_Suggested,dflname, email, DS_MKC_ContactID"
             DB::update("update contact_temp set updaterecord=0 where ds_mkc_contactid is null or  email = ''");
             DB::update("update contact_temp set updaterecord=0 where email in (select email from contact) or email in (select email2 from contact) or email  in (select email3 from contact) or email in (select email4 from contact) or email in (select email5 from contact)");
 
-            
-            
+
+
             $sStep6TableRows = DB::select("select distinct rowid,customer_s2 , dflname, email , DS_MKC_ContactID from contact_temp where updaterecord=1");
             $sStep6TableRows = collect($sStep6TableRows)->map(function($x) {
                         return (array) $x;
@@ -352,42 +356,31 @@ order by rowid,customer_s2 , dflname_Suggested,dflname, email, DS_MKC_ContactID"
 
     public function importStep6(Request $request, Ajax $ajax) {
         $rowids = implode(',', $request->input('rowid', []));
-        $Import_Filename = Session::get('IM_File_Name');
-        $Import_Id = Session::get('IM_ID');
 
-        try {
-            
-            if (!empty($rowids)) {
-                DB::update("update contact_temp set updaterecord=0 WHERE rowid Not IN (".$rowids.")"); 
-                DB::update("update contact_temp set updaterecord=1 WHERE rowid IN (".$rowids.")");
-            }
-            
-            $stmt = $this->db->getPdo()->prepare("EXEC dbo.sp_CRM_Update_Zoomimport_S1_Update");
-            $stmt->execute();
-            //Step 7 first update
-            $sStep7TableRows = DB::select("select distinct rowid, customer_s2, salutation, dharmaname, firstname, middlename, lastname, suffix , dflname, email  from contact_temp where ds_mkc_contactid is null");
-            $sStep7TableRows = collect($sStep7TableRows)->map(function($x) {
-                        return (array) $x;
-                    })->toArray();
-            $html = View::make('importzoom.step7-table', ['sStep2TableRows' => $sStep7TableRows])->render();
-            return $ajax->success()
-                            ->appendParam('html', $html)
-                            ->jscallback('ajax_Step7')
-                            ->response();
-        } catch (\Exception $exception) {
-            //Error
-            DB::update("Update UI_File_Name SET Import_Status = 'Error' WHERE User_Import_ID =" . $Import_Id);
-
-            $source_file = public_path('\\Import_Input\\' . $Import_Filename);
-            $destination_path = public_path('\\Import_Error\\');
-
-            rename($source_file, $destination_path . pathinfo($source_file, PATHINFO_BASENAME));
-
-            return $ajax->fail()
-                            ->jscallback('ajax_Step7')
-                            ->appendParam('message', $exception->getMessage())
-                            ->response();
+        if (!empty($rowids)) {
+            DB::update("update contact_temp set updaterecord=0 WHERE rowid Not IN (".$rowids.")");
+            DB::update("update contact_temp set updaterecord=1 WHERE rowid IN (".$rowids.")");
         }
+
+        $db = $this->db->getPdo();
+        $stmt = $db->prepare("EXEC dbo.sp_CRM_Update_Zoomimport_S1_Update");
+        $stmt->execute();
+
+        $stmt = $db->prepare("EXEC dbo.sp_CRM_Update_Zoomimport_S1_Sort");
+        $stmt->execute();
+
+            //Step 7 first update
+        $sStep7TableRows = DB::select("select distinct rowid, customer_s2, salutation, dharmaname, firstname, middlename, lastname, suffix , dflname, email,countspaces_lname  from contact_temp where ds_mkc_contactid is null order by email, countspaces_lname");
+        $sStep7TableRows = collect($sStep7TableRows)->map(function($x) {
+            return (array) $x;
+        })->toArray();
+        $html = View::make('importzoom.step7-table', ['sStep7TableRows' => $sStep7TableRows])->render();
+
+        return $ajax->success()
+            ->appendParam('html', $html)
+            ->jscallback('ajax_Step7')
+            ->response();
+
     }
 
     public function importFigure(Request $request,Ajax $ajax) {
@@ -395,12 +388,16 @@ order by rowid,customer_s2 , dflname_Suggested,dflname, email, DS_MKC_ContactID"
         if (!empty($rowids)) {
             DB::update("update contact_temp set insertrecord=1 WHERE rowid IN (".$rowids.")");
         }
-        
-        $stmt = $this->db->getPdo()->prepare("EXEC dbo.sp_CRM_Update_BulkImport_S4_Insert");
+
+        $db = $this->db->getPdo();
+        $stmt = $db->prepare("EXEC dbo.sp_ZSS_Update_EnvelopeLetter_contact_temp");
+        $stmt->execute();
+
+        $stmt = $db->prepare("EXEC dbo.sp_CRM_Update_BulkImport_S4_Insert");
         $stmt->execute();
 
         DB::insert("insert into xref_namezoom (zoomname, dflname) select distinct customer_s1, dflname from contact_temp where DS_MKC_ContactID is not null and isnull(dflname,'') <> ''");
-            
+
         $qry = DB::select("select count(rowid) as count from contact_temp where  updaterecord=1"); //matched records
         $matched = collect($qry)->map(function($x) {
                     return (array) $x;
@@ -465,7 +462,7 @@ order by rowid,customer_s2 , dflname_Suggested,dflname, email, DS_MKC_ContactID"
 
             DB::update("update   s set s.ds_mkc_contactid=x.ds_mkc_contactid , s.dflname= x.dflname, s.dflname_suggested=x.dflname from contact_temp s inner join contact x on x.dflname ='" . $itemSelVal . "'
  and s.ds_mkc_contactid is null where rowid= $itemSelId");
-            
+
             $sStep5TableRows = DB::select("select rowid,customer_s2 , dflname_Suggested,dflname, email, DS_MKC_ContactID from contact_temp where  rowid = $itemSelId");
             $sStep5TableRows = collect($sStep5TableRows)->map(function($x) {
                         return (array) $x;
@@ -477,6 +474,31 @@ order by rowid,customer_s2 , dflname_Suggested,dflname, email, DS_MKC_ContactID"
                             ->jscallback()
                             ->response();
         }
+    }
+
+    public function step5AddInsertRecord(Request $request, Ajax $ajax) {
+
+        $itemSelId = $request->input('itemSelId', '');
+        $itemSelId = $request->input('itemSelId', '');
+        $itemSelVal = str_ireplace("'", "''", $request->input('itemSelVal', ''));
+
+        DB::update("update   s set s.ds_mkc_contactid=x.ds_mkc_contactid , s.dflname= x.dflname, s.dflname_suggested=x.dflname,s.InsertRecord=1 from contact_temp s inner join contact x on x.dflname ='" . $itemSelVal . "'
+and s.ds_mkc_contactid is null where rowid= $itemSelId");
+
+
+        $sStep5TableRows = DB::select("select rowid,customer_s2 , dflname_Suggested,dflname, email, DS_MKC_ContactID,InsertRecord from contact_temp where  rowid = $itemSelId");
+        $sStep5TableRows = collect($sStep5TableRows)->map(function($x) {
+            return (array) $x;
+        })->toArray();
+        $sStep5TableRow = $sStep5TableRows[0];
+        return $ajax->success()
+            ->appendParam('sStep5TableRow', $sStep5TableRow)
+            ->appendParam('rowid',$itemSelId)
+            ->appendParam('updatesql',"update   s set s.ds_mkc_contactid=x.ds_mkc_contactid , s.dflname= x.dflname, s.dflname_suggested=x.dflname,s.InsertRecord=1 from contact_temp s inner join contact x on x.dflname ='" . $itemSelVal . "'
+and s.ds_mkc_contactid is null where rowid= $itemSelId")
+            ->jscallback()
+            ->response();
+
     }
 
     public function step7quickEdit(Request $request, Ajax $ajax) {
@@ -515,12 +537,12 @@ order by rowid,customer_s2 , dflname_Suggested,dflname, email, DS_MKC_ContactID"
                                 ->response();
             }
 
-            $aData = $aData[0];   
+            $aData = $aData[0];
             $dharmaname = !empty($aData['Dharmaname']) ? str_replace("'", "''", $aData['Dharmaname']) : ' ';
             $firstname = !empty($aData['Firstname']) ? str_replace("'", "''", $aData['Firstname']) : ' ';
             $lastname = !empty($aData['Lastname']) ? str_replace("'", "''", $aData['Lastname']) : ' ';
             DB::update("Update contact_temp set DFLName =  rtrim(ltrim(replace(replace( rtrim(ltrim(isnull('$dharmaname','') +  ' ' + isnull('$firstname','') +  ' ' +  isnull('$lastname',''))),'  ',' '),'  ',' '))) WHERE rowid = $rowid");
-            
+
             //DB::update("SET ANSI_NULLS ON; SET ANSI_WARNINGS ON;exec sp_ZSS_Update_EnvelopeLetter ".$aData['DS_MKC_ContactID']);
 
 

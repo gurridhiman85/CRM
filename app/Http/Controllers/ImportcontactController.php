@@ -134,11 +134,13 @@ class ImportcontactController extends Controller
             Session::put('IM_ID', $imId);
             Session::put('IM_File_Records', isset($uiCount[0]['count']) ? $uiCount[0]['count'] : 0);
 
-            $html = View::make('lookup.import.table',['ImportData' => $ImportData,'columns' => $columns])->render();
+            $html = View::make('lookup.import.table',['ImportData' => $ImportData,'columns' => $columns,'hidden_fields' => false])->render();
+            $hidden_fields_html = View::make('lookup.import.table',['ImportData' => $ImportData,'columns' => $columns,'hidden_fields' => true])->render();
         }
 
         return $ajax->success()
             ->appendParam('html',$html)
+            ->appendParam('hidden_fields_html',$hidden_fields_html)
             ->appendParam('Import_Id',$imId)
             ->appendParam('Import_Filename',$a_url)
             ->appendParam('columns',$columns)
@@ -196,41 +198,53 @@ class ImportcontactController extends Controller
 
             DB::statement("insert into ui_file_detail_update (".implode(',',$dbColumns)." , import_date, ds_mkc_source_feed,ds_mkc_input_file) select ".implode(',',$dColumns).", getdate() , '$sourcefeed','$Import_Filename' from userinput");
 
-            $stmt = $this->db->getPdo()->prepare("EXEC dbo.sp_CRM_Update_Bulkimport_S0_Insert");
+            $db = $this->db->getPdo();
+            $stmt = $db->prepare("EXEC dbo.sp_CRM_Update_Bulkimport_S0_Insert");
             $stmt->execute();
 
-            if($no_address == 1){
-                $stmt = $this->db->getPdo()->prepare("EXEC dbo.sp_CRM_Update_Bulkimport_S2_Match_NoAddr");
-                $stmt->execute();    
 
-                $qry = DB::select("select  t.ds_mkc_contactid,o.Dharmaname as Old_Dharmaname, o.Firstname as Old_Firstname, o.Middlename as Old_Middlename,  o.Lastname as Old_Lastname,  o.Extendedname as Old_Extendedname ,  t.Dharmaname as New_Dharmaname, t.Firstname as New_Firstname , t.Middlename as New_Middlename,  t.Lastname as New_Lastname,  t.Extendedname as New_Extendedname from contact o inner join contact_temp t on t.ds_mkc_contactid=o.ds_mkc_contactid where  t.ds_mkc_contactid is not null and (o.lastname <> t.lastname or o.firstname <> t.firstname) and (t.firstname <> '' or t.lastname <> '')");
-                $records = collect($qry)->map(function($x){ return (array) $x; })->toArray();
+            if($no_address == 0){
+                $input = 'D:\data\generic\input\GENERIC_HYGIENE_INPUT.txt';
 
-                $html = View::make('lookup.import.name',['records' => $records])->render();
+                if(file_exists($input)) {
+                    unlink($input);
+                }
+
+                $cleansed = 'D:\\data\\generic\\cleansed\\pGENERIC_HYGIENE_INPUT.txt';
+                if(file_exists($cleansed)){
+                    unlink($cleansed);
+                }
+
+                $db = $this->db->getPdo();
+                $sth = $db->prepare("SET NOCOUNT ON; EXEC sp_CRM_Update_Bulkimport_S1_ForCASS_P1");
+                $sth->execute();
+
+                /*$stmt = $this->db->getPdo()->prepare("EXEC dbo.sp_CRM_Update_Bulkimport_S1_ForCASS_P2");
+                $stmt->execute();*/
 
                 return $ajax->success()
-                    ->appendParam('html',$html)
-                    ->appendParam('recCount',count($records) > 0 ? true : false)
+                    ->jscallback('ajax_import_execute')
+                    ->appendParam('no_address', false)
+                    ->response();
+            }else if($no_address == 1){
+                $db = $this->db->getPdo();
+                $stmt = $db->prepare("EXEC dbo.sp_CRM_Update_Bulkimport_S2_Match_NoAddr");
+                $stmt->execute();
+
+                $tSQL = DB::select("select t.ds_mkc_contactid, o.address as [Old Address], t.address as [New Address], o.city as [Old City], t.city as [New City], o.state as [Old State], t.state as [New State], o.zip as [Old Zip], t.zip as [New Zip],  case when substring(t.addressquality,1,1) > substring(o.addressquality,1,1) then 'New is better' when  substring(t.addressquality,1,1) = substring(o.addressquality,1,1) then 'Same quality' when substring(t.addressquality,1,1) < substring(o.addressquality,1,1) then 'Old is better' else '' end as [Compare Address Quality],o.addressquality as [Old Address Quality] , t.addressquality as [New Address Quality]
+from contact_temp t
+inner join contact o on t.ds_mkc_contactid=o.ds_mkc_contactid where  t.ds_mkc_contactid is not null and o.address <> t.address and t.address <> '' and o.address <> '' Order By case when 
+ substring(t.addressquality,1,1) > substring(o.addressquality,1,1) then 'New is better' when  substring(t.addressquality,1,1) = substring(o.addressquality,1,1) then 'No Difference'
+when substring(t.addressquality,1,1) < substring(o.addressquality,1,1) then 'Old is better' else '' end");
+                $records = collect($tSQL)->map(function($x){ return (array) $x; })->toArray();
+                $html = View::make('lookup.import.address',['records' => $records])->render();
+
+                return $ajax->success()
                     ->jscallback('ajax_import_execute')
                     ->appendParam('no_address', true)
+                    ->appendParam('html', $html)
                     ->response();
             }
-
-            $input = 'D:\data\generic\input\GENERIC_HYGIENE_INPUT.txt';
-        
-            if(file_exists($input)) {
-                unlink($input);
-            }
-
-            $cleansed = 'D:\\data\\generic\\cleansed\\pGENERIC_HYGIENE_INPUT.txt';
-            if(file_exists($cleansed)){
-                unlink($cleansed);
-            }
-            $stmt1 = $this->db->getPdo()->prepare("EXEC dbo.sp_CRM_Update_Bulkimport_S1_ForCASS_P1");
-            $stmt1->execute();
-            return $ajax->success()
-                ->jscallback('ajax_import_execute')
-                ->response();
 
         }catch (\Exception $exception){
             //Error
@@ -252,11 +266,11 @@ class ImportcontactController extends Controller
 
         $step = $request->input('step');
         if($step == '4a'){
-
-            $fileExist = file_exists('D:\data\generic\input\GENERIC_HYGIENE_INPUT.txt');
+            $input = 'D:\data\generic\input\GENERIC_HYGIENE_INPUT.txt';
+            $fileExist = file_exists($input);
             if($fileExist){
-                $fileSize = filesize('D:\data\generic\input\GENERIC_HYGIENE_INPUT.txt');
-                if($fileSize == 0){
+                $fileSize = filesize($input);
+                if(!$fileSize){
                     return $ajax->fail()
                         ->message('This file could not be processed. Please check the file and try again or contact your CRMSquare administrator at esupport@datasquare.com')
                         ->response();
@@ -269,20 +283,24 @@ class ImportcontactController extends Controller
 
                 $command = 'schtasks /create /tn ' . $this->schtasks_dir . '\\accuzipopen2_bat /tr ' . public_path('\\accuzipopen2.bat') . ' /sc once /st ' . $time . ' /sd ' . $date .' /ru Administrator';
                 Helper::schtask_curl($command);
-
+                return $ajax->success()
+                    ->appendParam('file_found',$fileExist)
+                    ->response();
             }else{
-                $stmt = $this->db->getPdo()->prepare("EXEC dbo.sp_CRM_Update_Bulkimport_S1_ForCASS_P2");
-                $stmt->execute(); 
+                return $ajax->fail()
+                    ->message('This file could not be processed. Please check the file and try again or contact your CRMSquare administrator at esupport@datasquare.com')
+                    ->response();
             }
-            return $ajax->success()
-                ->appendParam('file_found',$fileExist)
-                ->response();
+        }
+        elseif ($step == '5'){
 
-        }elseif ($step == '5'){
+
+
             $html = '';
             $fileExist = file_exists('D:\\data\\generic\\cleansed\\pGENERIC_HYGIENE_INPUT.txt');
             if($fileExist){
-                $stmt = $this->db->getPdo()->prepare("EXEC dbo.sp_CRM_Update_Bulkimport_S2_Match");
+                $db = $this->db->getPdo();
+                $stmt = $db->prepare("EXEC dbo.sp_CRM_Update_Bulkimport_S2_Match");
                 $stmt->execute();
 
                 $cSQL = DB::select("select count(*) as count from contact_temp where ds_mkc_contactid is not null");
@@ -299,9 +317,7 @@ when substring(t.addressquality,1,1) < substring(o.addressquality,1,1) then 'Old
                     $html = View::make('lookup.import.address',['records' => $records])->render();
 
                 }else{
-                    $stmt = $this->db->getPdo()->prepare("EXEC dbo.sp_CRM_Update_BulkImport_S4_Insert");
-                    $stmt->execute();
-                    
+
                     $IM_File_Name = Session::get('IM_File_Name');
                     $IM_ID = Session::get('IM_ID');
 
@@ -313,6 +329,7 @@ when substring(t.addressquality,1,1) < substring(o.addressquality,1,1) then 'Old
 
                     return $ajax->fail()
                         ->appendParam('move_on_11_step',true)
+                        ->message('No Record found for update')
                         ->response();
                 }
             }
@@ -322,55 +339,15 @@ when substring(t.addressquality,1,1) < substring(o.addressquality,1,1) then 'Old
                 ->response();
         }
     }
-    public function addressQuickEdit(Request $request, Ajax $ajax) {
-        try {
-            $tablename = 'contact_temp';
-            $ds_mkc_contactid = $request->input('ds_mkc_contactid');
-            $fieldname = $request->input('fieldname');
-            $fieldvalue = $request->input('fieldvalue', '');
-            $aData = DB::table($tablename)
-                ->where('ds_mkc_contactid', $ds_mkc_contactid)
-                ->get();
-            $aData = collect($aData)->map(function($x) {
-                return (array) $x;
-            })->toArray();
-            //echo '<pre>'; print_r($aData); die;
-            if (count($aData) == 0) {
-                return $ajax->fail()
-                    ->appendParam('message', 'Record not found')
-                    ->response();
-            }
-
-            DB::table($tablename)
-                ->where('ds_mkc_contactid', $ds_mkc_contactid)
-                ->update([$fieldname => trim($fieldvalue)]);
-
-            $aData = DB::table($tablename)
-                ->where('ds_mkc_contactid', $ds_mkc_contactid)
-                ->get();
-            $aData = collect($aData)->map(function($x) {
-                return (array) $x;
-            })->toArray();
-
-            return $ajax->success()
-                ->appendParam('aData', $aData[0])
-                ->appendParam('ds_mkc_contactid', $ds_mkc_contactid)
-                ->jscallback('ajax_edit_address')
-                ->response();
-        } catch (\Exception $e) {
-            return $ajax->fail()
-                ->appendParam('message', $e->getMessage())
-                ->response();
-        }
-    }
 
     public function updateAddress(Ajax $ajax,Request $request){
         $cids = $request->input('cids',[]);
 
         try{
             if(count($cids) > 0) {
+                $db = $this->db->getPdo();
                 foreach ($cids as $cid) {
-                    $stmt = $this->db->getPdo()->prepare("EXEC dbo.sp_CRM_Update_Bulkimport_S3_Address " . $cid);
+                    $stmt = $db->prepare("EXEC dbo.sp_CRM_Update_Bulkimport_S3_Address " . $cid);
                     $stmt->execute();
                 }
             }
@@ -391,6 +368,100 @@ when substring(t.addressquality,1,1) < substring(o.addressquality,1,1) then 'Old
                 ->message($exception->getMessage())
                 ->response();
         }
+    }
+
+    public function updateName(Request $request, Ajax $ajax){
+        $cids = $request->input('cids',[]);
+
+        try{
+            if(count($cids) > 0) {
+                $db = $this->db->getPdo();
+                foreach ($cids as $cid) {
+                    $stmt = $db->prepare("EXEC dbo.sp_CRM_Update_Bulkimport_S3_Name " . $cid);
+                    $stmt->execute();
+                }
+            }
+
+            $db = $this->db->getPdo();
+            $stmt = $db->prepare("EXEC dbo.sp_CRM_Update_BulkImport_S4_Insert");
+            $stmt->execute();
+
+            /*matched records */
+            $qry = DB::select("select count(*) as count from contact_temp where ds_mkc_contactid is not null");
+            $matched = collect($qry)->map(function($x){ return (array) $x; })->toArray();
+            $ms = isset($matched[0]['count']) ? $matched[0]['count'] : 0;
+
+            /*inserted records*/
+            $qry = DB::select("select count(*) as count from contact_temp where ds_mkc_contactid is null");
+            $inserted = collect($qry)->map(function($x){ return (array) $x; })->toArray();
+            $in = isset($inserted[0]['count']) ? $inserted[0]['count'] : 0;
+
+            $IM_File_Name = Session::get('IM_File_Name');
+            $IM_ID = Session::get('IM_ID');
+            $IM_File_Records = Session::get('IM_File_Records');
+
+            DB::update("UPDATE UI_File_Name SET Import_Status = 'Completed' WHERE User_Import_ID = ".$IM_ID);
+            $source_file = public_path('\\Import_Input\\'.$IM_File_Name);
+            $destination_path = public_path('\\Import_Completed\\');
+            rename($source_file, $destination_path . pathinfo($source_file, PATHINFO_BASENAME));
+
+            $msg = "Congratulations!<br/> You successfully imported ".$IM_File_Name." with ".$IM_File_Records." records. <br/>".$ms." records were updated and ".$in." new records were inserted";
+            return $ajax->success()
+                ->message($msg)
+                ->jscallback('ajax_import_completed')
+                ->response();
+        }catch (\Exception $exception){
+            return $ajax->fail()
+                ->message('Something is wrong !')
+                ->response();
+        }
+    }
+
+    public function importFigure(Ajax $ajax){
+
+        $qry = DB::select("select count(*) as count from contact_temp where ds_mkc_contactid is not null"); //matched records
+        $matched = collect($qry)->map(function($x){ return (array) $x; })->toArray();
+
+        $qry = DB::select("select count(*) as count from contact_temp where ds_mkc_contactid is null");  //inserted records
+        $inserted = collect($qry)->map(function($x){ return (array) $x; })->toArray();
+
+        $html = '<h5>Congratulations! You successfully updated address.</h5><table class="table table-bordered table-hover color-table lkp-table font-16"><thead>
+                <tr>
+                    <th>Updated Records</th>
+                    <th>Inserted Records</th>
+                </tr>
+                </thead><tbody>';
+
+        $html .= '<tr>
+                    <td>'.$matched[0]['count'].'</td>
+                    <td>'.$inserted[0]['count'].'</td>
+                </tr>';
+
+        $html .= '</tbody><table>';
+
+
+        $sdata = [
+            'content' => $html
+        ];
+
+        $title = 'Alert';
+        $size = 'modal-dialog-centered modal-md';
+
+        if (isset($title)) {
+            $sdata['title'] = $title;
+        }
+        if (isset($size)) {
+            $sdata['size'] = $size;
+        }
+
+        $view = View::make('layouts.modal-popup-layout', $sdata);
+        $html = $view->render();
+
+        return $ajax->success()
+            ->appendParam('html', $html)
+            ->jscallback('loadModalLayout')
+            ->response();
+
     }
 
     public function nameQuickEdit(Request $request, Ajax $ajax) {
@@ -435,138 +506,58 @@ when substring(t.addressquality,1,1) < substring(o.addressquality,1,1) then 'Old
         }
     }
 
-    public function updateName(Request $request, Ajax $ajax){
-        $cids = $request->input('cids',[]);
-
-        try{
-            if(count($cids) > 0) {
-                foreach ($cids as $cid) {
-                    $stmt = $this->db->getPdo()->prepare("EXEC dbo.sp_CRM_Update_Bulkimport_S3_Name " . $cid);
-                    $stmt->execute();
-                }
+    public function addressQuickEdit(Request $request, Ajax $ajax) {
+        try {
+            $tablename = 'contact_temp';
+            $ds_mkc_contactid = $request->input('ds_mkc_contactid');
+            $fieldname = $request->input('fieldname');
+            $fieldvalue = $request->input('fieldvalue', '');
+            $aData = DB::table($tablename)
+                ->where('ds_mkc_contactid', $ds_mkc_contactid)
+                ->get();
+            $aData = collect($aData)->map(function($x) {
+                return (array) $x;
+            })->toArray();
+            //echo '<pre>'; print_r($aData); die;
+            if (count($aData) == 0) {
+                return $ajax->fail()
+                    ->appendParam('message', 'Record not found')
+                    ->response();
             }
 
-            $stmt = $this->db->getPdo()->prepare("EXEC dbo.sp_CRM_Update_BulkImport_S4_Insert");
-            $stmt->execute();
+            DB::table($tablename)
+                ->where('ds_mkc_contactid', $ds_mkc_contactid)
+                ->update([$fieldname => trim($fieldvalue)]);
 
-            /*matched records */
-            $qry = DB::select("select count(*) as count from contact_temp where ds_mkc_contactid is not null");
-            $matched = collect($qry)->map(function($x){ return (array) $x; })->toArray();
-            $ms = isset($matched[0]['count']) ? $matched[0]['count'] : 0;
+            $aData = DB::table($tablename)
+                ->where('ds_mkc_contactid', $ds_mkc_contactid)
+                ->get();
+            $aData = collect($aData)->map(function($x) {
+                return (array) $x;
+            })->toArray();
 
-            /*inserted records*/
-            $qry = DB::select("select count(*) as count from contact_temp where ds_mkc_contactid is null");
-            $inserted = collect($qry)->map(function($x){ return (array) $x; })->toArray();
-            $in = isset($inserted[0]['count']) ? $inserted[0]['count'] : 0;
-
-            $IM_File_Name = Session::get('IM_File_Name');
-            $IM_ID = Session::get('IM_ID');
-            $IM_File_Records = Session::get('IM_File_Records');
-
-            DB::update("UPDATE UI_File_Name SET Import_Status = 'Completed' WHERE User_Import_ID = ".$IM_ID);
-            $source_file = public_path('\\Import_Input\\'.$IM_File_Name);
-            $destination_path = public_path('\\Import_Completed\\');
-            rename($source_file, $destination_path . pathinfo($source_file, PATHINFO_BASENAME));
-
-            $msg = "Congratulations!<br/> You successfully imported ".$IM_File_Name." with ".$IM_File_Records." records. <br/>".$ms." records were updated and ".$in." new records were inserted";
             return $ajax->success()
-                ->message($msg)
-                ->jscallback('ajax_import_completed')
+                ->appendParam('aData', $aData[0])
+                ->appendParam('ds_mkc_contactid', $ds_mkc_contactid)
+                ->jscallback('ajax_edit_address')
                 ->response();
-        }catch (\Exception $exception){
+        } catch (\Exception $e) {
             return $ajax->fail()
-                ->message('Something is wrong !')
+                ->appendParam('message', $e->getMessage())
                 ->response();
         }
     }
 
-    public function importFigure(Ajax $ajax){
+    public function test1(Ajax $ajax){
+        /*$stmt = $this->db->getPdo()->prepare("EXEC dbo.sp_CRM_Update_Bulkimport_S1_ForCASS_P1");
+        $stmt->execute();*/
 
-        $qry = DB::select("select count(*) as count from contact_temp where ds_mkc_contactid is not null"); //matched records
-        $matched = collect($qry)->map(function($x){ return (array) $x; })->toArray();
+        /*$dbh = $this->db->getPdo();
+        $sth = $dbh->prepare("SET NOCOUNT ON; EXEC sp_CRM_Update_Bulkimport_S1_ForCASS_P1");
+        $sth->execute();*/
 
-        $qry = DB::select("select count(*) as count from contact_temp where ds_mkc_contactid is null");  //inserted records
-        $inserted = collect($qry)->map(function($x){ return (array) $x; })->toArray();
-
-        $html = '<h5>Congratulations! You successfully updated address.</h5><table id="basic_table2" class="table table-bordered table-hover color-table lkp-table font-16"><thead>
-                <tr>
-                    <th>Updated Records</th>
-                    <th>Inserted Records</th>
-                </tr>
-                </thead><tbody>';
-
-        $html .= '<tr>
-                    <td>'.$matched[0]['count'].'</td>
-                    <td>'.$inserted[0]['count'].'</td>
-                </tr>';
-
-        $html .= '</tbody><table>';
-
-
-        $sdata = [
-            'content' => $html
-        ];
-
-        $title = 'Alert';
-        $size = 'modal-dialog-centered modal-md';
-
-        if (isset($title)) {
-            $sdata['title'] = $title;
-        }
-        if (isset($size)) {
-            $sdata['size'] = $size;
-        }
-
-        $view = View::make('layouts.modal-popup-layout', $sdata);
-        $html = $view->render();
-
+        /*DB::select(DB::raw("EXEC dbo.sp_CRM_Update_Bulkimport_S1_ForCASS_P1"));*/
         return $ajax->success()
-            ->appendParam('html', $html)
-            ->jscallback('loadModalLayout')
             ->response();
-
-    }
-
-    function testColumns(){
-        /*$ImportData = [
-            [
-                'Email',
-                'OptedIn',
-                'Salutation',
-                'First Name',
-                'Last Name',
-                'Address',
-                'City',
-                'State',
-                'Zip',
-                'Country',
-                'Company',
-                'Phone',
-            ]
-        ];
-        $qry = DB::select("SELECT [RowID],[Field_Display_Name],[Field_Db_Name] FROM UI_Field_Mapping");
-        $columns = collect($qry)->map(function($x){ return (array) $x; })->toArray();
-        foreach( $ImportData[0] as $key=>$cell ){
-            $found_key = array_search(trim($cell), array_column($columns, 'Field_Display_Name'));
-            if($found_key > -1){
-                $columns[$found_key] = [
-                    'RowID' => $columns[$found_key]['RowID'],
-                    'Field_Display_Name' => $columns[$found_key]['Field_Display_Name'],
-                    'Field_Db_Name' => $columns[$found_key]['Field_Db_Name'],
-                    'is_display' => 0,
-                ];
-            }
-        }
-        echo '<pre>';
-        print_r($columns);
-        die;*/
-        /*$date = date("m/d/Y", time());
-        $time = date("H:i:s", time() + 60 + 10);
-
-        $schDir = config('constant.schDir');
-        $schtasks_dir = config('constant.schtasks_dir');
-
-        $command = 'schtasks /create /tn ' . $schtasks_dir . '\\accuzipopen2_bat /tr ' . public_path('\\accuzipopen2.bat') . ' /sc once /st ' . $time . ' /sd ' . $date .' /ru Administrator';
-        Helper::schtask_curl($command);*/
     }
 }

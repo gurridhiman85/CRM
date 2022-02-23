@@ -90,6 +90,7 @@
                                 <div class="col-md-4 pl-0">
                                     <div class="btn-toolbar pull-right" role="toolbar" aria-label="Toolbar with button groups">
                                         <div class="btn-group" role="group" aria-label="First group">
+                                            <div class="c-btn" style="display: none;"></div>
                                             <button type="button" title="Reset"
                                                     class="btn btn-light  font-14 font-weight-bold" aria-expanded="false"
                                                     style="float: right;box-shadow: none;" onclick="resetIMP();"><i
@@ -173,7 +174,7 @@
                             </div>
                         </div>
 
-                        <div class="fieldset" data-title="Update Records in CRM Portal" data-step="6">
+                        <div class="fieldset" data-title="Update Email for Existing Records in CRM Portal" data-step="6">
                             <div class="row">
                                 <form action="importzoom/step6" method="post" class="ajax-Form" id="zoomstep6">
                                     {!! csrf_field() !!}

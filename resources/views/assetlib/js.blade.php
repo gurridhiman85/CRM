@@ -274,8 +274,16 @@ $js_files = [
         'path' => '/js/importcontact.js',
         'required' => 0
     ],
+    'importbulkcc' => [
+        'path' => '/js/importbulkcc.js',
+        'required' => 0
+    ],
     'importzoom' => [
         'path' => '/js/importzoom.js',
+        'required' => 0
+    ],
+    'zoomcleanse' => [
+        'path' => '/js/zoomcleanse.js',
         'required' => 0
     ],
 

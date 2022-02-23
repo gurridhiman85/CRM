@@ -5,6 +5,7 @@ return [
     'loader_label' => 'CRM',
     'footer_label' => 'Copyright &copy;  2007 -  '.date("Y").' Data Square. All Rights Reserved.',
     'creator' => 'Data Square',
+    'top_nav_title' => 'The Zen Studies Society, Inc.',
     'client_name' => 'ZSS',
     'record_per_page' => 15,
 
@@ -19,7 +20,7 @@ return [
     'phpPath' => 'C:\\Program Files (X86)\\PHP\\v7.2\\php.exe',
     'schDir' => 'DB_CRMLV_v16D_AB',
     'prefix' => 'Dev_',
-    'phone_report_row_id' => 155,
+    'phone_report_row_id' => 215,
 
     'CommonHeader' => 'From: CRM Square Administrator<admin@crmsquare.com>' . "\r\n",
     'CommonBcc' => 'Bcc: devyani@datasquare.com' . "\n",

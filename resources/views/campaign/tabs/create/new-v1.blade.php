@@ -358,7 +358,7 @@
 <script type="text/javascript" src="js/dropdown_up.js"></script>
 <div class="divTable blueTable">
     <div class="divTableBody">
-        
+
         <div class="divTableRow">
             <div class="divTableCell font-14 fc">
                 <div style="font-size:14px;" class="ctooltip"><i class="fas fa-question-circle ds-c"
@@ -373,10 +373,20 @@
                         <div class="form-group">
                             <select class='form-control form-control-sm select-box1 fst-f' onchange="lListTemplateName(this.id,'change');" id='list_level'>
                                 <option value=''>Select Level</option>
+                                @foreach($list_levels as $list_level)
+                                    <option
+                                        @if(trim($list_level->List_Level) == 'Emailable') selected @endif
+                                        value="{{ trim($list_level->List_Level) }}"
+                                    >
+                                        {{ trim($list_level->List_Level_Display) }}
+                                    </option>
+                                @endforeach
+                                <!--
                                 <option value='Contact_View'>All Contacts</option>
                                 <option selected value='emailable'>Emailable Contacts</option>
                                 <option value='mailable'>Mailable Contacts</option>
                                 <option value='Sales_View'>Sales Detail</option>
+                                -->
                             </select>
                         </div>
                     </div>
@@ -391,7 +401,7 @@
             <option value='analysis_template'>Analysis Template</option>
             <option selected value='custom_fields'>Custom Fields</option>
         </select>
-        
+
         <div class="divTableRow" id='customFieldRow' style="display:none;height: auto; overflow: -webkit-paged-x;">
             <div class="divTableCell fc">
                 <div style="font-size:14px;" class="ctooltip">
@@ -781,7 +791,7 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <small class="form-control-feedback ml-2 pl-1 ds-l">Row Variable</small>
-                            <select name="row_variable_input" id="row_variable_input" class="form-control form-control-sm row_variable_input fst-f" onchange="run_report_inner();">
+                            <select name="row_variable_input" id="row_variable_input" multiple="multiple" data-placeholder="Select Values" class="form-control form-control-sm row_variable_input fst-f" onchange="run_report_inner();">
                                 <option value="">Select</option>
                             </select>
                         </div>
@@ -867,11 +877,11 @@
                         <div class="form-group pt-1">
                             <small class="form-control-feedback ds-l">&nbsp;</small>
                             <button type="button"
+                                    class="btn btn-info font-12 s-f mt-3 ajax-DS-Link"
                                     title="Go"
                                     id='runReportBtn'
-                                    data-href="getdistributionpu"
-                                    class="btn btn-light ds-c4 mt-3 font-10 font-weight-bold ajax-DS-Link">
-                               <span><i class=" fas fa-arrow-circle-right font-12"></i></span>
+                                    data-href="getdistributionpu">
+                                <i class=" fas fa-arrow-circle-right font-12"></i>
                             </button>
                             <input type="hidden" id="chartImage" class="chartImage" name="chartImage"/>
                         </div>
@@ -1116,11 +1126,12 @@
                         <div class="form-group pt-1">
                             <small class="form-control-feedback ds-l">&nbsp;</small>
                             <button type="button"
+                                    class="btn btn-info font-12 s-f mt-3"
                                     title="Go"
                                     id='runMetadataBtn'
                                     data-href="getmetadata"
-                                    class="btn btn-light ds-c4 mt-3 font-10 font-weight-bold" onclick="dispMetadata();">
-                                <span><i class=" fas fa-arrow-circle-right font-12"></i></span>
+                                    onclick="dispMetadata();">
+                                <i class=" fas fa-arrow-circle-right font-12"></i>
                             </button>
                         </div>
                     </div>
@@ -1182,7 +1193,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="divTableRow csql" data-chance="0" style="display: none;">
             <div class="divTableCell fc">
                 <div style="font-size:14px;" class="ctooltip"><i class="fas fa-question-circle ds-c"
@@ -1204,7 +1215,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="divTableRow">
             <div class="divTableCell fc">
                 <div style="font-size:14px;" class="ctooltip"><i class="fas fa-question-circle ds-c"
@@ -1227,7 +1238,7 @@
 
             </div>
         </div>
-        
+
         {{--<div class="divTableRow" style="display:none;">
             <div class="divTableCell fc">
                 <div style="font-size:14px;" class="ctooltip"><i class="fas fa-question-circle ds-c"
@@ -1273,7 +1284,7 @@
             </div>
         </div>
 
-        
+
         <div class="divTableRow" id="sqlQueryRow" style="display:none;width: 1062px !important;height:70px !important;">
 
             <div class="divTableCell fc">
@@ -1331,6 +1342,7 @@
         var libcamp_id = $('#libcamp_id').val();
         if (libflag_name == 'view' || libflag_name == 'new'){
             updateOptlib(libflag_name, libcamp_name, libcamp_id);
+            libflag_name == 'view' ?  $('#saveoption').hide() : '';
         }else{
             $('#list_level').trigger('change');
         }

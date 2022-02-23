@@ -11,7 +11,7 @@ $(function () {
             , stack: 6
         })*/
         // Dashboard 1 Morris-chart
-    Morris.Area({
+    /*Morris.Area({
         element: 'morris-area-chart'
         , data: [{
                 period: '2010'
@@ -108,10 +108,28 @@ $(function () {
         , hideHover: 'auto'
         , lineColors: ['#b4becb', '#01c0c8']
         , resize: true
-    });
-});    
+    });*/
+
+    /*Morris.Donut({
+        element: 'morris-donut-chart',
+        data: [{
+            label: "Adv",
+            value: 8500,
+
+        }, {
+            label: "Tredshow",
+            value: 3630,
+        }, {
+            label: "Web",
+            value: 4870
+        }],
+        resize: true,
+        colors:['#fb9678', '#01c0c8', '#4F5467']
+    });*/
+});
     // sparkline
-    var sparklineLogin = function() { 
+
+    var sparklineLogin = function() {
         $('#sales1').sparkline([20, 40, 30], {
             type: 'pie',
             height: '90',
@@ -126,12 +144,12 @@ $(function () {
             barSpacing: '10',
             barColor: '#25a6f7'
         });
-        
-    };    
+
+    };
     var sparkResize;
- 
-        $(window).resize(function(e) {
+
+        /*$(window).resize(function(e) {
             clearTimeout(sparkResize);
             sparkResize = setTimeout(sparklineLogin, 500);
-        });
-        sparklineLogin();
+        });*/
+       // sparklineLogin();

@@ -1,4 +1,4 @@
-<table class="table table-bordered table-hover color-table lkp-table">
+<table id="basic_table_without_dynamic_pagination" class="table table-bordered table-hover color-table lkp-table">
     <thead>
     <tr>
         <th>
@@ -7,7 +7,7 @@
                 <span class="custom-control-label"></span>
             </label>
         </th>
-        <th>Zoom Name</th>
+        <th>Zoom Name S2</th>
         <th>Salutation</th>
         <th>Dharma Name</th>
         <th>First Name</th>
@@ -20,56 +20,83 @@
     </tr>
     </thead>
     <tbody>
-    @foreach($sStep2TableRows as $sStep2TableRow)
+    @foreach($sStep7TableRows as $sStep7TableRow)
         <tr>
             <td>
-                <!--<input type="checkbox" class="checkbox" value="1"/>-->
+                <?php $is_checked = !empty($sStep7TableRow['email']) && $sStep7TableRow['email'] != null   ? 'checked' : ''; ?>
                 <label class="custom-control custom-checkbox m-b-0">
-                    <input type="checkbox" class="custom-control-input checkbox" id="checkbox_{{ $sStep2TableRow['rowid'] }}" name="rowid[]" value="{{ $sStep2TableRow['rowid'] }}" onclick="singleCheckbox();" >
+                    <input type="checkbox" class="custom-control-input checkbox" id="checkbox_{!! $sStep7TableRow['rowid'] !!}" onclick="singleCheckbox();" {!! $is_checked !!} name="rowid[]" value="{!! $sStep7TableRow['rowid'] !!}">
                     <span class="custom-control-label"></span>
                 </label>
             </td>
-            <td>{{ $sStep2TableRow['customer_s2'] }}</td>
-            <td>{{ $sStep2TableRow['salutation'] }}</td>
-            <td><input type="text" class="form-control border-0 form-control-sm ajax-quick-edit" data-field="Dharmaname"
-                       data-rowid="{{ $sStep2TableRow['rowid'] }}" value="{{ $sStep2TableRow['dharmaname'] }}"></td>
-            <td><input type="text" class="form-control border-0 form-control-sm ajax-quick-edit" data-field="Firstname"
-                       data-rowid="{{ $sStep2TableRow['rowid'] }}" value="{{ $sStep2TableRow['firstname'] }}"></td>
-            <td><input type="text" class="form-control border-0 form-control-sm ajax-quick-edit" data-field="Middlename"
-                       data-rowid="{{ $sStep2TableRow['rowid'] }}" value="{{ $sStep2TableRow['middlename'] }}"></td>
-            <td><input type="text" class="form-control border-0 form-control-sm ajax-quick-edit" data-field="Lastname"
-                       data-rowid="{{ $sStep2TableRow['rowid'] }}" value="{{ $sStep2TableRow['lastname'] }}"></td>
-            <td><input type="text" class="form-control border-0 form-control-sm ajax-quick-edit" data-field="Suffix"
-                       data-rowid="{{ $sStep2TableRow['rowid'] }}" value="{{ $sStep2TableRow['suffix'] }}"></td>
-            <td id="s7dflname_{{ $sStep2TableRow['rowid'] }}">{{ $sStep2TableRow['dflname'] }}</td>
-            <td><input type="text" class="form-control border-0 form-control-sm ajax-quick-edit" data-field="Email"
-                       data-rowid="{{ $sStep2TableRow['rowid'] }}" value="{{ $sStep2TableRow['email'] }}"></td>
+            <td>{{ $sStep7TableRow['customer_s2'] }}</td>
+            <td>{{ $sStep7TableRow['salutation'] }}</td>
+            <td>
+                <input type="text"
+                       class="form-control border-0 form-control-sm "
+                       onkeyup="ajax_quick_edit($(this))"
+                       data-field="Dharmaname"
+                       data-rowid="{{ $sStep7TableRow['rowid'] }}"
+                       value="{{ $sStep7TableRow['dharmaname'] }}">
+            </td>
+            <td>
+                <input type="text"
+                       class="form-control border-0 form-control-sm "
+                       onkeyup="ajax_quick_edit($(this))"
+                       data-field="Firstname"
+                       data-rowid="{{ $sStep7TableRow['rowid'] }}"
+                       value="{{ $sStep7TableRow['firstname'] }}">
+            </td>
+            <td>
+                <input type="text"
+                       class="form-control border-0 form-control-sm "
+                       onkeyup="ajax_quick_edit($(this))"
+                       data-field="Middlename"
+                       data-rowid="{{ $sStep7TableRow['rowid'] }}"
+                       value="{{ $sStep7TableRow['middlename'] }}">
+            </td>
+            <td>
+                <input type="text"
+                       class="form-control border-0 form-control-sm "
+                       onkeyup="ajax_quick_edit($(this))"
+                       data-field="Lastname"
+                       data-rowid="{{ $sStep7TableRow['rowid'] }}"
+                       value="{{ $sStep7TableRow['lastname'] }}">
+            </td>
+            <td>
+                <input type="text"
+                       class="form-control border-0 form-control-sm "
+                       onkeyup="ajax_quick_edit($(this))"
+                       data-field="Suffix"
+                       data-rowid="{{ $sStep7TableRow['rowid'] }}"
+                       value="{{ $sStep7TableRow['suffix'] }}">
+            </td>
+            <td>
+                <span id="s7dflname_{{ $sStep7TableRow['rowid'] }}">{{ $sStep7TableRow['dflname'] }}</span>
+            </td>
+            <td>
+                <input type="text"
+                       class="form-control border-0 form-control-sm "
+                       onkeyup="ajax_quick_edit($(this))"
+                       data-field="Email"
+                       data-rowid="{{ $sStep7TableRow['rowid'] }}"
+                       value="{{ $sStep7TableRow['email'] }}">
+            </td>
         </tr>
     @endforeach
     </tbody>
 </table>
 <script>
-    $(document).ready(function () {
-        $('.ajax-quick-edit').on('keyup',function () {
-            var rowid = $(this).data('rowid');
-            var fieldname = $(this).data('field');
-            var fieldvalue = $(this).val();
-            delay(function(){
-                ACFn.sendAjax('importzoom/step7quickedit','POST',{
-                    rowid : rowid,
-                    fieldname : fieldname,
-                    fieldvalue : fieldvalue,
-                })
-            }, 1000 );
-
-
-        })
-        
-        ACFn.ajax_update_step7 = function (F , R) {
-            if(R.success){
-                $('#s7dflname_' + R.rowid).text(R.aData.DFLName);
-                $('#checkbox_' + R.rowid).attr('checked',true);
-            }
-        }
-    })
+    function ajax_quick_edit(obj) {
+        var rowid = obj.data('rowid');
+        var fieldname = obj.data('field');
+        var fieldvalue = obj.val();
+        delay(function(){
+            ACFn.sendAjax('importzoom/step7quickedit','POST',{
+                rowid : rowid,
+                fieldname : fieldname,
+                fieldvalue : fieldvalue,
+            })
+        }, 1000 );
+    }
 </script>

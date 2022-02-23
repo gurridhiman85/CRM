@@ -38,23 +38,41 @@
             padding:3px;
             cursor:pointer;
         }
-		
+
 		::-webkit-scrollbar {
 			width: 0.7em;
-			height: 0.7em; 
+			height: 0.7em;
 		}
-		 
+
 		::-webkit-scrollbar-track {
 			-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
 		}
-		 
+
 		::-webkit-scrollbar-thumb {
 		  background-color: lightgrey;
 		  outline: 1px solid #ddd;
 		}
+
+        label.ui-corner-all input {
+            margin-right: 5px;
+        }
+
+        .swal2-popup .swal2-styled {
+            margin: 0.3125em;
+            padding: 0.825em 2em !important;
+            box-shadow: none;
+            font-weight: 500;
+        }
+
+        .swal2-popup .swal2-styled:focus {
+            box-shadow: none !important;
+        }
     </style>
+    <link href="css/example.css?ver={{time()}}" rel="stylesheet" type="text/css">
 </head>
-<body class="horizontal-nav boxed fixed-layout {!! !empty(Auth::user()->utheme) ? Auth::user()->utheme->meta_value : 'skin-blue' !!} ">
+<body
+        class="horizontal-nav boxed fixed-layout skin-blue "
+>
 <div class="preloader">
     <div class="loader">
         <div class="loader__figure"></div>
@@ -62,9 +80,11 @@
     </div>
 </div>
 @php
-    $User_Type = Auth::user()->authenticate->User_Type;
-    $Visibilities = Auth::user()->authenticate->Visibilities;
-    $visiblities = !empty($Visibilities) ? explode(',',$Visibilities) : [];
+    if(Auth::check()){
+        $User_Type = Auth::user()->authenticate->User_Type;
+        $Visibilities = Auth::user()->authenticate->Visibilities;
+        $visiblities = !empty($Visibilities) ? explode(',',$Visibilities) : [];
+    }
 @endphp
 
 <div id="main-wrapper">
@@ -77,7 +97,7 @@
         @include('layouts.docker-leftsidebar')
     @show
 
-    <div class="page-wrapper pt-1">
+    <div class="page-wrapper pt-2">
         @section('content')
             @yield('content')
         @show
@@ -92,14 +112,29 @@
     @include('assetlib.js')
 @show
 <script>
-	
+
+    var browser = (function (agent) {
+        switch (true) {
+            case agent.indexOf("edge") > -1: return "MS Edge (EdgeHtml)";
+            case agent.indexOf("edg") > -1: return "MS Edge Chromium";
+            case agent.indexOf("opr") > -1 && !!window.opr: return "opera";
+            case agent.indexOf("chrome") > -1 && !!window.chrome: return "chrome";
+            case agent.indexOf("trident") > -1: return "Internet Explorer";
+            case agent.indexOf("firefox") > -1: return "firefox";
+            case agent.indexOf("safari") > -1: return "safari";
+            default: return "other";
+        }
+    })(window.navigator.userAgent.toLowerCase());
+    //alert(browser);
     function readmore(obj) {
         if(obj.siblings(".complete").is(":hidden")){
             obj.text("-")
             obj.siblings(".complete").show();
+            obj.siblings(".teaser").hide();
         }else{
             obj.text("+")
             obj.siblings(".complete").hide();
+            obj.siblings(".teaser").show();
         }
     }
 </script>

@@ -20,6 +20,8 @@ use App\Mail\ShareReportEmail;
 use Illuminate\Support\Facades\Mail;
 use \LynX39\LaraPdfMerger\PdfManage;
 use Session;
+use Yajra\Datatables\Datatables;
+use DateTime;
 
 class ReportController extends Controller
 {
@@ -93,7 +95,7 @@ class ReportController extends Controller
         }*/
         if($tabid == 20){  // Running
 
-            $query = App\Model\ReportTemplate::query()->with(['rpmeta','rpstatus']);
+            /*$query = App\Model\ReportTemplate::query()->with(['rpmeta','rpschedule.rpschstatusmap']);
             if($User_Type != 'Full_Access') {
                 $query->where(function ($qry) use($uid){
                     $qry->whereHas('rpshare',function ($subqry) use($uid){
@@ -104,9 +106,11 @@ class ReportController extends Controller
                     });
                 });
             }
-            $query->whereHas('rpstatus',function ($qry){
-                $qry->where('UL_RepCmp_Status.status','running');
+            $query->whereHas('rpschedule.rpschstatusmap',function ($qry){
+                $qry->where('status','Running');
             });
+            Helper::ApplyFiltersConditionForRP($filters,$query);
+
             $records = $query->skip($position)
                             ->take($records_per_page)
                             ->orderBy('row_id', 'DESC')
@@ -124,10 +128,11 @@ class ReportController extends Controller
                     });
                 });
             }
-            $trQuery->whereHas('rpstatus',function ($qry){
-                $qry->where('UL_RepCmp_Status.status','running');
+            $trQuery->whereHas('rpschedule.rpschstatusmap',function ($qry){
+                $qry->where('status','Running');
             });
-            $total_records = $trQuery->count();
+            Helper::ApplyFiltersConditionForRP($filters,$trQuery);
+            $total_records = $trQuery->count();*/
 
             /*$resolver['Description'] = 'substring(meta_data,  P3.Pos + 1,  P4.Pos -  P3.Pos - 1)';
 
@@ -138,14 +143,14 @@ class ReportController extends Controller
             $records = DB::select("SELECT
             za.t_id as ID,za.list_level as [Level],
             za.list_short_name as Name,
-            substring(za.meta_data,  P3.Pos + 1,  P4.Pos -  P3.Pos - 1) as Description,za.is_public as 'is_public', za.Custom_SQL, 
+            substring(za.meta_data,  P3.Pos + 1,  P4.Pos -  P3.Pos - 1) as Description,za.is_public as 'is_public', za.Custom_SQL,
             ss.sche_name as ScheduleName,ss.templ_name as TemplateName,ss.start_time as 'StartTime',ss.next_runtime as next_runtime ,ss.ftp_flag as 'FTP',za.t_type,za.row_id,
                       case ss.file_name WHEN '-' THEN '-'
                       else ss.file_path+'/'+ss.file_name
                       END as [File Name],za.row_id as [Row_id]
-                      FROM 
+                      FROM
                       UL_RepCmp_Schedules st,[UL_RepCmp_Status] ss,
-                      UR_Report_Templates za 
+                      UR_Report_Templates za
                       cross apply (select (charindex('^', za.meta_data))) as P1(Pos)
             cross apply (select (charindex('^', za.meta_data,  P1.Pos+1))) as  P2(Pos)
             cross apply (select (charindex('^', za.meta_data,  P2.Pos+1))) as  P3(Pos)
@@ -157,15 +162,15 @@ class ReportController extends Controller
             cross apply (select (charindex('^', za.meta_data,  P8.Pos+1))) as  P9(Pos)
             cross apply (select (charindex('^', za.meta_data,  P9.Pos+1))) as P10(Pos)
             cross apply (select (charindex('^', za.meta_data, P10.Pos+1))) as P11(Pos)
-            cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos) 
-                       where (za.row_id = st.camp_tmpl_id and st.sch_status_id=ss.row_id AND za.t_type = 'A' and st.t_type = 'A'  
-                       
+            cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
+                       where (za.row_id = st.camp_tmpl_id and st.sch_status_id=ss.row_id AND za.t_type = 'A' and st.t_type = 'A'
+
                        AND ss.status = 'Running') $uWhere Order By za.row_id DESC");
 
             $nSQL = "SELECT count(*) as cnt
-				  FROM 
+				  FROM
 				  UL_RepCmp_Schedules st,[UL_RepCmp_Status] ss,
-				  UR_Report_Templates za 
+				  UR_Report_Templates za
 				  cross apply (select (charindex('^', za.meta_data))) as P1(Pos)
 cross apply (select (charindex('^', za.meta_data,  P1.Pos+1))) as  P2(Pos)
 cross apply (select (charindex('^', za.meta_data,  P2.Pos+1))) as  P3(Pos)
@@ -177,40 +182,54 @@ cross apply (select (charindex('^', za.meta_data,  P7.Pos+1))) as  P8(Pos)
 cross apply (select (charindex('^', za.meta_data,  P8.Pos+1))) as  P9(Pos)
 cross apply (select (charindex('^', za.meta_data,  P9.Pos+1))) as P10(Pos)
 cross apply (select (charindex('^', za.meta_data, P10.Pos+1))) as P11(Pos)
-cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos) 
-				   where (za.row_id = st.camp_tmpl_id and st.sch_status_id=ss.row_id AND za.t_type = 'A' and st.t_type = 'A'  
-				   
+cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
+				   where (za.row_id = st.camp_tmpl_id and st.sch_status_id=ss.row_id AND za.t_type = 'A' and st.t_type = 'A'
+
 				   AND ss.status = 'Running') $uWhere";
 
             $all_records = DB::select($nSQL);
             $total_records = collect($all_records)->map(function($x){ return (array) $x; })->toArray();*/
+            $sort_column = 'row_id';
+            $sort_dir = 'DESC';
             $tabName = 'running';
             if($rType == 'pagination'){
-                $html = View::make('report.tabs.scheduled.table',['records' => $records,'uid' => $uid,'tab' => $tabName])->render();
+                $html = View::make('report.tabs.running.table',[
+                    //'records' => $records,
+                    'uid' => $uid,
+                    'tab' => $tabName,
+                    'sort_column' => $sort_column,
+                    'sort_dir' => $sort_dir,
+                ])->render();
             }else{
-                $html = View::make('report.tabs.scheduled.index',['records' => $records,'uid' => $uid,'tab' => $tabName])->render();
+                $html = View::make('report.tabs.running.index',[
+                    //'records' => $records,
+                    'uid' => $uid,
+                    'tab' => $tabName,
+                    'sort_column' => $sort_column,
+                    'sort_dir' => $sort_dir,
+                ])->render();
             }
 
-            $paginationhtml = View::make('report.tabs.running.pagination-html',[
+            /*$paginationhtml = View::make('report.tabs.running.pagination-html',[
                 'total_records' => $total_records,
                 'records' => $records,
                 'position' => $position,
                 'records_per_page' => $records_per_page,
                 'page' => $page,
                 'tab' => $tabName
-            ])->render();
+            ])->render();*/
 
             return $ajax->success()
-                ->appendParam('records',$records)
+               // ->appendParam('records',$records)
                 ->appendParam('html',$html)
-                ->appendParam('paginationHtml',$paginationhtml)
+                ->appendParam('paginationHtml','')
                 ->jscallback('load_ajax_tab')
                 ->response();
 
         }
         else if($tabid == 21){ // Scheduled
 
-            $query = App\Model\ReportTemplate::query()->with(['rpmeta','rpstatus']);
+            /*$query = App\Model\ReportTemplate::query()->with('rpmeta','rpschedule.rpschstatusmap');
             if($User_Type != 'Full_Access') {
                 $query->where(function ($qry) use($uid){
                     $qry->whereHas('rpshare',function ($subqry) use($uid){
@@ -221,9 +240,10 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
                     });
                 });
             }
-            $query->whereHas('rpstatus',function ($qry){
-                $qry->where('UL_RepCmp_Status.status','Scheduled');
+            $query->whereHas('rpschedule.rpschstatusmap',function ($qry){
+                $qry->where('status','Scheduled');
             });
+            Helper::ApplyFiltersConditionForRP($filters,$query);
             $records = $query->skip($position)->take($records_per_page)->orderBy('row_id', 'DESC')->get()->toArray();
 
             $trQuery = App\Model\ReportTemplate::query();
@@ -237,22 +257,23 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
                     });
                 });
             }
-            $trQuery->whereHas('rpstatus',function ($qry){
-                $qry->where('UL_RepCmp_Status.status','Scheduled');
+            $trQuery->whereHas('rpschedule.rpschstatusmap',function ($qry){
+                $qry->where('status','Scheduled');
             });
-            $total_records = $trQuery->count();
+            Helper::ApplyFiltersConditionForRP($filters,$trQuery);
+            $total_records = $trQuery->count();*/
 
            /* $records = DB::select("SELECT
 za.t_id as ID,za.list_level as [Level],
 za.list_short_name as Name,
-substring(za.meta_data,  P3.Pos + 1,  P4.Pos -  P3.Pos - 1) as Description,za.is_public as 'is_public', za.Custom_SQL, 
+substring(za.meta_data,  P3.Pos + 1,  P4.Pos -  P3.Pos - 1) as Description,za.is_public as 'is_public', za.Custom_SQL,
 ss.sche_name as ScheduleName,ss.templ_name as TemplateName,ss.start_time as 'StartTime',ss.next_runtime as next_runtime ,ss.ftp_flag as 'FTP',za.t_type,za.row_id,
 				  case ss.file_name WHEN '-' THEN '-'
 				  else ss.file_path+'/'+ss.file_name
 				  END as [File Name],za.row_id as [Row_id]
-				  FROM 
+				  FROM
 				  UL_RepCmp_Schedules st,[UL_RepCmp_Status] ss,
-				  UR_Report_Templates za 
+				  UR_Report_Templates za
 				  cross apply (select (charindex('^', za.meta_data))) as P1(Pos)
 cross apply (select (charindex('^', za.meta_data,  P1.Pos+1))) as  P2(Pos)
 cross apply (select (charindex('^', za.meta_data,  P2.Pos+1))) as  P3(Pos)
@@ -264,46 +285,59 @@ cross apply (select (charindex('^', za.meta_data,  P7.Pos+1))) as  P8(Pos)
 cross apply (select (charindex('^', za.meta_data,  P8.Pos+1))) as  P9(Pos)
 cross apply (select (charindex('^', za.meta_data,  P9.Pos+1))) as P10(Pos)
 cross apply (select (charindex('^', za.meta_data, P10.Pos+1))) as P11(Pos)
-cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos) 
-				   where (za.row_id = st.camp_tmpl_id and st.sch_status_id=ss.row_id AND za.t_type = 'A' and st.t_type = 'A'  
-				   
+cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
+				   where (za.row_id = st.camp_tmpl_id and st.sch_status_id=ss.row_id AND za.t_type = 'A' and st.t_type = 'A'
+
 				   AND ss.status = 'Scheduled') $uWhere Order By ss.next_runtime DESC");
 
             $nSQL = "SELECT count(*) as cnt
-				  FROM UR_Report_Templates za,UL_RepCmp_Schedules st,[UL_RepCmp_Status] ss 
-				   where (za.row_id = st.camp_tmpl_id and st.sch_status_id=ss.row_id AND za.t_type = 'A' and st.t_type = 'A'  
+				  FROM UR_Report_Templates za,UL_RepCmp_Schedules st,[UL_RepCmp_Status] ss
+				   where (za.row_id = st.camp_tmpl_id and st.sch_status_id=ss.row_id AND za.t_type = 'A' and st.t_type = 'A'
 				   AND ss.status = 'Scheduled') $uWhere";
 
             $all_records = DB::select($nSQL);
             $total_records = collect($all_records)->map(function($x){ return (array) $x; })->toArray();*/
-
+            $sort_column = 'row_id';
+            $sort_dir = 'DESC';
             $tabName = 'scheduled';
             if($rType == 'pagination'){
-                $html = View::make('report.tabs.scheduled.table',['records' => $records,'uid' => $uid,'tab' => $tabName])->render();
+                $html = View::make('report.tabs.scheduled.table',[
+                    //'records' => $records,
+                    'uid' => $uid,
+                    'tab' => $tabName,
+                    'sort_column' => $sort_column,
+                    'sort_dir' => $sort_dir,
+                ])->render();
             }else{
-                $html = View::make('report.tabs.scheduled.index',['records' => $records,'uid' => $uid,'tab' => $tabName])->render();
+                $html = View::make('report.tabs.scheduled.index',[
+                    //'records' => $records,
+                    'uid' => $uid,
+                    'tab' => $tabName,
+                    'sort_column' => $sort_column,
+                    'sort_dir' => $sort_dir,
+                ])->render();
             }
 
-            $paginationhtml = View::make('report.tabs.scheduled.pagination-html',[
+            /*$paginationhtml = View::make('report.tabs.scheduled.pagination-html',[
                 'total_records' => $total_records,
                 'records' => $records,
                 'position' => $position,
                 'records_per_page' => $records_per_page,
                 'page' => $page,
                 'tab' => $tabName
-            ])->render();
+            ])->render();*/
 
             return $ajax->success()
-                ->appendParam('records',$records)
+               // ->appendParam('records',$records)
                 ->appendParam('html',$html)
-                ->appendParam('paginationHtml',$paginationhtml)
+                ->appendParam('paginationHtml','')
                 ->jscallback('load_ajax_tab')
                 ->response();
 
         }
         else if($tabid == 22){ // Completed
 
-            $query = App\Model\ReportTemplate::query();
+           /* $query = App\Model\ReportTemplate::query()->with(['rpschedule.rpschstatusmap']);
             if($User_Type != 'Full_Access') {
                 $query->where(function ($qry) use($uid){
                     $qry->whereHas('rpshare',function ($subqry) use($uid){
@@ -315,10 +349,12 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
                 });
 
             }
-            $query->whereHas('rpstatus',function ($qry){
-                $qry->where('UL_RepCmp_Status.status','Completed');
+            $query->whereHas('rpschedule.rpschstatusmap',function ($qry){
+                $qry->where('status','Completed');
             });
+            Helper::ApplyFiltersConditionForRP($filters,$query);
             $records = $query->skip($position)->take($records_per_page)->orderBy('row_id', 'DESC')->get();
+
             $trQuery = App\Model\ReportTemplate::query();
             if($User_Type != 'Full_Access') {
                 $trQuery->where(function ($qry) use($uid){
@@ -330,10 +366,11 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
                     });
                 });
             }
-            $trQuery->whereHas('rpstatus',function ($qry){
-                $qry->where('UL_RepCmp_Status.status','Completed');
+            $trQuery->whereHas('rpschedule.rpschstatusmap',function ($qry){
+                $qry->where('status','Completed');
             });
-            $total_records = $trQuery->count();
+            Helper::ApplyFiltersConditionForRP($filters,$trQuery);
+            $total_records = $trQuery->count();*/
 
             /*$sSQL = "select * from (select ROW_NUMBER() over (Order By row_id DESC) as ROWNUMBER,* from (SELECT za.t_id as ID,za.list_level as [Level],
 za.list_short_name as Name,za.t_name,za.sql,za.selected_fields,za.meta_data,
@@ -377,14 +414,124 @@ where (sc.camp_id = za.t_id AND za.t_type = 'A') $uWhere";
             $nSQL .= ") a ) _myResults ";
             $all_records = DB::select($nSQL);
             $total_records = collect($all_records)->map(function($x){ return (array) $x; })->toArray();*/
-            $tabName = 'completed';
+
+            $sort_column = 'row_id';
+            $sort_dir = 'DESC';
+
+            $tabName = 'level1';
             if($rType == 'pagination'){
-                $html = View::make('report.tabs.completed.table',['records' => $records,'uid' => $uid,'prefix' => $this->prefix,'tab' => $tabName])->render();
+                $html = View::make('report.tabs.completed.table',[
+                   // 'records' => $records,
+                    'uid' => $uid,
+                    'prefix' => $this->prefix,
+                    'tab' => $tabName,
+                    //'filters' => $filters,
+                    'sort_column' => $sort_column,
+                    'sort_dir' => $sort_dir,
+                ])->render();
             }else{
-                $html = View::make('report.tabs.completed.index',['records' => $records,'uid' => $uid,'prefix' => $this->prefix,'tab' => $tabName])->render();
+                $html = View::make('report.tabs.completed.index',[
+                    //'records' => $records,
+                    'uid' => $uid,
+                    'prefix' => $this->prefix,
+                    'tab' => $tabName,
+                    //'filters' => $filters,
+                    'sort_column' => $sort_column,
+                    'sort_dir' => $sort_dir,
+                ])->render();
             }
 
-            $paginationhtml = View::make('report.tabs.completed.pagination-html',[
+            /*$paginationhtml = View::make('report.tabs.level1.pagination-html',[
+                'total_records' => $total_records,
+                'records' => $records,
+                'position' => $position,
+                'records_per_page' => $records_per_page,
+                'page' => $page,
+                'tab' => $tabName
+            ])->render();*/
+            return $ajax->success()
+                //->appendParam('total_records',$total_records)
+                //->appendParam('records',$records)
+                ->appendParam('html',$html)
+                ->appendParam('paginationHtml','')
+                ->jscallback('load_ajax_tab')
+                ->response();
+        }
+        else if($tabid == 23 || $tabid == 24){
+            $list_levels = DB::select("select * from  UL_RepCmp_Lookup_Level_Camp");
+            $html = View::make('report.tabs.create.new-v1',[
+                'tabid' => $tabid,
+                'list_levels' => $list_levels
+            ])->render();
+
+            return $ajax->success()
+                ->appendParam('html',$html)
+                ->jscallback('load_ajax_tab')
+                ->response();
+        }
+
+        else if ($tabid == 25){
+            $txtSearch = isset($filters['searchterm']) ? $filters['searchterm'][0] : '';
+            $query = App\Model\ReportTemplate::query()->with('rpschedule.rpschstatusmap');
+            if($User_Type != 'Full_Access') {
+                $query->where(function ($qry) use($uid){
+                    $qry->whereHas('rpshare',function ($subqry) use($uid){
+                        $subqry->where('Shared_With_User_id',$uid);
+                    });
+                    $qry->orWhere(function ($subqry) use ($uid) {
+                        $subqry->where('User_ID', $uid)->orWhere('is_public', 'Y');
+                    });
+                });
+
+            }
+
+
+            $query->whereHas('rpschedule.rpschstatusmap',function ($qry) use($txtSearch){
+                $qry->whereIn('status',['Child']);
+            });
+            Helper::ApplyFiltersConditionForRP($filters,$query,true);
+            $query->where('row_id',$request->row_id);
+            $records = $query->skip($position)
+                            ->take($records_per_page)
+                            ->orderBy('row_id', 'DESC')
+                            ->get();
+            //print_r($records); die;
+            $trQuery = App\Model\ReportTemplate::query();
+            if($User_Type != 'Full_Access') {
+                $trQuery->where(function ($qry) use($uid){
+                    $qry->whereHas('rpshare',function ($subqry) use($uid){
+                        $subqry->where('Shared_With_User_id',$uid);
+                    });
+                    $qry->orWhere(function ($subqry) use ($uid) {
+                        $subqry->where('User_ID', $uid)->orWhere('is_public', 'Y');
+                    });
+                });
+            }
+            $trQuery->whereHas('rpschedule.rpschstatusmap',function ($qry) use ($txtSearch){
+                $qry->whereIn('status',['Child']);
+            });
+            Helper::ApplyFiltersConditionForRP($filters,$trQuery,true);
+            $trQuery->where('row_id',$request->row_id);
+            $total_records = $trQuery->count();
+
+            $tabName = 'older';
+            if($rType == 'pagination'){
+                $html = View::make('report.tabs.older_versions.table',[
+                    'records' => $records,
+                    'uid' => $uid,
+                    'prefix' => $this->prefix,
+                    'tab' => $tabName
+                ])->render();
+            }else{
+                $html = View::make('report.tabs.older_versions.index',[
+                    'records' => $records,
+                    'uid' => $uid,
+                    'prefix' => $this->prefix,
+                    'tab' => $tabName
+                ])->render();
+            }
+
+            $paginationhtml = View::make('report.tabs.older_versions.pagination-html',[
                 'total_records' => $total_records,
                 'records' => $records,
                 'position' => $position,
@@ -400,22 +547,419 @@ where (sc.camp_id = za.t_id AND za.t_type = 'A') $uWhere";
                 ->jscallback('load_ajax_tab')
                 ->response();
         }
-        else if($tabid == 23){
-            $html = View::make('report.tabs.create.new-v1',['tabid' => $tabid])->render();
+        else if($tabid == 26) {
+            $html = View::make('report.tabs.create.execute', ['tabid' => $tabid])->render();
 
             return $ajax->success()
-                ->appendParam('html',$html)
+                ->appendParam('html', $html)
                 ->jscallback('load_ajax_tab')
                 ->response();
         }
-        else if($tabid == 24){
-            $html = View::make('report.tabs.create.new-v1',['tabid' => $tabid])->render();
+    }
 
-            return $ajax->success()
-                ->appendParam('html',$html)
-                ->jscallback('load_ajax_tab')
-                ->response();
+    /**
+     * Process datatables ajax request.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getRunningTabData(Request $request)
+    {
+        $uid = Auth::user()->User_ID;
+        $User_Type = Auth::user()->authenticate->User_Type;
+        $filters = $request->input('filters',[]);
+        $table_columns = $request->input('columns');
+        $table_order = $request->input('order');
+        //dd($table_columns[$table_order[0]['column']]['data']);
+
+        $sort_column = $table_order[0]['column'] == 0 ? 'row_id' : $table_columns[$table_order[0]['column']]['data'];
+        $sort_dir = $table_order[0]['dir'];
+
+        $query = App\Model\ReportTemplate::query()->with(['rpmeta','rpschedule.rpschstatusmap']);
+        if($User_Type != 'Full_Access') {
+            $query->where(function ($qry) use($uid){
+                $qry->whereHas('rpshare',function ($subqry) use($uid){
+                    $subqry->where('Shared_With_User_id',$uid);
+                });
+                $qry->orWhere(function ($subqry) use ($uid) {
+                    $subqry->where('User_ID', $uid)->orWhere('is_public', 'Y');
+                });
+            });
         }
+        $query->whereHas('rpschedule.rpschstatusmap',function ($qry){
+            $qry->where('status','Running');
+        });
+        Helper::ApplyFiltersConditionForRP($filters,$query);
+        //$query->orderBy($sort_column, $sort_dir);
+
+        //dd($sSql);
+        return Datatables::of($query)
+            ->addColumn('Description',function ($data){
+                $category = isset($data->rpmeta->Category) ? $data->rpmeta->Category : '';
+                if(!empty($category)){
+                    $category = strip_tags(trim($category));
+                    if (strlen($category) > 50){
+                        $categoryCut = substr($category, 0, 50);
+                        $endPoint = strrpos($categoryCut, ' ');
+
+                        //if the string doesn't contain any space then it will cut without word basis.
+                        $string = $endPoint? substr($categoryCut, 0, $endPoint) : substr($categoryCut, 0);
+
+                        return '<span class="teaser">'. $string .'</span>
+                        <span class="complete">'. $category .'</span>
+                        <span class="more font-14" onclick="readmore($(this))">+</span>';
+                    }else{
+                        return $category;
+                    }
+                }
+                return $category;
+            })
+            ->addColumn('StartTime',function ($data){
+                $data= collect($data)->map(function($x){ return (array) $x; })->toArray();
+                $rpstatus = !empty($data['rpschedule']['rpschstatusmap'][0]) ? $data['rpschedule']['rpschstatusmap'] : [];
+                $start_date = !empty($rpstatus) ? $rpstatus[0]['start_time'] : date('Y-m-d h:i');
+                $dDatePart = explode(" ", $start_date);
+                $tTimePart = explode(":", $dDatePart[1]);
+
+                return $dDatePart[0] . ' ' . $tTimePart[0] . ':' . $tTimePart[1];
+            })
+            ->addColumn('next_runtime',function ($data){
+                $data= collect($data)->map(function($x){ return (array) $x; })->toArray();
+                $rpstatus = !empty($data['rpschedule']['rpschstatusmap'][0]) ? $data['rpschedule']['rpschstatusmap'] : [];
+                if(!empty($rpstatus) && !empty($rpstatus[0]['next_runtime'])){
+                    $dDatePart = explode(" ", $rpstatus[0]['next_runtime']);
+                    $tTimePart = explode(":", $dDatePart[1]);
+                    $next_runtime = $dDatePart[0] . ' ' . $tTimePart[0] . ':' . $tTimePart[1];
+                }else{
+                    $next_runtime = '';
+                }
+                return $next_runtime;
+            })
+            ->addColumn('FTP',function ($data){
+                $ftp = !empty($data->rpcompleted->ftp_flag) ? $data->rpcompleted->ftp_flag : 'N';
+                return $ftp;
+            })
+            ->addColumn('is_share',function ($data){
+                $is_share = isset($data->rpshare) && !empty($data->rpshare->Shared_With_User_id) && $data->rpshare->Shared_With_User_id == Auth::user()->User_ID > 0 ? 'Y' : 'N';
+                return $is_share;
+            })
+            ->addColumn('action',function ($data) {
+                $action = '<select  onchange=\'show_Create_library($(this))\' class=\'form-control-sm\' style="border-color: #bfe6f6;text-align-last: center;">
+                    <option value=\'0\'>Select</option>
+                    <option value=\'view,'.$data->row_id.',"'.$data->list_short_name.'",'.$data->t_id.'\'>View</option>
+                    <option value=\'delete,'.$data->row_id.',"'.$data->list_short_name.'",'.$data->t_id.'\'>Delete</option>            
+                </select>';
+                return $action;
+            })
+            ->rawColumns(['Description','StartTime','next_runtime','action'])
+            ->make(true);
+    }
+
+    /**
+     * Process datatables ajax request.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getScheduledTabData(Request $request)
+    {
+        $uid = Auth::user()->User_ID;
+        $User_Type = Auth::user()->authenticate->User_Type;
+        $filters = $request->input('filters',[]);
+        $table_columns = $request->input('columns');
+        $table_order = $request->input('order');
+        //dd($table_columns[$table_order[0]['column']]['data']);
+
+        $sort_column = $table_order[0]['column'] == 0 ? 'row_id' : $table_columns[$table_order[0]['column']]['data'];
+        $sort_dir = $table_order[0]['dir'];
+
+        $query = App\Model\ReportTemplate::query()->with('rpmeta','rpschedule.rpschstatusmap');
+        if($User_Type != 'Full_Access') {
+            $query->where(function ($qry) use($uid){
+                $qry->whereHas('rpshare',function ($subqry) use($uid){
+                    $subqry->where('Shared_With_User_id',$uid);
+                });
+                $qry->orWhere(function ($subqry) use ($uid) {
+                    $subqry->where('User_ID', $uid)->orWhere('is_public', 'Y');
+                });
+            });
+        }
+        $query->whereHas('rpschedule.rpschstatusmap',function ($qry){
+            $qry->where('status','Scheduled');
+        });
+        Helper::ApplyFiltersConditionForRP($filters,$query);
+        //$query->orderBy($sort_column, $sort_dir);
+
+        //dd($sSql);
+        return Datatables::of($query)
+            ->addColumn('Description',function ($data){
+                $category = isset($data->rpmeta->Category) ? $data->rpmeta->Category : '';
+                if(!empty($category)){
+                    $category = strip_tags(trim($category));
+                    if (strlen($category) > 50){
+                        $categoryCut = substr($category, 0, 50);
+                        $endPoint = strrpos($categoryCut, ' ');
+
+                        //if the string doesn't contain any space then it will cut without word basis.
+                        $string = $endPoint? substr($categoryCut, 0, $endPoint) : substr($categoryCut, 0);
+
+                        return '<span class="teaser">'. $string .'</span>
+                        <span class="complete">'. $category .'</span>
+                        <span class="more font-14" onclick="readmore($(this))">+</span>';
+                    }else{
+                        return $category;
+                    }
+                }
+                return $category;
+            })
+            ->addColumn('Schedule_type',function ($data){
+                $data= collect($data)->map(function($x){ return (array) $x; })->toArray();
+                if($data['rpschedule']['Schedule_type'] == 'RP') {
+                    return ucfirst($data['rpschedule']['rp_run_sch']);
+                }elseif($data['rpschedule']['Schedule_type'] == 'RA'){
+                    return 'Once';
+                }else{
+                    return 'Once';
+                }
+            })
+            ->addColumn('StartTime',function ($data){
+                $data= collect($data)->map(function($x){ return (array) $x; })->toArray();
+                $rpstatus = !empty($data['rpschedule']['rpschstatusmap'][0]) ? $data['rpschedule']['rpschstatusmap'] : [];
+                $start_date = !empty($rpstatus) ? $rpstatus[0]['start_time'] : date('Y-m-d h:i');
+                $dDatePart = explode(" ", $start_date);
+                $tTimePart = explode(":", $dDatePart[1]);
+
+                return $dDatePart[0] . ' ' . $tTimePart[0] . ':' . $tTimePart[1];
+            })
+            ->addColumn('next_runtime',function ($data){
+                $data= collect($data)->map(function($x){ return (array) $x; })->toArray();
+                $rpstatus = !empty($data['rpschedule']['rpschstatusmap'][0]) ? $data['rpschedule']['rpschstatusmap'] : [];
+                if(!empty($rpstatus) && !empty($rpstatus[0]['next_runtime'])){
+                    $dDatePart = explode(" ", $rpstatus[0]['next_runtime']);
+                    $tTimePart = explode(":", $dDatePart[1]);
+                    $next_runtime = $dDatePart[0] . ' ' . $tTimePart[0] . ':' . $tTimePart[1];
+                }else{
+                    $next_runtime = '';
+                }
+                return $next_runtime;
+            })
+            ->addColumn('EndDate',function ($data){
+                $data= collect($data)->map(function($x){ return (array) $x; })->toArray();
+                $endDate = !empty($data['rpschedule']['rp_end_date']) ? $data['rpschedule']['rp_end_date'] : '';
+                return $endDate;
+            })
+            ->addColumn('FTP',function ($data){
+                $ftp = !empty($data->rpcompleted->ftp_flag) ? $data->rpcompleted->ftp_flag : 'N';
+                return $ftp;
+            })
+            ->addColumn('is_share',function ($data){
+                $is_share = isset($data->rpshare) && !empty($data->rpshare->Shared_With_User_id) && $data->rpshare->Shared_With_User_id == Auth::user()->User_ID > 0 ? 'Y' : 'N';
+                return $is_share;
+            })
+            ->addColumn('action',function ($data) {
+                $action = '<select  onchange=\'show_Create_library($(this))\' class=\'form-control-sm\' style="border-color: #bfe6f6;text-align-last: center;">
+                    <option value=\'0\'>Select</option>
+                    <option value=\'view,'.$data->row_id.',"'.$data->list_short_name.'",'.$data->t_id.'\'>View</option>
+                    <option value=\'delete,'.$data->row_id.',"'.$data->list_short_name.'",'.$data->t_id.'\'>Delete</option>            
+                </select>';
+                return $action;
+            })
+            ->rawColumns(['Description','Schedule_type','StartTime','next_runtime','EndDate','action'])
+            ->make(true);
+    }
+
+    /**
+     * Process datatables ajax request.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getCompleteTabData(Request $request)
+    {
+        $uid = Auth::user()->User_ID;
+        $User_Type = Auth::user()->authenticate->User_Type;
+        $filters = $request->input('filters',[]);
+        $table_columns = $request->input('columns');
+        $table_order = $request->input('order');
+        //dd($table_columns[$table_order[0]['column']]['data']);
+
+        $sort_column = $table_order[0]['column'] == 0 ? 'row_id' : $table_columns[$table_order[0]['column']]['data'];
+        $sort_dir = $table_order[0]['dir'];
+
+        $query = App\Model\ReportTemplate::query()->with(['rpschedule.rpschstatusmap']);
+        if($User_Type != 'Full_Access') {
+            $query->where(function ($qry) use($uid){
+                $qry->whereHas('rpshare',function ($subqry) use($uid){
+                    $subqry->where('Shared_With_User_id',$uid);
+                });
+                $qry->orWhere(function ($subqry) use ($uid) {
+                    $subqry->where('User_ID', $uid)->orWhere('is_public', 'Y');
+                });
+            });
+
+        }
+        $query->whereHas('rpschedule.rpschstatusmap',function ($qry){
+            $qry->where('status','Completed');
+        });
+        Helper::ApplyFiltersConditionForRP($filters,$query);
+
+        $records = $query->orderByDesc('tag')->orderByDesc('row_id')->get();
+        return Datatables::of($records)
+            ->addColumn('Tag',function ($data){
+                $is_tag = $data->tag == 1 ? 'checked' : '';
+                return '<label class="custom-control custom-checkbox m-b-0">
+            <input type="checkbox" class="custom-control-input checkbox" onclick="tagreport($(this),'.$data->row_id.',\'tag\');" '.$is_tag.' value="1">
+            <span class="custom-control-label"></span>
+        </label>';
+            }, 0)
+            ->addColumn('Description',function ($data){
+                $category = isset($data->rpmeta->Category) ? $data->rpmeta->Category : '';
+                if(!empty($category)){
+                    $category = strip_tags(trim($category));
+                    if (strlen($category) > 50){
+                        $categoryCut = substr($category, 0, 50);
+                        $endPoint = strrpos($categoryCut, ' ');
+
+                        //if the string doesn't contain any space then it will cut without word basis.
+                        $string = $endPoint? substr($categoryCut, 0, $endPoint) : substr($categoryCut, 0);
+
+                        return '<span class="teaser">'. $string .'</span>
+                        <span class="complete">'. $category .'</span>
+                        <span class="more font-14" onclick="readmore($(this))">+</span>';
+                    }else{
+                        return $category;
+                    }
+                }
+                return $category;
+            })
+            ->addColumn('StartTime',function ($data){
+                $start_time = !empty($data->rpcompleted->start_time) ? $data->rpcompleted->start_time : date('Y-m-d h:i');
+                $completed_time = !empty($data->rpcompleted->completed_time) ? $data->rpcompleted->completed_time : date('Y-m-d h:i');
+                $date1 = new DateTime($start_time);
+                $date2 = new DateTime($completed_time);
+                $interval = $date1->diff($date2);
+
+                $dDatePart = explode(" ", $start_time);
+                $tTimePart = explode(":", $dDatePart[1]);
+
+                return $dDatePart[0] . ' ' . $tTimePart[0] . ':' . $tTimePart[1];
+            })
+            ->addColumn('RunTime',function ($data){
+                $start_time = !empty($data->rpcompleted->start_time) ? $data->rpcompleted->start_time : date('Y-m-d h:i');
+                $completed_time = !empty($data->rpcompleted->completed_time) ? $data->rpcompleted->completed_time : date('Y-m-d h:i');
+                $date1 = new DateTime($start_time);
+                $date2 = new DateTime($completed_time);
+                $interval = $date1->diff($date2);
+
+                $cCompleteTime = '';
+                if ($interval->h != 0) {
+                    $cCompleteTime .= $interval->h . ':';
+                }
+                if ($interval->i != 0) {
+                    $cCompleteTime .= $interval->h . ':';
+                }
+
+                return $cCompleteTime . $interval->s;
+            })
+            ->addColumn('FTP',function ($data){
+                $ftp = !empty($data->rpcompleted->ftp_flag) ? $data->rpcompleted->ftp_flag : 'N';
+                return $ftp;
+            })
+            ->addColumn('is_share',function ($data){
+                $is_share = isset($data->rpshare) && !empty($data->rpshare->Shared_With_User_id) && $data->rpshare->Shared_With_User_id == Auth::user()->User_ID > 0 ? 'Y' : 'N';
+                return $is_share;
+            })
+            ->addColumn('total_records',function ($data){
+                $rpschstatusmap = isset($data->rpschedule->rpschstatusmap) ? $data->rpschedule->rpschstatusmap : [];
+                $total_records = isset($rpschstatusmap[0]['total_records']) ? number_format($rpschstatusmap[0]['total_records']) : 0;
+                return $total_records;
+            })
+            ->addColumn('listXLSX',function ($data) {
+                $rpschstatusmap = isset($data->rpschedule->rpschstatusmap) ? $data->rpschedule->rpschstatusmap : [];
+                $ListXLSX = $data->promoexpo_folder . '\\' . $this->prefix . 'RPL_' . $rpschstatusmap[0]['file_name'] . '.xlsx';
+                $list1 = '';
+                if (!empty($ListXLSX) && file_exists(public_path($ListXLSX))){
+                    $list1 .='<a class="btn no-border font-16 p-0" download href = "'.$ListXLSX.'" title = "Download" id = "DownloadBtn" >
+                    <i class="fas fa-file-excel" style = "color: #06b489;" ></i >
+                </a >';
+                }
+                return $list1;
+            })
+            ->addColumn('listPDF',function ($data) {
+                $rpschstatusmap = isset($data->rpschedule->rpschstatusmap) ? $data->rpschedule->rpschstatusmap : [];
+                $ListPDF = $data->promoexpo_folder.'\\' . $this->prefix . 'RPL_'.$rpschstatusmap[0]['file_name'].'.pdf';
+                $list1 = '';
+                if (!empty($ListPDF) && file_exists(public_path($ListPDF))){
+                    $list1 .='<a class="btn no-border font-16 p-0" download href = "'.$ListPDF.'" title = "Download" id = "DownloadBtn" > <i class="fas fa-file-pdf" style="color: #e92639;" ></i ></a >
+                <div class="checkbox">
+                    <input id="'.$ListPDF.'" type="checkbox" class="po_status" value="'.$data->row_id.'" onchange="mPdfChecked($(this),\'list\');"/>
+                    <label for="'.$ListPDF.'" style="margin-bottom: 16px;"></label>
+
+                    <div class="space"></div>
+                </div>';
+                }
+                return $list1;
+            })
+            ->addColumn('ver',function ($data) {
+                $rpschstatusmap = isset($data->rpschedule->rpschstatusmap) ? $data->rpschedule->rpschstatusmap : [];
+                $ver = '';
+                if(isset($rpschstatusmap) && count($rpschstatusmap) > 1){
+                    $ver .='<a href="javascript:void(0);" onclick="showOldReport(\''.$data->row_id.'\')">
+                <i class="fas fa-align-justify"></i>
+            </a>';
+                }
+                return $ver;
+            })
+            ->addColumn('SummaryXLSX',function ($data) {
+                $rpschstatusmap = isset($data->rpschedule->rpschstatusmap) ? $data->rpschedule->rpschstatusmap : [];
+                $SummaryXLSX = $data->promoexpo_folder.'\\'.$this->prefix.'RPS_'.$rpschstatusmap[0]['file_name'].'.xlsx';
+                $rpt = '';
+                if(!empty($SummaryXLSX) && file_exists(public_path($SummaryXLSX))){
+                    $rpt .= '<a class="btn no-border font-16 p-0" download href="'.$SummaryXLSX.'" download title="Download" id="DownloadBtn"><i class="fas fa-file-excel" style="color: #06b489;"></i></a>';
+                }
+                return $rpt;
+            })->addColumn('SummaryPDF',function ($data) {
+                $rpschstatusmap = isset($data->rpschedule->rpschstatusmap) ? $data->rpschedule->rpschstatusmap : [];
+                $SummaryPDF = $data->promoexpo_folder.'\\'.$this->prefix.'RPS_'.$rpschstatusmap[0]['file_name'].'.pdf';
+                $rpt = '';
+                if(!empty($SummaryPDF) && file_exists(public_path($SummaryPDF))){
+                    $rpt .= '<a class="btn no-border font-16 p-0" download href="'.$SummaryPDF.'" download title="Download" id="DownloadBtn"><i class="fas fa-file-pdf" style="color: #e92639;"></i></a>&nbsp;';
+
+                    $rpt .= '<div class="checkbox">
+                <input id="'.$SummaryPDF.'" type="checkbox" class="po_status" value="'.$data->row_id.'" onchange="mPdfChecked($(this),\'rpt\');"/>
+                <label for="'.$SummaryPDF.'" style="margin-bottom: 16px;"></label>
+
+                <div class="space"></div>
+            </div>';
+                }
+                return $rpt;
+            })
+            ->addColumn('run',function ($data) {
+                if(isset($data->rpmeta)){
+                    $data->rpmeta->Category = isset($data->rpmeta->Category) ? str_replace(' ','~', $data->rpmeta->Category) : '';
+                }
+                $em_report_json = json_encode(['row_id' => $data->row_id,'t_id' => $data->t_id,'list_level' => $data->list_level,'list_short_name' => $data->list_short_name,'t_name' => $data->t_name,'sql' => base64_encode($data->sql),'selected_fields' => $data->selected_fields,'rpmeta' => $data->rpmeta,'Report_Row' => $data->Report_Row,'Report_Column' => $data->Report_Column,'Report_Function' => $data->Report_Function,'Report_Sum' => $data->Report_Sum,'Report_Show' => $data->Report_Show,'Chart_Type' => trim($data->Chart_Type),'Axis_Scale' => $data->Axis_Scale,'Label_Value' => $data->Label_Value]);
+                $run = '<div class="checkbox">
+                    <input id="'.$data->t_id .'" type="checkbox" class="em_report" onclick="emreport()" value='.$em_report_json.'>
+                    <label for="'.$data->t_id .'"></label>
+        
+                    <div class="space"></div>
+                </div>';
+                return $run;
+            })
+            ->addColumn('action',function ($data) {
+                $action = '<select  onchange=\'show_Create_library($(this))\' class=\'form-control-sm\' style="border-color: #bfe6f6;text-align-last: center;">
+                    <option value=\'0\'>Select</option>
+                    <option value=\'view,'.$data->row_id.',"'.$data->list_short_name.'",'.$data->t_id.'\'>View</option>
+                    <option value=\'new,'.$data->row_id.',"'.$data->list_short_name.'",'.$data->t_id.'\'>Save As</option>
+                    <option value=\'run,'.$data->row_id.',"'.$data->list_short_name.'",'.$data->t_id.'\'>Run Report</option>
+                    <option value=\'replica,'.$data->row_id.',"'.$data->list_short_name.'",'.$data->t_id.'\'>Run List</option>
+                    <option value=\'schedule,'.$data->row_id.',"'.$data->list_short_name.'",'.$data->t_id.'\'>Schedule</option>
+                    <option value=\'email,'.$data->row_id.',"'.$data->list_short_name.'",'.$data->t_id.'\'>Email</option>
+                    <option value=\'share,'.$data->row_id.',"'.$data->list_short_name.'",'.$data->t_id.'\'>Share</option>
+                    <option value=\'delete,'.$data->row_id.',"'.$data->list_short_name.'",'.$data->t_id.'\'>Delete</option>            
+                </select>';
+                return $action;
+            })
+            ->rawColumns(['Tag','Description','listXLSX','listPDF','ver','SummaryXLSX','SummaryPDF','run','action'])
+            ->make(true);
     }
 
 	public function reSchedule(){
@@ -453,6 +997,7 @@ where (sc.camp_id = za.t_id AND za.t_type = 'A') $uWhere";
     }
 
     public function arSchData(Request $request, Ajax $ajax){
+        //echo '<pre>'; print_r($request->all()); die;
         define('UPLOAD_DIR', public_path().'\\'.'Chart_Images\\');
         $pgaction = $request->input('pgaction');
 
@@ -478,12 +1023,12 @@ where (sc.camp_id = za.t_id AND za.t_type = 'A') $uWhere";
             $CGOpt = $request->input('CGOpt');
             $eData = $request->input('eData');
 
-            $ftp_flag = $request->input('ftp_flag');
-            $ftpData = $request->input('ftpData');
+            $ftp_data = $request->input('ftp_data');
+            //$ftpData = $request->input('ftpData');
             $SFTP_Attachment = $request->input('SFTP_Attachment');
             $SR_Attachment = $request->input('SR_Attachment');
-            $SREmailStr = $request->input('SREmailStr');
-            $ShareStr = $request->input('ShareStr');
+            $SREmailData = $request->input('SREmailData');
+            $ShareData = $request->input('ShareData');
             $rtype = $request->input('rtype');
             $saveFile = $request->input('saveFile');
             $SMTPStr = $request->input('SMTPStr');
@@ -608,7 +1153,7 @@ VALUES
             $report->promoexpo_cd_opt             = $saveCD;
             $report->promoexpo_file_opt           = 'Y';
             $report->promoexpo_folder             = $eFolder;
-            $report->promoexpo_file               = $eFile;
+            $report->promoexpo_file               = $t_name;
             $report->promoexpo_ext                = $eExt;
             $report->promoexpo_ecg_opt            = $CGOpt;
             $report->promoexpo_data               = $eData;
@@ -651,26 +1196,30 @@ VALUES
             $CName = $t_name;
             $sName = "S_" . $t_name;
 
-            if ($ftp_flag == 'Y') {
-                $pos = strpos($ftpData, ":");
+            if (isset($ftp_data['enable']) && $ftp_data['enable'] == 'Y') {
 
-                if ($pos != false) {
-                    $ftpArray = explode(":", $ftpData);
+                if (!isset($ftp_data['ftp_id'])) {
+                    //$ftpArray = explode(":", $ftpData);
                     DB::insert("INSERT INTO [UL_RepCmp_SFTP]([ftp_temp_name],[ftp_site_name],[ftp_host_address],[ftp_port_no]
                        ,[ftp_user_name],[ftp_password],[folder_loc],[site_type]) VALUES
-                        ('$ftpArray[0]','$ftpArray[1]','$ftpArray[2]','$ftpArray[3]','$ftpArray[4]','$ftpArray[5]','$ftpArray[6]','$ftpArray[7]')");
+                        ('".$ftp_data['ftp_name']."','".$ftp_data['ftp_name']."','".$ftp_data['host']."','".$ftp_data['port']."','".$ftp_data['user']."','".$ftp_data['pass']."','".$ftp_data['loc']."','".$ftp_data['site_type']."')");
 
-                    $SQL = DB::select("Select [row_id]  from [UL_RepCmp_SFTP] Where ftp_temp_name = '$ftpArray[0]'");
+                    $SQL = DB::select("Select [row_id]  from [UL_RepCmp_SFTP] Where ftp_temp_name = '".$ftp_data['ftp_name']."'");
                     $aData= collect($SQL)->map(function($x){ return (array) $x; })->toArray();
-                    if (!empty($aData)) {
-                        $ftpData = $aData[0]['row_id'];
-
-                    }
+                }else{
+                    $SQL = DB::select("Select [row_id]  from [UL_RepCmp_SFTP] Where ftp_id = ".$ftp_data['ftp_id']);
+                    $aData= collect($SQL)->map(function($x){ return (array) $x; })->toArray();
                 }
-            } else
-                $ftpData = 0;
-            // FTP Details
 
+                $ftp_id = $aData[0]['row_id'];
+            } else
+                $ftp_id = 0;
+            // FTP Details
+            $file_name = $listShortName . "_" . date("Ymd", time());
+            if ($saveFile == 'Y')
+                $dbfilename = $file_name;
+            else
+                $dbfilename = '-';
 
             if (($rtype == 'RA') || ($rtype == 'RP') || ($rtype = 'RI')) {
 
@@ -693,7 +1242,7 @@ VALUES
 
                     DB::insert("INSERT INTO [UL_RepCmp_Schedules]([Schedule_Name]
                                      ,[Schedule_type],[runat_date],[runat_time],[ftp_tmpl_id],[camp_tmpl_id],[t_type],[SFTP_Attachment])
-                                     values ('$sName','$rtype','$RA_Dt','$RA_time','$ftpData','$Camp_temp_id','A','$SFTP_Attachment')");
+                                     values ('$sName','$rtype','$RA_Dt','$RA_time','$ftp_id','$Camp_temp_id','A','$SFTP_Attachment')");
 
 
                     //Insert into UL_RepCmp_Schedules table
@@ -722,13 +1271,9 @@ VALUES
                     // Schedule the task
 
                     //Insert into UL_RepCmp_Status table
-                    if ($saveFile == 'Y')
-                        $dbfilename = $eFile . '.' . $eExt;
-                    else
-                        $dbfilename = '-';
                     DB::insert("INSERT INTO [UL_RepCmp_Status]([sche_name],[templ_name],[start_time],[next_runtime]
                                        ,[completed_time],[file_name],[succ_flag],[ftp_flag],[status],[file_path],[last_runtime],[t_type])
-                                       VALUES ('$sName','$CName','$date1','$RA_Dt $RA_time','','$dbfilename','','$ftp_flag','Scheduled','$eFolder','','A')");
+                                       VALUES ('$sName','$CName','$date1','$RA_Dt $RA_time','','$dbfilename','','".$ftp_data['enable']."','Scheduled','$eFolder','','A')");
 
                     //Insert into UL_RepCmp_Status table
 
@@ -757,7 +1302,7 @@ VALUES
                     DB::insert("INSERT INTO [UL_RepCmp_Schedules]([Schedule_Name],[Schedule_type],[rp_start_date]
                 ,[rp_end_date],[rp_run_sch],[rp_run_time],[ftp_tmpl_id],[camp_tmpl_id],[rp_count],[rp_days],[rp_months_weeks],[metadata_date],[t_type],[SFTP_Attachment])
                                 VALUES ('$sName','$rtype','$RP_Start_Dt','$RP_end_Dt','$rp_run_sch','$RA_time'
-                                ,'$ftpData','$Camp_temp_id',1,'$mo','$r_Str','$metadata_date','A','$SFTP_Attachment')");
+                                ,'$ftp_id','$Camp_temp_id',1,'$mo','$r_Str','$metadata_date','A','$SFTP_Attachment')");
 
                     $SchtempSQL = DB::select("Select [row_id],[rp_start_date],[rp_end_date],[rp_run_time] from [UL_RepCmp_Schedules]
                                     Where Schedule_Name = '$sName' AND t_type = 'A'");
@@ -780,6 +1325,8 @@ VALUES
                         $rp_end_date = $aData[0]['rp_end_date'];
                         $tmp = explode('-', $rp_end_date);
                         $rp_end_date = $tmp[1] . '/' . $tmp[2] . '/' . $tmp[0];
+                        $rp_end_date_cm = date('m/d/Y', strtotime($rp_end_date . ' +1 day'));
+
                         $rp_run_time = $aData[0]['rp_run_time'];
                         $tmp = explode(':', $rp_run_time);
                         $rp_run_time = $tmp[0] . ':' . $tmp[1];
@@ -787,35 +1334,33 @@ VALUES
 
                     }
 
-                    $fh = fopen( $this->filePath.'arschedule.bat', 'w' );
+                    /*$fh = fopen( $this->filePath.'arschedule.bat', 'w' );
                     fclose($fh);
 
                     $fhead = fopen($this->filePath."arschedule.bat", 'a');
                     $command = "php artisan arSchedule:run ".$sch_id." \n";
                     fwrite($fhead, $command);
-                    fclose($fhead);
+                    fclose($fhead);*/
 
-                    $fhead = fopen($this->filePath."arschedule.bat", 'a');
+                    /*$fhead = fopen($this->filePath."arschedule.bat", 'a');
                     $command = "Schtasks /delete /TN ".$this->schtasks_dir."\\".$sName." /f";
                     fwrite($fhead, $command);
-                    fclose($fhead);
+                    fclose($fhead);*/
                     /******************** Create Bat file - End ******************/
 
                     switch ($rp_run_sch) {
                         case 'daily':
-                            $command = 'schtasks /create /tn ' . $this->schtasks_dir. '\\' . $sName . ' /tr "\'' . $this->phpPath . '\' \'' . $this->filePath . 'arschedule.bat\'" /sc ' . $rp_run_sch . ' /sd ' . $rp_start_date . ' /st ' . $rp_run_time . '  /ed ' . $rp_end_date . '  /z /ru Administrator';
-
+                            $command = 'schtasks /create /tn ' . $this->schtasks_dir. '\\' . $sName . ' /tr "\'' . $this->phpPath . '\' -f \'' . $this->filePath . 'artisan\' arSchedule:run '.$sch_id.' " /sc ' . $rp_run_sch . ' /sd ' . $rp_start_date . ' /st ' . $rp_run_time . '  /ed ' . $rp_end_date_cm . '  /z /ru Administrator';
 
                             break;
                         case 'weekly':
-                            $command = 'schtasks /create /tn ' . $this->schtasks_dir . '\\' . $sName . ' /tr "\'' . $this->phpPath . '\' \'' . $this->filePath . 'arschedule.bat\'" /sc ' . $rp_run_sch . ' /mo ' . $mo . ' /sd ' . $rp_start_date . ' /st ' . $rp_run_time . '  /ed ' . $rp_end_date . ' /d ' . $dayStr . ' /z /ru Administrator';
-
+                            $command = 'schtasks /create /tn ' . $this->schtasks_dir . '\\' . $sName . ' /tr "\'' . $this->phpPath . '\' -f \'' . $this->filePath . 'artisan\' arSchedule:run '.$sch_id.' " /sc ' . $rp_run_sch . ' /mo ' . $mo . ' /sd ' . $rp_start_date . ' /st ' . $rp_run_time . '  /ed ' . $rp_end_date_cm . ' /d ' . $dayStr . ' /z /ru Administrator';
                             break;
                         case 'monthly':
                             if ($dayStr == 'last')
-                                $command = 'schtasks /create /tn ' . $this->schtasks_dir . '\\' . $sName . ' /tr "\'' . $this->phpPath . '\' \'' . $this->filePath . 'arschedule.bat\'" /sc ' . $rp_run_sch . ' /sd ' . $rp_start_date . ' /st ' . $rp_run_time . '  /ed ' . $rp_end_date . ' /m ' . $monthStr . ' /mo lastday /z /ru Administrator';
+                                $command = 'schtasks /create /tn ' . $this->schtasks_dir . '\\' . $sName . ' /tr "\'' . $this->phpPath . '\' -f \'' . $this->filePath . 'artisan\' arSchedule:run '.$sch_id.' " /sc ' . $rp_run_sch . ' /sd ' . $rp_start_date . ' /st ' . $rp_run_time . '  /ed ' . $rp_end_date . ' /m ' . $monthStr . ' /mo lastday /z /ru Administrator';
                             else
-                                $command = 'schtasks /create /tn ' . $this->schtasks_dir . '\\' . $sName . ' /tr "\'' . $this->phpPath . '\' \'' . $this->filePath . 'arschedule.bat\' " /sc ' . $rp_run_sch . ' /sd ' . $rp_start_date . ' /st ' . $rp_run_time . '  /ed ' . $rp_end_date . ' /m ' . $monthStr . ' /d ' . $dayStr . ' /z /ru Administrator';
+                                $command = 'schtasks /create /tn ' . $this->schtasks_dir . '\\' . $sName . ' /tr "\'' . $this->phpPath . '\' -f \'' . $this->filePath . 'artisan\' arSchedule:run '.$sch_id.' " /sc ' . $rp_run_sch . ' /sd ' . $rp_start_date . ' /st ' . $rp_run_time . '  /ed ' . $rp_end_date_cm . ' /m ' . $monthStr . ' /d ' . $dayStr . ' /z /ru Administrator';
                             break;
 
                     }
@@ -895,20 +1440,16 @@ VALUES
                             break;
                     } // Switch statement
                     $next_runTime = $rp_run_time;
-                    if ($saveFile == 'Y')
-                        $dbfilename = $eFile . '.' . $eExt;
-                    else
-                        $dbfilename = '-';
 
                     DB::insert("INSERT INTO [UL_RepCmp_Status]([sche_name],[templ_name],[start_time],[next_runtime]
                                ,[completed_time],[file_name],[succ_flag],[ftp_flag],[status],[file_path],[run_until],[t_type])
-                               VALUES ('$sName','$CName','$date1','$next_runDate $rp_run_time','','$dbfilename','','$ftp_flag','Scheduled','$eFolder','$rp_end_date $rp_run_time','A')");
+                               VALUES ('$sName','$CName','$date1','$next_runDate $rp_run_time','','$dbfilename','','".$ftp_data['enable']."','Scheduled','$eFolder','$rp_end_date $rp_run_time','A')");
                     //Insert into UL_RepCmp_Status table
                 }
                 else if ($rtype == 'RI') {
                     $sName = "S_" . str_replace(" ", "_", $CName);
                     DB::insert("INSERT INTO [UL_RepCmp_Schedules]([Schedule_Name],[Schedule_type],[ftp_tmpl_id],[camp_tmpl_id],[t_type],[SFTP_Attachment])
-                                VALUES ('$sName','$rtype','$ftpData','$Camp_temp_id','A','$SFTP_Attachment')");
+                                VALUES ('$sName','$rtype','$ftp_id','$Camp_temp_id','A','$SFTP_Attachment')");
 
                     $SchtempSQL = DB::select("Select [row_id] from [UL_RepCmp_Schedules] Where Schedule_Name COLLATE Latin1_General_CS_AS = '$sName' AND t_type = 'A'");
 
@@ -925,13 +1466,9 @@ VALUES
                     Helper::schtask_curl($command);
 
                     // Schedule the task
-                    if ($saveFile == 'Y')
-                        $dbfilename = $eFile . '.' . $eExt;
-                    else
-                        $dbfilename = '-';
                     DB::insert("INSERT INTO [UL_RepCmp_Status]([sche_name],[templ_name],[start_time]
                                    ,[completed_time],[file_name],[succ_flag],[status],[file_path],[ftp_flag],[t_type])
-                                   VALUES ('$sName','$CName','$date1','','$dbfilename','','Running','$eFolder','$ftp_flag','A')");
+                                   VALUES ('$sName','$CName','$date1','','$dbfilename','','Running','$eFolder','".$ftp_data['enable']."','A')");
                 }  //if($rtype == 'RI')
 
                 //Get Schdule row_id to update the status
@@ -948,9 +1485,10 @@ VALUES
                 //Get Schdule row_id to update the status
 
                 //Status update to Scheduled
-                DB::update("Update UL_RepCmp_Schedules set [sch_status_id] = '" . $Sch_row_id . "' Where row_id = '" . $sch_id . "' AND t_type = 'A'");
+                //DB::update("Update UL_RepCmp_Schedules set [sch_status_id] = '" . $Sch_row_id . "' Where row_id = '" . $sch_id . "' AND t_type = 'A'");
                 //Status update to Scheduled
 
+                DB::insert("INSERT INTO [UL_RepCmp_Sch_status_mapping] ([sch_id],[sch_status_id],[t_type]) VALUES ('".$sch_id."','".$Sch_row_id."', 'A')");
 
             }  // if For Run AT or RP
 
@@ -964,38 +1502,40 @@ VALUES
                                      ,[femail_to] = '" . $SMTPArray[8] . "',[femail_cc] = '" . $SMTPArray[9] . "',[femail_bcc] = '" . $SMTPArray[10] . "',[femail_sub] = '" . $SMTPArray[11] . "',[femail_comments] = '" . $SMTPArray[12] . "' Where row_id = '" . $sch_id . "' AND t_type = 'A'");
             }
 
-
-
             //Send Report via Email Details
-            $SREmailArray = explode(":", $SREmailStr);
-            if ($SREmailArray[0] == 'Y') {
+            //$SREmailArray = explode(":", $SREmailStr);
+            if (isset($SREmailData['enable']) && $SREmailData['enable'] == 'Y') {
 
-                $Email_Flag = $SREmailArray[0];
-
-                DB::insert("INSERT INTO UL_RepCmp_Email ([User_id],[Email_Flag],[camp_tmpl_id],[remail_to],[remail_cc],[remail_bcc],[remail_sub],[remail_comments],[t_type],[Email_Status],[Email_Attachment]) values ('" . Auth::user()->User_ID . "','" . $Email_Flag . "','" . $CID . "','" . $SREmailArray[1] . "','" . $SREmailArray[2] . "','" . $SREmailArray[3] . "','" . $SREmailArray[4] . "','" . $SREmailArray[5] . "','A','pending','" . $SREmailArray[6]. "')");
+                //$Email_Flag = $SREmailArray[0];
+                DB::insert("INSERT INTO UL_RepCmp_Email ([User_id],[Email_Flag],[camp_tmpl_id],[remail_to],[remail_cc],[remail_bcc],[remail_sub],[remail_comments],[t_type],[Email_Status],[Email_Attachment]) values ('" . Auth::user()->User_ID . "','" . $SREmailData['enable'] . "','" . $CID . "','" . $SREmailData['to'] . "','" . $SREmailData['cc'] . "','" . $SREmailData['bcc'] . "','" . $SREmailData['sub'] . "','" . $SREmailData['message'] . "','A','pending','" . $SREmailData['Email_Attachment']. "')");
             }
 
             //Share Report
-            $ShareArray = explode(":", $ShareStr);
-            if ($ShareArray[0] == 'Y') {
-
-                $Share_Flag = $ShareArray[0];
-                $users = !empty($ShareArray[1]) ? explode(',',$ShareArray[1]) : [];
+           // $ShareArray = explode(":", $ShareStr);
+            if (isset($ShareData['enable']) && $ShareData['enable'] == 'Y') {
+                $Share_Flag = $ShareData['enable'];
+                $users = !empty($ShareData['to']) ? explode(',',$ShareData['to']) : [];
                 $user_id = Auth::user()->User_ID;
-                $limitedtextarea4 = $ShareArray[2];
+                $limitedtextarea4 = $ShareData['message'];
                 Helper::shareReport($CID,'A',$user_id,$users,$limitedtextarea4,$this->clientname,0,0);
             }
-
-            Helper::generateSrPDF($rv,$cv,ucfirst($fu),$sv,$sa,$sSQL,$list_level,$listShortName,$imgTag,$imgPath,$eFolder,$t_name,$this->prefix . 'RPS_',$SR_Attachment,$rpDesc,$report_orientation);
-        }
+            if(!empty($rv)){
+                if( strpos($rv, ',') !== false ) {
+                    $nrv = explode(',',$rv);
+                }else{
+                    $nrv[] = $rv;
+                }
+                Helper::generateSrPDF($nrv,$cv,ucfirst($fu),$sv,$sa,$sSQL,$list_level,$listShortName,$imgTag,$imgPath,$eFolder,$file_name,$this->prefix . 'RPS_',$SR_Attachment,$rpDesc,$report_orientation);
+            }
+         }
         else if ($pgaction == 'ReSch_campaign') {
             $CID = $request->input('CID');
-            $ftp_flag = $request->input('ftp_flag');
-            $ftpData = $request->input('ftpData');
+            $ftp_data = $request->input('ftp_data');
+            //$ftpData = $request->input('ftpData');
             $SFTP_Attachment = $request->input('SFTP_Attachment');
             $SR_Attachment = $request->input('SR_Attachment');
-            $SREmailStr = $request->input('SREmailStr');
-            $ShareStr = $request->input('ShareStr');
+            $SREmailData = $request->input('SREmailData');
+            $ShareData = $request->input('ShareData');
             $rtype = $request->input('rtype');
             $SMTPStr = $request->input('SMTPStr');
 
@@ -1031,6 +1571,7 @@ VALUES
             $eData = $dDataI['promoexpo_data'];
             $list_format = $dDataI['List_Format'];
             $report_orientation = $dDataI['Report_Orientation'];
+            $SR_Attachment = $dDataI['SR_Attachment'];
             /*$metaStr = $dDataI['meta_data'];
             $upMetaStr = explode('^',$metaStr);
             $upMetaStr[6] = date('Y');
@@ -1061,6 +1602,8 @@ VALUES
                 $imgTag = '<img src="' .$cI. '" class="img-responsive">';
             }
 
+
+
             DB::insert("INSERT INTO [UR_Report_Templates] ([t_id],[User_ID],[DCampaignID], [t_name],[t_type],[list_short_name],[list_level],[list_fields],[filter_criteria],
 		  [Customer_Exclusion_Criteria],[Customer_Inclusion_Criteria],[filter_condition],[Customer_Exclusion_Condition],
 		  [Customer_Inclusion_Condition],[selected_fields],[sql],[seg_def],[seg_noLS],[seg_method],[seg_criteria],
@@ -1075,13 +1618,12 @@ VALUES
 		  [seg_selected_criteria],[seg_grp_no],[seg_ctrl_grp_opt],[seg_camp_grp_dtls],[seg_camp_grp_proportion],
 		  [seg_camp_grp_sel_cri],[seg_sample],[promoexpo_cd_opt],[promoexpo_file_opt],[promoexpo_folder],'$t_name' as [promoexpo_file],
 		  [promoexpo_ext],[promoexpo_ecg_opt],[promoexpo_data],
-		  [Report_Row],[Report_Column],[Report_Function],[Report_Sum],[Report_Show],[is_public],[Custom_SQL],[Chart_Type],'$imgPath' as [Chart_Image],[Axis_Scale],[Label_Value],'$SR_Attachment' as [SR_Attachment],[List_Format],[Report_Orientation] FROM [UR_Report_Templates] 
+		  [Report_Row],[Report_Column],[Report_Function],[Report_Sum],[Report_Show],[is_public],[Custom_SQL],[Chart_Type],'$imgPath' as [Chart_Image],[Axis_Scale],[Label_Value], [SR_Attachment],[List_Format],[Report_Orientation] FROM [UR_Report_Templates] 
 		  WHERE  t_id = '$CID' AND t_type='A'");
 
 
+            $rpDesc = isset($params->Category) ? str_replace('~',' ', $params->Category) : '';
 
-
-            $rpDesc = $params->Category;
             $metadata = new App\Model\RepCmpMetaData();
             $metadata->CampaignID  = $campaign_id;
             $metadata->Type        = 'A';
@@ -1100,40 +1642,47 @@ VALUES
             $metadata->Sort_Column = $params->Sort_Column;
             $metadata->Sort_Order  = $params->Sort_Order;
             $metadata->save();
-
             $CName = $t_name;
             $sName = "S_" . $t_name;
 
-            if ($ftp_flag == 'Y') {
-                $pos = strpos($ftpData, ":");
+            if (isset($ftp_data['enable']) && $ftp_data['enable'] == 'Y') {
 
-                if ($pos != false) {
-                    $ftpArray = explode(":", $ftpData);
+                if (!isset($ftp_data['ftp_id'])) {
+                    //$ftpArray = explode(":", $ftpData);
                     DB::insert("INSERT INTO [UL_RepCmp_SFTP]([ftp_temp_name],[ftp_site_name],[ftp_host_address],[ftp_port_no]
                        ,[ftp_user_name],[ftp_password],[folder_loc],[site_type]) VALUES
-                        ('$ftpArray[0]','$ftpArray[1]','$ftpArray[2]','$ftpArray[3]','$ftpArray[4]','$ftpArray[5]','$ftpArray[6]','$ftpArray[7]')");
+                        ('".$ftp_data['ftp_name']."','".$ftp_data['ftp_name']."','".$ftp_data['host']."','".$ftp_data['port']."','".$ftp_data['user']."','".$ftp_data['pass']."','".$ftp_data['loc']."','".$ftp_data['site_type']."')");
 
-                    $SQL = DB::select("Select [row_id]  from [UL_RepCmp_SFTP] Where ftp_temp_name = '$ftpArray[0]'");
-                    $aData = collect($SQL)->map(function($x){ return (array) $x; })->toArray();
-                    if (!empty($aData)) {
-                        $ftpData = $aData[0]['row_id'];
-
-                    }
+                    $SQL = DB::select("Select [row_id]  from [UL_RepCmp_SFTP] Where ftp_temp_name = '".$ftp_data['ftp_name']."'");
+                    $aData= collect($SQL)->map(function($x){ return (array) $x; })->toArray();
+                }else{
+                    $SQL = DB::select("Select [row_id]  from [UL_RepCmp_SFTP] Where ftp_id = ".$ftp_data['ftp_id']);
+                    $aData= collect($SQL)->map(function($x){ return (array) $x; })->toArray();
                 }
+
+                $ftp_id = $aData[0]['row_id'];
             } else
-                $ftpData = 0;
+                $ftp_id = 0;
             // FTP Details
+
 
 
             if (($rtype == 'RA') || ($rtype == 'RP') || ($rtype = 'RI')) {
 
                 // Common to Both
-                $SQL = DB::select("Select [row_id],[sql] from [UR_Report_Templates] Where t_name = '$CName' AND User_ID = '$uid' AND t_type='A'");
+                $SQL = DB::select("Select [row_id],[list_short_name],[sql] from [UR_Report_Templates] Where t_name = '$CName' AND User_ID = '$uid' AND t_type='A'");
                 $aData = collect($SQL)->map(function($x){ return (array) $x; })->toArray();
                 if (!empty($aData)) {
                     $Camp_temp_id = $aData[0]['row_id'];
                     $sSQL = $aData[0]['sql'];
+                    $list_short_name = $aData[0]['list_short_name'];
                 }
+
+                $file_name = $list_short_name . "_" . date("Ymd", time());
+                if ($saveFile == 'Y')
+                    $dbfilename = $file_name;
+                else
+                    $dbfilename = '-';
 
                 // Common to Both
 
@@ -1144,7 +1693,7 @@ VALUES
 
                     DB::insert("INSERT INTO [UL_RepCmp_Schedules]([Schedule_Name]
                                      ,[Schedule_type],[runat_date],[runat_time],[ftp_tmpl_id],[camp_tmpl_id],[t_type],[SFTP_Attachment])
-                                     values ('$sName','$rtype','$RA_Dt','$RA_time','$ftpData','$Camp_temp_id','A','$SFTP_Attachment')");
+                                     values ('$sName','$rtype','$RA_Dt','$RA_time','$ftp_id','$Camp_temp_id','A','$SFTP_Attachment')");
                     //Insert into UL_RepCmp_Schedules table
 
                     $SchtempSQL = DB::select("Select [row_id],[runat_date],[runat_time] from [UL_RepCmp_Schedules] Where Schedule_Name = '$sName' AND t_type = 'A'");
@@ -1157,6 +1706,7 @@ VALUES
 
                         $tmp = explode('-', $RA_Dt);
                         $RA_Dt = $tmp[1] . '/' . $tmp[2] . '/' . $tmp[0];
+                        $date1 = date("m/d/y  H:i:s", time());
                         //$RA_Dt_SQL = $tmp[0] . '-' . $tmp[1] . '-' . $tmp[2];
                         //$tmp = explode(':', $RA_time);
                         //$RA_time = $tmp[0] . ':' . $tmp[1];
@@ -1169,13 +1719,10 @@ VALUES
                     // Schedule the task
 
                     //Insert into UL_RepCmp_Status table
-                    if ($saveFile == 'Y')
-                        $dbfilename = $eFile . '.' . $eExt;
-                    else
-                        $dbfilename = '-';
+
                     DB::insert("INSERT INTO [UL_RepCmp_Status]([sche_name],[templ_name],[start_time],[next_runtime]
                                        ,[completed_time],[file_name],[succ_flag],[ftp_flag],[status],[file_path],[last_runtime],[t_type])
-                                       VALUES ('$sName','$CName','','$RA_Dt $RA_time','','$dbfilename','','$ftp_flag','Scheduled','$eFolder','','A')");
+                                       VALUES ('$sName','$CName','$date1','$RA_Dt $RA_time','','$file_name','','".$ftp_data['enable']."','Scheduled','$eFolder','','A')");
                     //Insert into UL_RepCmp_Status table
 
 
@@ -1196,14 +1743,12 @@ VALUES
                     else
                         $r_Str = '';
 
-
-                    $metaArray = explode('^', $metaStr);
-                    $metadata_date = $metaArray[7] . '/' . $metaArray[8] . '/' . $metaArray[6];
+                    $metadata_date = $params->Start_Date;
 
                     DB::insert("INSERT INTO [UL_RepCmp_Schedules]([Schedule_Name],[Schedule_type],[rp_start_date]
                 ,[rp_end_date],[rp_run_sch],[rp_run_time],[ftp_tmpl_id],[camp_tmpl_id],[rp_count],[rp_days],[rp_months_weeks],[metadata_date],[t_type],[SFTP_Attachment])
                                 VALUES ('$sName','$rtype','$RP_Start_Dt','$RP_end_Dt','$rp_run_sch','$RA_time'
-                                ,'$ftpData','$Camp_temp_id',1,'$mo','$r_Str','$metadata_date','A','$SFTP_Attachment')");
+                                ,'$ftp_id','$Camp_temp_id',1,'$mo','$r_Str','$metadata_date','A','$SFTP_Attachment')");
 
                     $SchtempSQL = DB::select("Select [row_id],[rp_start_date],[rp_end_date],[rp_run_time] from [UL_RepCmp_Schedules]
                                     Where Schedule_Name = '$sName' AND t_type = 'A'");
@@ -1219,17 +1764,19 @@ VALUES
 
                         $tmp = explode(':', $RA_time);
                         $RA_time = $tmp[0] . ':' . $tmp[1] . ':00';
+                        $date1 = date("m/d/y  H:i:s", time());
 
                         $rp_end_date = $aData[0]['rp_end_date'];
                         $tmp = explode('-', $rp_end_date);
                         $rp_end_date = $tmp[1] . '/' . $tmp[2] . '/' . $tmp[0];
+                        $rp_end_date_cm = date('m/d/Y', strtotime($rp_end_date . ' +1 day'));
                         $rp_run_time = $aData[0]['rp_run_time'];
                         //$tmp = explode(':', $rp_run_time);
                         //$rp_run_time = $tmp[0] . ':' . $tmp[1] . ':00';
 
 
                     }
-                    $fh = fopen( $this->filePath.'arschedule.bat', 'w' );
+                    /*$fh = fopen( $this->filePath.'arschedule.bat', 'w' );
                     fclose($fh);
 
                     $fhead = fopen($this->filePath."arschedule.bat", 'a');
@@ -1240,22 +1787,22 @@ VALUES
                     $fhead = fopen($this->filePath."arschedule.bat", 'a');
                     $command = "Schtasks /delete /TN ".$this->schtasks_dir."\\".$sName." /f";
                     fwrite($fhead, $command);
-                    fclose($fhead);
+                    fclose($fhead);*/
                     /******************** Create Bat file - End ******************/
 
                     switch ($rp_run_sch) {
                         case 'daily':
-                            $command = 'schtasks /create /tn ' . $this->schtasks_dir . '\\' . $sName . ' /tr "\'' . $this->phpPath . '\' \'' . $this->filePath . 'arschedule.bat\'" /sc ' . $rp_run_sch . ' /sd ' . $rp_start_date . ' /st ' . $rp_run_time . '  /ed ' . $rp_end_date . '  /z /ru Administrator';
+                            $command = 'schtasks /create /tn ' . $this->schtasks_dir. '\\' . $sName . ' /tr "\'' . $this->phpPath . '\' -f \'' . $this->filePath . 'artisan\' arSchedule:run '.$sch_id.' " /sc ' . $rp_run_sch . ' /sd ' . $rp_start_date . ' /st ' . $rp_run_time . '  /ed ' . $rp_end_date_cm . '  /z /ru Administrator';
+
                             break;
                         case 'weekly':
-                            $command = 'schtasks /create /tn ' . $this->schtasks_dir . '\\' . $sName . ' /tr "\'' . $this->phpPath . '\' \'' . $this->filePath . 'arschedule.bat\'" /sc ' . $rp_run_sch . ' /mo ' . $mo . ' /sd ' . $rp_start_date . ' /st ' . $rp_run_time . '  /ed ' . $rp_end_date . ' /d ' . $dayStr . ' /z /ru Administrator';
-
+                            $command = 'schtasks /create /tn ' . $this->schtasks_dir . '\\' . $sName . ' /tr "\'' . $this->phpPath . '\' -f \'' . $this->filePath . 'artisan\' arSchedule:run '.$sch_id.' " /sc ' . $rp_run_sch . ' /mo ' . $mo . ' /sd ' . $rp_start_date . ' /st ' . $rp_run_time . '  /ed ' . $rp_end_date_cm . ' /d ' . $dayStr . ' /z /ru Administrator';
                             break;
                         case 'monthly':
                             if ($dayStr == 'last')
-                                $command = 'schtasks /create /tn ' . $this->schtasks_dir . '\\' . $sName . ' /tr "\'' . $this->phpPath . '\' \'' . $this->filePath . 'arschedule.bat\'" /sc ' . $rp_run_sch . ' /sd ' . $rp_start_date . ' /st ' . $rp_run_time . '  /ed ' . $rp_end_date . ' /m ' . $monthStr . ' /mo lastday /z /ru Administrator';
+                                $command = 'schtasks /create /tn ' . $this->schtasks_dir . '\\' . $sName . ' /tr "\'' . $this->phpPath . '\' -f \'' . $this->filePath . 'artisan\' arSchedule:run '.$sch_id.' " /sc ' . $rp_run_sch . ' /sd ' . $rp_start_date . ' /st ' . $rp_run_time . '  /ed ' . $rp_end_date . ' /m ' . $monthStr . ' /mo lastday /z /ru Administrator';
                             else
-                                $command = 'schtasks /create /tn ' . $this->schtasks_dir . '\\' . $sName . ' /tr "\'' . $this->phpPath . '\' \'' . $this->filePath . 'arschedule.bat\' " /sc ' . $rp_run_sch . ' /sd ' . $rp_start_date . ' /st ' . $rp_run_time . '  /ed ' . $rp_end_date . ' /m ' . $monthStr . ' /d ' . $dayStr . ' /z /ru Administrator';
+                                $command = 'schtasks /create /tn ' . $this->schtasks_dir . '\\' . $sName . ' /tr "\'' . $this->phpPath . '\' -f \'' . $this->filePath . 'artisan\' arSchedule:run '.$sch_id.' " /sc ' . $rp_run_sch . ' /sd ' . $rp_start_date . ' /st ' . $rp_run_time . '  /ed ' . $rp_end_date_cm . ' /m ' . $monthStr . ' /d ' . $dayStr . ' /z /ru Administrator';
                             break;
 
                     }
@@ -1334,14 +1881,9 @@ VALUES
                             break;
                     } // Switch statement
                     $next_runTime = $rp_run_time;
-                    if ($saveFile == 'Y')
-                        $dbfilename = $eFile . '.' . $eExt;
-                    else
-                        $dbfilename = '-';
-
                     DB::insert("INSERT INTO [UL_RepCmp_Status]([sche_name],[templ_name],[start_time],[next_runtime]
                                ,[completed_time],[file_name],[succ_flag],[ftp_flag],[status],[file_path],[run_until],[t_type])
-                               VALUES ('$sName','$CName','','$next_runDate $rp_run_time','','$dbfilename','','$ftp_flag','Scheduled','$eFolder','$rp_end_date $rp_run_time','A')");
+                               VALUES ('$sName','$CName','$date1','$next_runDate $rp_run_time','','$file_name','','".$ftp_data['enable']."','Scheduled','$eFolder','$rp_end_date $rp_run_time','A')");
                     //Insert into UL_RepCmp_Status table
 
 
@@ -1349,7 +1891,7 @@ VALUES
                 else if ($rtype == 'RI') {
                     $sName = "S_" . str_replace(" ", "_", $CName);
                     DB::insert("INSERT INTO [UL_RepCmp_Schedules]([Schedule_Name],[Schedule_type],[ftp_tmpl_id],[camp_tmpl_id],[t_type],[SFTP_Attachment])
-                                VALUES ('$sName','$rtype','$ftpData','$Camp_temp_id','A','$SFTP_Attachment')");
+                                VALUES ('$sName','$rtype','$ftp_id','$Camp_temp_id','A','$SFTP_Attachment')");
 
                     $SchtempSQL = DB::select("Select [row_id] from [UL_RepCmp_Schedules] Where Schedule_Name COLLATE Latin1_General_CS_AS = '$sName' AND t_type = 'A'");
                     $aData = collect($SchtempSQL)->map(function($x){ return (array) $x; })->toArray();
@@ -1365,13 +1907,9 @@ VALUES
                     Helper::schtask_curl($command);
 
                     // Schedule the task
-                    if ($saveFile == 'Y')
-                        $dbfilename = $eFile . '.' . $eExt;
-                    else
-                        $dbfilename = '-';
                     DB::insert("INSERT INTO [UL_RepCmp_Status]([sche_name],[templ_name],[start_time]
                                    ,[completed_time],[file_name],[succ_flag],[status],[file_path],[ftp_flag],[t_type])
-                                   VALUES ('$sName','$CName','$date1','','$dbfilename','','Running','$eFolder','$ftp_flag','A')");
+                                   VALUES ('$sName','$CName','$date1','','$file_name','','Running','$eFolder','".$ftp_data['enable']."','A')");
                 }  //if($rtype == 'RI')
 
                 //Get Schdule row_id to update the status
@@ -1388,7 +1926,9 @@ VALUES
                 //Get Schdule row_id to update the status
 
                 //Status update to Scheduled
-                DB::update("Update UL_RepCmp_Schedules set [sch_status_id] = '" . $Sch_row_id . "' Where row_id = '" . $sch_id . "' AND t_type = 'A'");
+                //DB::update("Update UL_RepCmp_Schedules set [sch_status_id] = '" . $Sch_row_id . "' Where row_id = '" . $sch_id . "' AND t_type = 'A'");
+
+                DB::insert("INSERT INTO [UL_RepCmp_Sch_status_mapping] ([sch_id],[sch_status_id],[t_type]) VALUES ('".$sch_id."','".$Sch_row_id."', 'A')");
                 //Status update to Scheduled
             }  // if For Run AT or RP
 
@@ -1400,22 +1940,18 @@ VALUES
                                      ,[femail_to] = '" . $SMTPArray[8] . "',[femail_cc] = '" . $SMTPArray[9] . "',[femail_bcc] = '" . $SMTPArray[10] . "',[femail_sub] = '" . $SMTPArray[11] . "',[femail_comments] = '" . $SMTPArray[12] . "' Where row_id = '" . $sch_id . "' AND t_type = 'A'");
             }
 
-            $SREmailArray = explode(":", $SREmailStr);
-            if ($SREmailArray[0] == 'Y') {
+            if (isset($SREmailData['enable']) && $SREmailData['enable'] == 'Y') {
 
-                $Email_Flag = $SREmailArray[0];
-
-                DB::insert("INSERT INTO UL_RepCmp_Email ([User_id],[Email_Flag],[camp_tmpl_id],[remail_to],[remail_cc],[remail_bcc],[remail_sub],[remail_comments],[t_type],[Email_Status],[Email_Attachment]) values ('" . Auth::user()->User_ID . "','" . $Email_Flag . "','" . $CID . "','" . $SREmailArray[1] . "','" . $SREmailArray[2] . "','" . $SREmailArray[3] . "','" . $SREmailArray[4] . "','" . $SREmailArray[5] . "','A','pending','" . $SREmailArray[6]. "')");
+                //$Email_Flag = $SREmailArray[0];
+                DB::insert("INSERT INTO UL_RepCmp_Email ([User_id],[Email_Flag],[camp_tmpl_id],[remail_to],[remail_cc],[remail_bcc],[remail_sub],[remail_comments],[t_type],[Email_Status],[Email_Attachment]) values ('" . Auth::user()->User_ID . "','" . $SREmailData['enable'] . "','" . $CID . "','" . $SREmailData['to'] . "','" . $SREmailData['cc'] . "','" . $SREmailData['bcc'] . "','" . $SREmailData['sub'] . "','" . $SREmailData['message'] . "','A','pending','" . $SREmailData['Email_Attachment']. "')");
             }
 
             //Share Report
-            $ShareArray = explode(":", $ShareStr);
-            if ($ShareArray[0] == 'Y') {
-
-                $Share_Flag = $ShareArray[0];
-                $users = !empty($ShareArray[1]) ? explode(',',$ShareArray[1]) : [];
+            if (isset($ShareData['enable']) && $ShareData['enable'] == 'Y') {
+                $Share_Flag = $ShareData['enable'];
+                $users = !empty($ShareData['to']) ? explode(',',$ShareData['to']) : [];
                 $user_id = Auth::user()->User_ID;
-                $limitedtextarea4 = $ShareArray[2];
+                $limitedtextarea4 = $ShareData['message'];
                 Helper::shareReport($CID,'A',$user_id,$users,$limitedtextarea4,$this->clientname,0,0);
             }
 
@@ -1428,16 +1964,21 @@ VALUES
             $list_level = $dDataI['list_level'];
             $list_short_name = $dDataI['list_short_name'];
             $sSQL = $dDataI['sql'];
-
-
-            Helper::generateSrPDF($rv,$cv,$fu,$sv,$sa,$sSQL,$list_level,$list_short_name,$imgTag,$imgPath,$eFolder,$t_name,$this->prefix  . 'RPS_',$SR_Attachment,$rpDesc,$report_orientation);
+            if(!empty($rv)) {
+                if (strpos($rv, ',') !== false) {
+                    $nrv = explode(',', $rv);
+                } else {
+                    $nrv[] = $rv;
+                }
+                Helper::generateSrPDF($nrv, $cv, $fu, $sv, $sa, $sSQL, $list_level, $list_short_name, $imgTag, $imgPath, $eFolder, $file_name, $this->prefix . 'RPS_', $SR_Attachment, $rpDesc, $report_orientation);
+            }
         }
     }
 
     public function getSingleReport(Request $request, Ajax $ajax){
         $tempid = $request->input('tempid');
-        /*$sSQL = DB::select("SELECT [t_id],[t_name],[list_short_name],[list_level],[list_fields],[filter_criteria],[Customer_Exclusion_Criteria],[Customer_Inclusion_Criteria],[filter_condition],[Customer_Exclusion_Condition],[Customer_Inclusion_Condition],[selected_fields],[sql],[Report_Row],[Report_Column],[Report_Function],[Report_Sum],[Report_Show],[is_public],[Custom_SQL],[Chart_Type],[Chart_Image],[Axis_Scale],[Label_Value],[SR_Attachment],[List_Format],[Report_Orientation] FROM [UR_Report_Templates] WHERE [row_id] = '$tempid'");*/
-        
+        /*$sSQL = DB::select("SELECT [t_id],[t_name],[list_short_name],[list_level],[list_fields],[filter_criteria],[Customer_Exclusion_Criteria],[Customer_Inclusion_Criteria],[filter_condition],[Customer_Exclusion_Condition],[Customer_Inclusion_Condition],[selected_fields],[sql],[Report_Row],[Report_Column],[Report_Function],[Report_Sum],[Report_Show],[Report_Orientation],[is_public],[Custom_SQL],[Chart_Type],[Chart_Image],[Axis_Scale],[Label_Value],[SR_Attachment],[List_Format],[Report_Orientation] FROM [UR_Report_Templates] WHERE [row_id] = '$tempid'");*/
+
        /* $sSQL = DB::select("SELECT rt.row_id,rt.t_id,rt.t_name,rt.list_short_name,rt.list_level,rt.list_fields,rt.filter_criteria,rt.Customer_Exclusion_Criteria,
 rt.Customer_Inclusion_Criteria,rt.filter_condition,rt.Customer_Exclusion_Condition,rt.Customer_Inclusion_Condition,
 rt.selected_fields,rt.sql,rt.Report_Row,rt.Report_Column,rt.Report_Function,rt.Report_Sum,rt.Report_Show,rt.is_public,
@@ -1448,8 +1989,14 @@ md.SKU,md.Coupon,md.Sort_Column,md.Sort_Order FROM [UR_Report_Templates] rt INNE
         $aData= collect($sSQL)->map(function($x){ return (array) $x; })->toArray();
         $aData = $aData[0];*/
 
-        $record = App\Model\ReportTemplate::with(['rpmeta'])->where('row_id',$tempid)->first()->toArray();
-
+        $record = App\Model\ReportTemplate::with(['rpmeta'])->where('row_id',$tempid)->first();
+        if(!$record){
+            return $ajax->fail()
+                ->jscallback()
+                ->message('Report not found')
+                ->response();
+        }
+        $record = $record->toArray();
         $checked_fields = !empty($record['selected_fields']) ? explode(',',$record['selected_fields']) : ['DS_MKC_ContactID'];
         $aData1 = DB::select("SELECT DISTINCT [Type] from [UL_RepCmp_Lookup_Fields] WHERE List_Level = '" . $record['list_level'] . "'");
         $aData1 = collect($aData1)->map(function($x){ return (array) $x; })->toArray();
@@ -1498,6 +2045,27 @@ md.SKU,md.Coupon,md.Sort_Column,md.Sort_Order FROM [UR_Report_Templates] rt INNE
             ->appendParam('fields_Html',$hHtml)
             ->appendParam('lkpOptions',$lkpOptions)
             ->appendParam('numOptions',$numOptions)
+            ->response();
+    }
+
+    public function getExecuteData(Request $request,Ajax $ajax){
+        $tempid = $request->input('tempid');
+        $record = App\Model\ReportTemplate::with(['rpschedule','rpshare','rpemail','rpschedule.sftp'])->where('t_id',$tempid)
+            ->first();
+        return $ajax->success()
+            ->appendParam('aData',$record)
+            ->response();
+    }
+
+    public function addToPhone(Request $request,Ajax $ajax){
+        $eCampid = $request->input('eCampid');
+        $addval = $request->input('addval');
+        App\Model\ReportTemplate::where('row_id','<>',$eCampid)->update(['Attach_Phone' => 0]);
+        App\Model\ReportTemplate::where('row_id',$eCampid)->update(['Attach_Phone' => $addval]);
+        $record = App\Model\ReportTemplate::with(['rpschedule','rpshare','rpemail','rpschedule.sftp'])->where('row_id',$eCampid)
+            ->first();
+        return $ajax->success()
+            ->appendParam('aData',$record)
             ->response();
     }
 }

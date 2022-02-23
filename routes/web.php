@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers\Auth;
+use App\Helpers\Helper;
 use App\Library\Ajax;
 use App\Model\UserDetail;
 use App\Model\UserRole;
@@ -21,6 +22,13 @@ use \Illuminate\Support\Facades\View as View;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('datatables/data', 'DatatablesController@anyData')->name('datatables.data');
+
+Route::get('datatables', 'DatatablesController@getIndex');
+
+
+
 //testing
 Route::get('/test', function() {
     $sSQL = "select touchstatus, touchcampaign  from contact_view wHere touchstatus is not null and touchcampaign in (select max(touchcampaign) from touch)";
@@ -72,8 +80,29 @@ Route::get('logout',function (){
 Route::get('mail', 'MailController@send');
 Route::get('pdf', 'RepCmpController@pdf');
 
+//Dashboard
+$dashboard_types = DB::select("SELECT * FROM ZChart_Links");
+foreach ($dashboard_types as $dashboard_type){
+    Route::get('/'.$dashboard_type->link, 'DashboardController@index')->name($dashboard_type->link);
+}
+
+
+Route::post('/getdashboardinfo', 'DashboardController@getDashboardInfo');
+Route::get('dlogin',array('as'=>'dlogin',function(){
+    Artisan::call('cache:clear');
+    Artisan::call('view:clear');
+    return view('users.dlogin');
+}));
+Route::post('dlogin', 'UserController@dlogin');
+
+Route::get('/taxonomy', 'TaxonomyController@index');
+Route::get('/taxonomy/get', 'TaxonomyController@getTaxonomy');
+Route::get('/taxonomy/quickupdate', 'TaxonomyController@quickUpdate');
+Route::get('/taxonomy/download', 'TaxonomyController@download');
 
 Route::group(['middleware' => ['auth']], function () {
+
+
 
     //Users
     Route::post('changepassword', 'UserController@changePassword');
@@ -83,6 +112,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/', 'LookupController@index');
     Route::get('/lookup', 'LookupController@index');
     Route::post('/lookup/getfirstscreen', 'LookupController@getFirstScreen');
+
+    Route::get('/lookup/getfirstscreenindex', 'LookupController@getFirstScreenIndex');
+    Route::post('/lookup/getfirstscreendata', 'LookupController@getFirstScreenData')->name('lookupfirstscreen.data');
+
     Route::get('/lookup/downloadreport', 'LookupController@downloadReport');
     Route::get('/lookup/downloadallreports/{cid}', 'LookupController@downloadAllReports');
     Route::post('/lookup/domerge', 'LookupController@doMerge');
@@ -99,13 +132,32 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/lookup/reviewcontact', 'LookupController@reviewContact');
     Route::get('/testDn', 'LookupController@testDn');
     Route::get('/testreader', 'LookupController@testReader');
+    Route::get('/lookup/showcreatecampaign', 'LookupController@showCreateCampaign');
 
+    //activitydetails
+    Route::get('/activity', 'ActivityController@index');
+    Route::post('/activity/details', 'ActivityController@details');
+    Route::get('/activity/downloadreport', 'ActivityController@download');
     //Phone
     Route::get('/phone', 'PhoneController@index');
     Route::post('/phone/getfirstscreen', 'PhoneController@getFirstScreen');
+    Route::get('/phone/getfirstscreenindex', 'PhoneController@getFirstScreenIndex');
+    Route::post('/phone/getfirstscreendata', 'PhoneController@getFirstScreenData')->name('phonefirstscreen.data');
+
     Route::post('/phone/touch', 'PhoneController@saveTouch');
     Route::get('/phone/delete/{rid}/{contactid}', 'PhoneController@deleteTouch');
     Route::post('/phone/downloadphonereport', 'PhoneController@downloadPhoneReport');
+    Route::get('/phone/add', 'PhoneController@addToPhone');
+    Route::post('/phone/add', 'PhoneController@insertToPhone');
+
+    //Import Bulk CC
+    Route::get('/importbulkcc', 'ImportbulkccController@index');
+    Route::post('/importbulkcc/step1', 'ImportbulkccController@step1');
+    Route::post('/importbulkcc/step2', 'ImportbulkccController@step2');
+    Route::post('/importbulkcc/step3', 'ImportbulkccController@step3');
+    Route::post('/importbulkcc/step4', 'ImportbulkccController@step4');
+    Route::post('/importbulkcc/step5', 'ImportbulkccController@step5');
+
 
     //Import Contacts
     Route::get('/import', 'ImportcontactController@index');
@@ -116,6 +168,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/import/updatename', 'ImportcontactController@updateName');
     Route::get('/import/figure', 'ImportcontactController@importFigure');
     Route::get('/import/testColumns', 'ImportcontactController@testColumns');
+    Route::get('/import/test1', 'ImportcontactController@test1');
 
     //Import Zoom
     Route::get('/importzoom', 'ImportzoomController@index');
@@ -126,14 +179,34 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/importzoom/step5', 'ImportzoomController@importStep5');
     Route::post('/importzoom/step5', 'ImportzoomController@importStep5');
     Route::get('/importzoom/step5autofill', 'ImportzoomController@step5AutoFill');
-    Route::post('/importzoom/step6', 'ImportzoomController@importStep6');
+    Route::post('/importzoom/step6', 'ImportzoomController@importStep6')->name('importzoom_step6.data');;
     Route::post('/importzoom/step7quickedit', 'ImportzoomController@step7quickEdit');
-
+    Route::get('/importzoom/step5addinsertrecord', 'ImportzoomController@step5AddInsertRecord');
     Route::post('/importzoom/figure', 'ImportzoomController@importFigure');
+
+
+    //Zoom Cleanse
+    Route::get('/zoomcleanse', 'ZoomcleanseController@index');
+    Route::post('/zoomcleanse/step1', 'ZoomcleanseController@importStep1');
+    Route::post('/zoomcleanse/step2', 'ZoomcleanseController@importStep2');
+    Route::post('/zoomcleanse/step3', 'ZoomcleanseController@importStep3');
+    Route::post('/zoomcleanse/step4', 'ZoomcleanseController@importStep4');
+    Route::post('/zoomcleanse/step5', 'ZoomcleanseController@importStep5');
+    Route::post('/zoomcleanse/step5', 'ZoomcleanseController@importStep5');
+    Route::get('/zoomcleanse/step5autofill', 'ZoomcleanseController@step5AutoFill');
+    Route::get('/zoomcleanse/step5addinsertrecord', 'ZoomcleanseController@step5AddInsertRecord');
+    Route::post('/zoomcleanse/step6', 'ZoomcleanseController@importStep6')->name('zoomcleanse_step6.data');
+    Route::post('/zoomcleanse/step7quickedit', 'ZoomcleanseController@step7quickEdit');
+    Route::post('/zoomcleanse/figure', 'ZoomcleanseController@importFigure');
 
     // Report
     Route::get('/report', 'ReportController@index');
     Route::get('/report/get', 'ReportController@getReport');
+
+    Route::post('/report/getrunningtabdata', 'ReportController@getRunningTabData')->name('report_running.data');
+    Route::post('/report/getscheduledtabdata', 'ReportController@getScheduledTabData')->name('report_scheduled.data');
+    Route::post('/report/getcompletetabdata', 'ReportController@getCompleteTabData')->name('report_completed.data');
+
 	Route::post('/report/schedule', 'ReportController@rpSchedule');
 	Route::get('/report/getlist', 'ReportController@getList');
 	Route::get('/report/seq', 'ReportController@getSeq');
@@ -141,6 +214,10 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/report/recd', 'ReportController@getSingleReport');
 	Route::post('/report/reschedule', 'ReportController@reSchedule');
 	Route::post('/report/callouterschedule', 'ReportController@callOuterSchedule');
+	Route::post('/report/addtophone', 'ReportController@addToPhone');
+
+	//Report Execute tab
+    Route::post('/report/getexecutedata', 'ReportController@getExecuteData');
 
 	//Help
 	Route::get('/helps', 'HelpController@index');
@@ -148,7 +225,17 @@ Route::group(['middleware' => ['auth']], function () {
 
 	/*************** Campaign - Start************/
     Route::get('/campaign', 'CampaignController@index');
-    Route::get('/campaign/get', 'CampaignController@getCampaign');
+    Route::post('/campaign/get', 'CampaignController@getCampaign');
+
+    Route::post('/campaign/getrunningtabdata', 'CampaignController@getRunningTabData')->name('campaign_running.data');
+    Route::post('/campaign/getscheduledtabdata', 'CampaignController@getScheduledTabData')->name('campaign_scheduled.data');
+    Route::post('/campaign/getcompletetabdata', 'CampaignController@getCompleteTabData')->name('campaign_completed.data');
+    Route::post('/campaign/getesummarytabdata', 'CampaignController@getESummaryTabData')->name('campaign_esummary.data');
+    Route::post('/campaign/getedetailstabdata', 'CampaignController@getEDetailsTabData')->name('campaign_edetails.data');
+
+    Route::get('/campaign/edownload', 'CampaignController@EvaluationDownload');
+    Route::get('/campaign/metadataquickupdate', 'CampaignController@MetaDataQuickUpdate');
+    Route::get('/campaign/single', 'CampaignController@getSingle');
     Route::post('/campaign/schedule', 'CampaignController@rpSchedule');
     Route::get('/campaign/getlist', 'CampaignController@getList');
     Route::get('/campaign/seq', 'CampaignController@getSeq');
@@ -157,6 +244,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/campaign/reschedule', 'CampaignController@reSchedule');
     Route::post('/campaign/callouterschedule', 'CampaignController@callOuterSchedule');
     Route::post('/campaign/showmeta', 'CampaignController@showMeta');
+    Route::get('/campaign/phone', 'CampaignController@showPhone');
+    Route::post('/campaign/phone', 'CampaignController@submitPhone');
 
     //generatequickmeta
     Route::post('/campaign/generatequickmeta', 'CampaignSegmentController@generateQuickMeta');
@@ -177,7 +266,28 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/campaign/getmetadata', 'CampaignMetaDataController@getMetadata');
     Route::post('/campaign/metasavelkp', 'CampaignMetaDataController@metaSaveLkp');
 
+    //Execute
+    Route::post('/campaign/getexecutedata', 'CampaignController@getExecuteData');
     /*************** Campaign - End************/
+
+    /*************** Email - Start************/
+    Route::get('/email', 'EmailController@index');
+    Route::get('/email/get', 'EmailController@getEmails');
+
+    Route::post('/email/getcompletedemails', 'EmailController@getCompletedEmails')->name('email_completed.data');
+
+    Route::post('/email/sendemail', 'EmailController@sendEmail');
+    Route::get('/email/count_toprocess', 'EmailController@countToProcess');
+    Route::get('/email/today_campaigns', 'EmailController@todayCampaigns');
+    Route::get('/email/db_queries', 'EmailController@dbQueries');
+    Route::get('/email/getshrink', 'EmailController@getShrink');
+    Route::get('/email/getfilesize', 'EmailController@getFileSize');
+    Route::get('/email/count_dupes_popup', 'EmailController@countDupesPopup');
+    Route::get('/email/count_dupes', 'EmailController@countDupes');
+    Route::get('/email/Delete_toprocess', 'EmailController@DeleteToProcess');
+    Route::get('/email/showeditpopup', 'EmailController@showEditPopup');
+    Route::post('/email/update', 'EmailController@updateCampaign');
+    /*************** Email - End************/
 
     //Common route for campaign & report
     Route::post('/sendviaemail', 'RepCmpController@sendViaEmail');
@@ -186,6 +296,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/getshare', 'RepCmpController@getShare');
     Route::post('/sharereport', 'RepCmpController@share');
     Route::post('/delete', 'RepCmpController@delete');
+    Route::post('/delete_older_version', 'RepCmpController@deleteOlderVersion');
     Route::get('/getftpdata', 'RepCmpController@getFtpData');
     Route::get('/getfieldtypes', 'RepCmpController@getFieldTypes');
     Route::get('/getdistributionpu/{ll?}', 'RepCmpController@getDistriPopUp');
@@ -200,6 +311,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/countsql', 'RepCmpController@getCountSql');
     Route::get('/preview', 'RepCmpController@showPreview');
     Route::get('/download10K', 'RepCmpController@download10K');
+    Route::post('/tag', 'RepCmpController@tag');
+
+    Route::get('/common/showeditable', 'CommonController@showEditable');
+    Route::get('/common/updateeditable', 'CommonController@updateEditable');
+
+
 
     Route::get('/testing', function (){
         //testing code
@@ -249,5 +366,67 @@ Route::group(['middleware' => ['auth']], function () {
 
     });
 
-});
+    Route::get('/integrateReportMapping', function (){
+        @ini_set('max_execution_time',5000);
 
+        $aData = DB::select("Select rp.t_id,rs.row_id as sch_id,rs.sch_status_id,rst.*,rp.promoexpo_file from UC_Report_Templates rp INNER JOIN UL_RepCmp_Schedules rs on rp.row_id = rs.camp_tmpl_id INNER JOIN UL_RepCmp_Status rst on rs.sch_status_id = rst.row_id AND rs.sch_status_id <> '' AND rp.t_type = 'A'");
+        $aData = collect($aData)->map(function ($x) {
+            return (array)$x;
+        })->toArray();
+
+        DB::statement("Delete from UL_RepCmp_Sch_status_mapping WHERE t_type = 'A'");
+
+        //DB::statement("Truncate table [UL_RepCmp_Metadata]");
+        //echo '<pre>'; print_r($aData); die;
+        foreach ($aData as $data){
+            DB::insert("INSERT INTO [UL_RepCmp_Sch_status_mapping] ([sch_id],[sch_status_id],[t_type]) VALUES ('".$data['sch_id']."','".$data['sch_status_id']."', 'A')");
+
+            DB::update("UPDATE UL_RepCmp_Status SET file_name='".$data['templ_name']."' WHERE row_id = '".$data['sch_status_id']."'");
+        }
+
+    });
+
+    Route::get('/integrateCampaignMapping', function (){
+        @ini_set('max_execution_time',5000);
+        $aData = DB::select("Select rp.t_id,rs.row_id as sch_id,rs.sch_status_id,rst.*,rp.promoexpo_file from UC_Campaign_Templates rp INNER JOIN UL_RepCmp_Schedules rs on rp.row_id = rs.camp_tmpl_id INNER JOIN UL_RepCmp_Status rst on rs.sch_status_id = rst.row_id AND rs.sch_status_id <> '' AND rp.t_type = 'C'");
+        $aData = collect($aData)->map(function ($x) {
+            return (array)$x;
+        })->toArray();
+        DB::statement("Delete from UL_RepCmp_Sch_status_mapping WHERE t_type = 'A'");
+        //DB::statement("Truncate table [UL_RepCmp_Metadata]");
+        //echo '<pre>'; print_r($aData); die;
+        foreach ($aData as $data){
+            DB::insert("INSERT INTO [UL_RepCmp_Sch_status_mapping] ([sch_id],[sch_status_id],[t_type]) VALUES ('".$data['sch_id']."','".$data['sch_status_id']."', 'C')");
+
+            DB::update("UPDATE UL_RepCmp_Status SET file_name='".$data['templ_name']."' WHERE row_id = '".$data['sch_status_id']."'");
+        }
+
+    });
+
+
+    Route::get('/testSch', function (){
+        @ini_set('max_execution_time',5000);
+        $schtasks_dir = config('constant.schtasks_dir');
+        $phpPath = config('constant.phpPath');
+        $filePath = config('constant.filePath');
+
+
+        $sName = 'S_testing';
+        $sch_id = 12;
+        $rp_run_sch = 'daily';
+        $rp_start_date1 = '05/31/2021';
+        $rp_start_date1 = date('m-d-Y', strtotime($rp_start_date1 . ' +1 day'));
+        echo $rp_start_date1; die;
+        $rp_start_date = '05/31/2021';
+        $rp_end_date = '06/07/2021';
+        $rp_run_time = '07:12';
+        $rp_end_time = '23:59';
+        $command = 'schtasks /create /tn ' . $schtasks_dir. '\\' . $sName . ' /tr "\'' . $phpPath . '\' -f \'' . $filePath . 'artisan\' arSchedule1:run '.$sch_id.' " /sc ' . $rp_run_sch . ' /sd ' . $rp_start_date . ' /st ' . $rp_run_time . '  /ed ' . $rp_end_date .' /et  23:59 /z /ru Administrator';
+
+        $command = 'schtasks /create /tn ' . $schtasks_dir. '\\' . $sName . ' /tr "\'' . $phpPath . '\' -f \'' . $filePath . 'artisan\' arSchedule1:run '.$sch_id.' " /sc ' . $rp_run_sch . ' /sd ' . $rp_start_date . ' /st ' . $rp_run_time . '  /ed ' . $rp_end_date . ' /et ' .$rp_end_time.'  /z /ru Administrator';
+        echo $command."<br/>";
+        Helper::schtask_curl($command);
+
+    });
+
+});

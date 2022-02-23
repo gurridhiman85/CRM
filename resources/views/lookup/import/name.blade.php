@@ -1,4 +1,4 @@
-<table class="table table-bordered table-hover color-table lkp-table">
+<table class="table table-bordered table-hover color-table lkp-table" id="table_task">
     <thead>
     <tr>
         <th rowspan="2">

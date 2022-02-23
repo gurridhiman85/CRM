@@ -41,7 +41,7 @@ function campaignJS($outer) {
             get_customer_excl_incl_summary(3);
         })
     }
-
+    $('#showSqlBtn').hide();
 
 }
 
@@ -114,9 +114,22 @@ function IntervalTimer(callback, interval) {
 }
 
 /*var timer = new IntervalTimer(function () {
-}, 40000);*/ // Timer for auto refresh completed tab.
+}, 40000);*/ // Timer for auto refresh level1 tab.
+
+function emreport(){
+    if($(".em_report:checked").length > 0){
+        $('.emreport').show();
+        $('.schreport').show();
+    }
+    else{
+        $('.emreport').hide();
+        $('.schreport').hide();
+    }
+}
 
 $(document).ready(function () {
+
+
     setTimeout(function () {
         if ($('#txtTo1').length){
             var emailMS = [
@@ -146,8 +159,12 @@ $(document).ready(function () {
     $('#tab_26, #tab_27, #tab_28 , #tab_29').html('');
 
     $('[href="#tab_22"]').trigger('click');
-    $('.seg-clr-btn,.meta-go-btn').hide();
-    $('#save').hide();
+    setTimeout(function () {
+        $('.seg-clr-btn,.meta-go-btn').hide();
+        $('#save').hide();
+    },3000);
+
+
     $('.cn-report-btn').on('click',function () {
         $(this).hide();
         $('.cl-report-btn').show();
@@ -159,6 +176,7 @@ $(document).ready(function () {
         $('.meta-go-btn').hide();
         //timer.pause();
         $('a[href="#tab_26"]').trigger('click');
+        $('#showSqlBtn').hide();
         //$('#save').hide().attr('disabled',false).attr('onclick','addsubSQL(false)');
         $('#savebottom').show().attr('disabled',false).attr('onclick','addsubSQL(false)');
         $('#saveoption').show();
@@ -181,15 +199,37 @@ $(document).ready(function () {
         $('#libflag_name').val('');
         $('#libcamp_name').val('');
         $('#libcamp_id').val('');
+        $('#libcId').val('');
         //timer.resume();
         $('a[href="#tab_22"]').trigger('click');
-        $('#save').hide().attr('disabled',false).attr('onclick','');
+        $('#showSqlBtn').hide();
+        $('#save').attr('disabled',false).attr('onclick','');
+        $('#save').hide();
         $('#savebottom').hide().attr('disabled',false).attr('onclick','');
         $('#saveoption').hide()
         $('.seg-clr-btn').hide();
         $('.meta-go-btn').hide();
         parent.up_flag = 'new';
         $('#tab_26, #tab_27, #tab_28 , #tab_29').html('');
+    });
+
+    ACFn.ajax_download_file = function(F,R){
+        if(R.success){
+            window.location.href = R.download_url;
+        }
+    };
+
+    var autosearch_field = $('.ajax-search');
+    autosearch_field.on('keyup change paste',function(e) {
+        if((e.type == 'keyup' && e.target.tagName == 'INPUT') || (e.type == 'change' && e.target.tagName == 'SELECT')){
+            var obj = $(this);
+            var oldVal = obj.val();
+            delay(function(){
+                var fvalue = $.trim(obj.val());
+                $('[name="searchterm"]').val(fvalue);
+                $('.tab-ajax li a.active').trigger('show.bs.tab');
+            }, 1000 );
+        }
     });
 })
 
@@ -291,7 +331,6 @@ function save() {
                     }
 
                     if ((checkval == 'Y')) {
-                        responseStr
                         /********* 2018-03-23 - changes for hide buttons when view selected -- start ********/
 
                         setTimeout(function () {
@@ -402,7 +441,7 @@ function loadList(resStr, up_flag) {
     $("#accordion").html(resStr.fields_Html);
 
 
-    $('#row_variable_input').html('<option value="">Select</option>');
+    $('#row_variable_input').html('');
     $('#column_variable_input').html('<option value="">Select</option>');
     $('#sum_variable_input').html('<option value="">Select</option>');
     $.each(resStr.lkpOptions, function(val, text) {
@@ -418,6 +457,29 @@ function loadList(resStr, up_flag) {
     });
 
     initJS($('#accordion'));
+
+    var emailMS = [
+        'row_variable_input'
+    ];
+
+    $.each(emailMS, function (index, value) {
+        if ($("#" + value).length){
+            if (up_flag == 'view') {
+                $("#" + value).attr('disabled', true);
+            }
+            $("#" + value).multiselect({
+                //appendTo: '#emailBox',
+                close: function () {
+                },
+                header: true, //"Region",
+                selectedList: 1, // 0-based index
+                nonSelectedText: 'Select Values',
+                enableFiltering: true,
+                filterBehavior: 'text',
+            }).multiselectfilter({label: 'Search'});
+        }
+    });
+
     $("#customFieldRow").show();
     $('#fieldSummery').hide();
 
@@ -591,7 +653,22 @@ function loadList(resStr, up_flag) {
 
             if (Report_Row != "") {
                 $('#tabular_report').show();
-                $('#row_variable_input').val(Report_Row);
+                if( Report_Row.indexOf(',') != -1 ){
+                    var Report_RowArr = Report_Row.split(',');
+                    $.each(Report_RowArr,function (index,val) {
+                        $('#row_variable_input option[value="'+val+'"]').attr('selected',true);
+                    })
+                }else{
+                    $('#row_variable_input option[value="'+Report_Row+'"]').attr('selected',true);
+                }
+
+                $("#row_variable_input").multiselect('refresh');
+
+                if (up_flag == 'view') {
+                    $("#row_variable_input_ms").attr('style', 'width:245.156px !important;height: 28px; background-color: #d6dce2 !important;height: calc(1.5em + .5rem + 2px);padding: .25rem .5rem;border-radius: .2rem;background-clip: padding-box;border: 1px solid #e9ecef;font-size: .76563rem;min-height: 27px;');
+                }else{
+                    $("#row_variable_input_ms").attr('style', 'width:245.156px !important;height: 28px; background-color: white !important;height: calc(1.5em + .5rem + 2px);padding: .25rem .5rem;border-radius: .2rem;background-clip: padding-box;border: 1px solid #e9ecef;font-size: .76563rem;min-height: 27px;');
+                }
                 $('#column_variable_input').val(Report_Column);
                 if(Report_Column == ""){
                     if($('#show_as_input').length > 0){
@@ -1063,6 +1140,7 @@ function session(runoption) {
         var exclusionsfilters = localStorage.getItem('exclusionsfilters');
         var inclusionsfilters = localStorage.getItem('inclusionsfilters');
         var params = JSON.parse(localStorage.getItem('params'));
+        console.log('cc params---',params);
         $.ajax({
             url : 'campaign/cc_sch_data',
             type : 'POST',
@@ -1075,7 +1153,7 @@ function session(runoption) {
                 ftp_flag : 'N',
                 ftpData : '',
                 SFTP_Attachment : '',
-                SR_Attachment : 'onlyreport',
+                SR_Attachment : 'onlylist',
                 SREmailStr : 'N',
                 ShareStr : 'N',
                 rtype : 'RI',
@@ -1096,7 +1174,7 @@ function session(runoption) {
                     $('#tab_26, #tab_27, #tab_28 , #tab_29').html('');
                 },1500)
                 localStorage.removeItem('record');
-                localStorage.removeItem('params');
+                //localStorage.removeItem('params');
                 localStorage.removeItem('contactfilters');
                 localStorage.removeItem('exclusionsfilters');
                 localStorage.removeItem('inclusionsfilters');
@@ -1164,9 +1242,11 @@ function getDefaultStorage(postData){
                     parm.DFS = "none";
                     parm.LSD = LSD;
                     parm.cellSample = cellSample;
-                    parm.cg = "Y";
+                    parm.cg = "N";
                     parm.chkCG = crchkgroup;
                     parm.lssc = "";
+                    parm.segFilterCriteria = "";
+                    parm.segFilterCondition = "";
                     parm.lssm = "none";
                     parm.noCG = "1";
                     parm.noLS = 0;
@@ -1288,6 +1368,20 @@ function triggerCompletedTab() {
     }
 }
 
+function showOldReport(row_id) {
+    $('.clr-btn').show();
+    $('.emreport').hide();
+    $('.cn-report-btn').hide();
+    $('.create-new').hide();
+    $('.older-version a').attr('data-row_id',row_id);
+    $('.older-version').show();
+    $('.c-btn').html('');
+    /*$('#libflag_name').val(libflag_name);
+    $('#libcamp_name').val(libcamp_name);
+    $('#libcamp_id').val(libcamp_id);*/
+    $('a[href="#tab_31"]').trigger('click');
+}
+
 function librarySQL_sel(obj, col) {
 
     document.getElementById('list_Preview').style.display = 'none';
@@ -1319,17 +1413,20 @@ function librarySQL_sel(obj, col) {
         }
     }
     var callback = {success: handleSuccess};
-    var postData = "col=" + col + "&obj=" + obj + "&pgaction=getschedule&gschtype=completed&rand=" + Math.random();
+    var postData = "col=" + col + "&obj=" + obj + "&pgaction=getschedule&gschtype=level1&rand=" + Math.random();
     var request = YAHOO.util.Connect.asyncRequest('POST', 'cc_lib_data.php', callback, postData);
 }
 
 function show_Create_library(obj) { // Change Campaign - 2014-03  begin
-
+    $('.older-version').hide();
+    $('.search-btn').hide();
     var val = obj.val();
     var libnameArray = val.split(",");
     var libflag_name = libnameArray[0];
     var libcamp_id = libnameArray[1];
     var libcamp_name = libnameArray[2];
+    var libcId = libnameArray[3];
+
     if (libflag_name == 'run') {
         obj.val(0);
         get_distribution_show(libcamp_id);
@@ -1352,12 +1449,10 @@ function show_Create_library(obj) { // Change Campaign - 2014-03  begin
                 var dataArr = datao.aData;
                 var sql1 = dataArr.sql;
                 var sSQL = sql1.replace(/\\\"/g, "\"");
-                var metaData = dataArr.meta_data;
-                var metaStr = metaData.split('^');
                 $('#previewSql').val(sSQL);
                 $('#previewDownloadFileName').val(dataArr.t_name);
                 $('#previewDownloadFileType').val('xlsx');
-                list_report_run(0,dataArr.t_name,dataArr.List_Format,metaStr[3]);
+                list_report_run(0,dataArr.t_name,dataArr.List_Format,dataArr.rpmeta.Category);
             }
         });
         return false;
@@ -1395,10 +1490,11 @@ function show_Create_library(obj) { // Change Campaign - 2014-03  begin
         $('#share-title').text('Share Campaign');
         var postData = {
             eCampid : libcamp_id,
-            t_type : 'A',
+            t_type : 'C',
             _token : $('[name="_token"]').val()
         };
         obj.val(0);
+        $('#chkAddToPhone').parents('.form-group').hide();
         $.ajax({
             type: 'GET',
             url: 'getshare',
@@ -1437,6 +1533,12 @@ function show_Create_library(obj) { // Change Campaign - 2014-03  begin
 
     if (libflag_name == 'delete') {
         delete_row_comp(libcamp_id);
+        obj.val(0);
+        return false;
+    }
+
+    if (libflag_name == 'deleteolderversion') {
+        delete_older_version_row_comp(libcamp_id);
         obj.val(0);
         return false;
     }
@@ -1656,11 +1758,13 @@ function show_Create_library(obj) { // Change Campaign - 2014-03  begin
         $('#libflag_name').val(libflag_name);
         $('#libcamp_name').val(libcamp_name);
         $('#libcamp_id').val(libcamp_id);
+        $('#libcId').val(libcId);
         //$('a[href="#tab_26"]').text('View');
         $('a[href="#tab_26"]').trigger('click');
         $('#save').hide().attr('onclick','');
         $('#savebottom').hide().attr('onclick','');
         $('.seg-clr-btn').hide();
+        $('.search-btn').hide();
         return false;
     }
 
@@ -1671,10 +1775,11 @@ function show_Create_library(obj) { // Change Campaign - 2014-03  begin
         //$('.view-report').show();
         $('.list-report, .emreport').hide();
         $('.c-btn').html('');
+        $('.search-btn').show();
         $('#libflag_name').val(libflag_name);
         $('#libcamp_name').val(libcamp_name);
         $('#libcamp_id').val(libcamp_id);
-
+        $('#libcId').val(libcId);
         $('a[href="#tab_26"]').trigger('click');
         $('#save').hide().attr('onclick','addsubSQL(false);');
         $('#savebottom').show().attr('onclick','addsubSQL(false);');
@@ -1746,24 +1851,21 @@ function get_distribution_show(recid) {
         },
         async: false,
         success: function (datao) {
+            NProgress.done(true)
             var dataouter = datao.aData;
             //var dataArr = dataouter.split('<|>');
 
             localStorage.removeItem('srData');
             var listShortName = dataouter.list_short_name;
-            //localStorage.removeItem('listShortName');
-            //localStorage.setItem('listShortName',listShortName);
-            var list_level = dataouter.list_level;
-            $('#list_name').val(dataouter.t_name);
-            var metaData = dataouter.meta_data;
-            var metaStr = metaData.split('^');
+            /*var metaData = dataouter.meta_data;
+            var metaStr = metaData.split('^');*/
             var sql = (dataouter.sql).replace(/\\\"/g, "\"");
 
             var srData = {
                 'list_level' :  dataouter.list_level,
                 't_name' : dataouter.t_name,
                 'list_short_name' : dataouter.list_short_name,
-                'metaDesc' : metaStr[3],
+                'metaDesc' : dataouter.rpmeta.Category,
                 'cont_filters': dataouter.filter_condition,
                 'incl_filters': dataouter.Customer_Inclusion_Condition,
                 'excl_filters': dataouter.Customer_Exclusion_Condition,
@@ -1774,7 +1876,7 @@ function get_distribution_show(recid) {
             localStorage.setItem('srData',JSON.stringify(srData));
             var list_level = dataouter.list_level;
             $('#list_name').val(dataouter.t_name);
-            $('#meta_description').val(metaStr[3]);
+            $('#meta_description').length ? $('#meta_description').val(metaStr[3]) : '';
 
             var Report_Row = dataouter.Report_Row;
             var Report_Column = dataouter.Report_Column;
@@ -1783,6 +1885,12 @@ function get_distribution_show(recid) {
             var Report_Show = dataouter.Report_Show;
             var Chart_Type = $.trim(dataouter.Chart_Type);
             var Axis_Scale = $.trim(dataouter.Axis_Scale);
+
+            if( Report_Row.indexOf(',') != -1 ){
+                Report_Row = Report_Row.split(',');
+            }else{
+                Report_Row = [Report_Row];
+            }
 
             var params = {
                 row_variable : Report_Row,
@@ -2106,15 +2214,30 @@ function add_field(fieldname,action) { console.log(fieldname,action);
         if (fieldSummaryVal == "") {
             $('#fieldSummaryVal').text(fieldname);
         } else {
-            var n = fieldSummaryVal.indexOf(fieldname);
-            if (n == -1) {
+            if($("#fieldSummaryVal:contains('"+ fieldname +"')").length == 0){
                 $('#fieldSummaryVal').text(fieldSummaryVal + "," + fieldname);
             }
+
+            /*var n = fieldSummaryVal.indexOf(fieldname);
+            if (n == -1) {
+                $('#fieldSummaryVal').text(fieldSummaryVal + "," + fieldname);
+            }*/
         }
 
         $("#sortcolumn").append('<option value='+fieldname+'>'+fieldname+'</option>');
     } else {
         $("#sortcolumn option[value="+fieldname+"]").remove();
+        if($("#fieldSummaryVal:contains('"+ fieldname +"')").length > 0){
+            var res = fieldSummaryVal.replace("," + fieldname, "");
+        }else if($("#fieldSummaryVal:contains('"+ fieldname +"')").length == 0){
+            if($("#fieldSummaryVal:contains(',')").length > 0){
+                var res = fieldSummaryVal.replace(fieldname + ",", "");
+            }else{
+                var res = fieldSummaryVal.replace(fieldname, "");
+            }
+        }
+        $('#fieldSummaryVal').text($.trim(res));
+        return false;
         var n = fieldSummaryVal.indexOf(fieldname);
         if (n > 0) { // If column exist on after first position
             var res = fieldSummaryVal.replace("," + fieldname, "");
@@ -2238,7 +2361,7 @@ function lListTemplateName(id, aAction, selectedFields) {
                 $("#accordion").html(data.fieldsHtml);
 
 
-                $('#row_variable_input').html('<option value="">Select</option>');
+                $('#row_variable_input').html('');
                 $('#column_variable_input').html('<option value="">Select</option>');
                 $('#sum_variable_input').html('<option value="">Select</option>');
                 $.each(data.lkpOptions, function(val, text) {
@@ -2254,6 +2377,29 @@ function lListTemplateName(id, aAction, selectedFields) {
                 });
 
                 initJS($('#accordion'));
+
+                var emailMS = [
+                    'row_variable_input'
+                ];
+
+                $.each(emailMS, function (index, value) {
+                    if ($("#" + value).length){
+                        $("#" + value).multiselect({
+                            //appendTo: '#emailBox',
+                            close: function () {
+                            },
+                            header: true, //"Region",
+                            selectedList: 1, // 0-based index
+                            nonSelectedText: 'Select Values',
+                            enableFiltering: true,
+                            filterBehavior: 'text',
+                        }).multiselectfilter({label: 'Search'});
+
+                        $("#" + value).multiselect('refresh');
+                        $("#" + value + "_ms").attr('style', 'width:245.156px !important;height: 28px; background-color: white !important;height: calc(1.5em + .5rem + 2px);padding: .25rem .5rem;border-radius: .2rem;background-clip: padding-box;border: 1px solid #e9ecef;font-size: .76563rem;min-height: 27px;');
+
+                    }
+                });
                 $("#customFieldRow").show();
                 $('#fieldSummery').hide();
 
@@ -2835,8 +2981,10 @@ function get_filter_summary() {
                             var st = '%', ed = '';
                         }
 
-                        if (val[i].indexOf(",") > -1) {
-                            var vValArray = val[i].split(",");
+                        if (val[i].indexOf(",") > -1 || Array.isArray(val[i])) {
+                            var vValArray = val[i].indexOf(",") > -1 ? val[i].split(",") :
+                                Array.isArray(val[i]) ? val[i] : [];
+                            console.log('vValArray---',vValArray)
                             var nNewValVar = '(';
 
                             var collog = '';
@@ -2959,8 +3107,9 @@ function get_filter_summary() {
                             var st = '%', ed = '';
                         }
 
-                        if (val[i].indexOf(",") > -1) {
-                            var vValArray = val[i].split(",");
+                        if (val[i].indexOf(",") > -1 || Array.isArray(val[i])) {
+                            var vValArray = val[i].indexOf(",") > -1 ? val[i].split(",") :
+                                Array.isArray(val[i]) ? val[i] : [];
                             var nNewValVar = '(';
                             var collog = '';
                             for (kk = 0; kk < vValArray.length; kk++) {
@@ -3283,8 +3432,9 @@ function get_customer_excl_incl_summary(section) {
                             var st = '%', ed = '';
                         }
 
-                        if (val[i].indexOf(",") > -1) {
-                            var vValArray = val[i].split(",");
+                        if (val[i].indexOf(",") > -1 || Array.isArray(val[i])) {
+                            var vValArray = val[i].indexOf(",") > -1 ? val[i].split(",") :
+                                Array.isArray(val[i]) ? val[i] : [];
                             var nNewValVar = '(';
 
                             var collog = '';
@@ -3402,8 +3552,9 @@ function get_customer_excl_incl_summary(section) {
                             var st = '%', ed = '';
                         }
 
-                        if (val[i].indexOf(",") > -1) {
-                            var vValArray = val[i].split(",");
+                        if (val[i].indexOf(",") > -1 || Array.isArray(val[i])) {
+                            var vValArray = val[i].indexOf(",") > -1 ? val[i].split(",") :
+                                Array.isArray(val[i]) ? val[i] : [];
                             var nNewValVar = '(';
                             var collog = '';
                             for (kk = 0; kk < vValArray.length; kk++) {
@@ -3698,7 +3849,7 @@ function updateSqlEditFilterSummery() { //alert('here');
     //is_query_changed(1);
 }
 
-function addsubSQL(runoption) {
+function addsubSQL(runoption = true) {
     if ($.trim($('#listShortName').val()) == "") {
         $('#indicationMsg').fadeIn('slow');
         $('#indicationMsg').text('Please enter campaign name');
@@ -3978,17 +4129,42 @@ function create_distribution(is_download,$outer = []) {
     }
 }
 
+
+
 function delete_row_comp(libcamp_id) {
     var ans = confirm("Confirm Deletion?");
     if (ans) {
         $.ajax({
             type: 'POST',
             url: 'delete',
-            data: {del_row : libcamp_id , type : 'A', _token : $('[name="_token"]').val()},
+            data: {del_row : libcamp_id , type : 'C', _token : $('[name="_token"]').val()},
             async: false,
             success: function (dataouter) {
                 ACFn.display_message('Successfully Deleted','','success')
                 $('.tab-ajax li a.active').trigger('show.bs.tab');
+            }
+        })
+    }
+}
+
+function delete_older_version_row_comp(libcamp_id) {
+    var ans = confirm("Confirm Deletion?");
+    if (ans) {
+        $.ajax({
+            type: 'POST',
+            url: 'delete_older_version',
+            data: {del_row : libcamp_id , type : 'C', _token : $('[name="_token"]').val()},
+            async: false,
+            dataType : 'JSON',
+            success: function (dataouter) {
+                if(dataouter.success){
+                    ACFn.display_message('Successfully Deleted','','success')
+                    $('.tab-ajax li a.active').trigger('show.bs.tab');
+                    $('.older-version').show();
+                }else{
+                    ACFn.display_message(dataouter.messageTitle,'','success')
+                }
+
             }
         })
     }
@@ -4294,6 +4470,7 @@ function getCustomFieldMeta(val, select_id, numF, divNum, optId, secIds, section
             sectiontype : section,
             colName : val,
             secIds : secIds,
+            list_level : $('#list_level').val()
         },
         async: false,
         success: function (data) {
@@ -4386,7 +4563,7 @@ function GetTextInfo(thiss, events) {
 }
 
 function run_report(){
-    console.log('eh chlya');
+
     $('#indicationCFMsgForDistribution').attr('style', 'color:#5eb5d7;font-size:13px');
     $('#indicationCFMsgForDistribution').text('Summary report running. Please wait…');
 
@@ -4581,7 +4758,7 @@ ACFn.ajax_run_report_result_inner = function (F,R) {
 }
 
 
-function run_report_outer(dataouter){
+function run_report_outer(dataouter,inner_call = 2){
     if($('#row_variable_input').val() != ""){
 
         var Report_Row = dataouter.Report_Row;
@@ -4597,6 +4774,12 @@ function run_report_outer(dataouter){
         var List_Level = dataouter.list_level;
         var sql = dataouter.sql;
         var url = 'run';
+
+        if( Report_Row.indexOf(',') != -1 ){
+            Report_Row = Report_Row.split(',');
+        }else{
+            Report_Row = [Report_Row];
+        }
         ACFn.sendAjax(url,'get',{
             list_level : List_Level,
             sql : sql,
@@ -4608,7 +4791,7 @@ function run_report_outer(dataouter){
             chart_variable : Chart_Type,
             chart_axis_scale : Axis_Scale,
             chart_label_value : Label_Value,
-            inner_call : 2,
+            inner_call : inner_call,
         },'',{},false)
     }
 }
@@ -4627,7 +4810,7 @@ ACFn.ajax_run_report_result_outer = function (F,R) {
         localStorage.setItem("xlsxData", JSON.stringify(xlsxData));
         console.log(JSON.parse(localStorage.getItem("xlsxData")))
         if(R.chart_variable != ""){
-            chart_change_outer(R.row_variable,R.column_variable,R.sum_variable,R.function_variable,R.show_as,R.chart_variable,'column_variable_input',R.chart_axis_scale,R.chart_label_value);
+            chart_change_outer(R.row_variable,R.column_variable,R.sum_variable,R.function_variable,R.show_as,R.chart_variable,'column_variable_input',R.chart_axis_scale,R.chart_label_value,R.inner_call);
         }
     }
 }
@@ -4679,12 +4862,16 @@ function singleRenderChartData(localStoreData,rv,cv){
                         if(rv == iV){
                             if(iVitem != null){
                                 iVitem = iVitem.replace('%','');
+                            }else{
+                                iVitem = 0;
                             }
                             iBody[0] = iVitem.toString();
                             iBody2[0] = iVitem.toString();
                         }else if(iV == 0 && rv != iV){
                             if(iVitem != null){
                                 iVitem = iVitem.replace('%','');
+                            }else{
+                                iVitem = 0;
                             }
                             iBody[0] = iVitem.toString();
                             iBody2[0] = iVitem.toString();
@@ -4695,6 +4882,8 @@ function singleRenderChartData(localStoreData,rv,cv){
                                 iVitem = iVitem.toString();
                                 iVitem = iVitem.indexOf('%') != -1 ? iVitem.replace('%','') : iVitem;
                                 iVitem = Math.round(iVitem);
+                            }else{
+                                iVitem = 0;
                             }
                             iBody[++j] = iVitem;
                             j++;
@@ -4714,7 +4903,7 @@ function singleRenderChartData(localStoreData,rv,cv){
 google.charts.load('current', {'packages': ['corechart']});
 
 function chart_change(rv,cv,sv,fn,sa,ct,ctID,cs,cval,desObj){
-
+    rv = rv.join(' | ');
     $('#indicationCFMsgForDistribution').attr('style', 'color:#5eb5d7;font-size:13px');
     $('#indicationCFMsgForDistribution').text('');
     if ($('#chart_variable_input').val() != "") {
@@ -4723,7 +4912,7 @@ function chart_change(rv,cv,sv,fn,sa,ct,ctID,cs,cval,desObj){
 
         var xlsxData = localStorage.getItem("xlsxData");
 
-        google.charts.load('current', {'packages':['corechart']});
+        //google.charts.load('current', {'packages':['corechart']});
         var colVariable = cv == "" ? 'Distribution' : cv;
         var rowVariable = rv == "" ? 'Summary' : rv;
 
@@ -4867,6 +5056,24 @@ function chart_change(rv,cv,sv,fn,sa,ct,ctID,cs,cval,desObj){
 
             if(type == 'pie'){
                 var chart = new google.visualization.PieChart(chart_area);
+
+                google.visualization.events.addListener(chart, 'ready', function(){
+                    console.log('chart.getImageURI()---' , chart.getImageURI());
+
+                    chart_area.innerHTML = '<img src="' + chart.getImageURI() + '" class="img-responsive">';
+                    if($('#chartPI').length){
+                        $('#chartPI').hide();
+                    }
+                    addChart($('#chartPI'));
+                    $('#chartImage').val(chart.getImageURI());
+                    if($('#chart_variable').length){
+                        $('#chart_variable_input').val($('#chart_variable').val());
+                        $('#chart_axis_scale_input').val($('#chart_axis_scale').val());
+                        $('#chart_label_value_input').prop('checked',$('#chart_label_value').is(':checked') ? true : false);
+                    }
+
+                });
+
                 chart.draw(data, options);
             }
             else if(type == 'line'){
@@ -4882,6 +5089,7 @@ function chart_change(rv,cv,sv,fn,sa,ct,ctID,cs,cval,desObj){
                     if($('#chartPI').length){
                         $('#chartPI').hide();
                     }
+                    addChart($('#chartPI'));
                     $('#chartImage').val(chart.getImageURI());
                     addChart($('#chartPI'));
                     if($('#chart_variable').length){
@@ -4941,8 +5149,8 @@ function chart_change(rv,cv,sv,fn,sa,ct,ctID,cs,cval,desObj){
     }
 }
 
-function chart_change_outer(rv,cv,sv,fn,sa,ct,ctID,cs,cval){
-
+function chart_change_outer(rv,cv,sv,fn,sa,ct,ctID,cs,cval,inner_call){
+    rv = rv.join(' | ');
     if (ct != "") {
         var type = ct;
         //var ctype = $('#' + ctID).find('option:selected').text() + ' Chart';
@@ -5000,19 +5208,19 @@ function chart_change_outer(rv,cv,sv,fn,sa,ct,ctID,cs,cval){
         google.setOnLoadCallback(function() {
 
             if(cval == '0'){
-                drawChartOuter(cdata.withoutLV,type,ctype,ctitle,xAxis,yAxis,cType,cLegend,cval);
+                drawChartOuter(cdata.withoutLV,type,ctype,ctitle,xAxis,yAxis,cType,cLegend,cval,inner_call);
             }else if(cval == '1'){
-                drawChartOuter(cdata.withoutLV,type,ctype,ctitle,xAxis,yAxis,cType,cLegend,cval);
+                drawChartOuter(cdata.withoutLV,type,ctype,ctitle,xAxis,yAxis,cType,cLegend,cval,inner_call);
             }else if(cval == '2'){
-                drawChartOuter(cdata.pureData,type,ctype,ctitle,xAxis,yAxis,cType,cLegend,cval);
+                drawChartOuter(cdata.pureData,type,ctype,ctitle,xAxis,yAxis,cType,cLegend,cval,inner_call);
             }else if(cval == '3'){
-                drawChartOuter(cdata.pureData,type,ctype,ctitle,xAxis,yAxis,cType,cLegend,cval);
+                drawChartOuter(cdata.pureData,type,ctype,ctitle,xAxis,yAxis,cType,cLegend,cval,inner_call);
             }else{
-                drawChartOuter(cdata.withoutLV,type,ctype,ctitle,xAxis,yAxis,cType,cLegend,'0');
+                drawChartOuter(cdata.withoutLV,type,ctype,ctitle,xAxis,yAxis,cType,cLegend,'0',inner_call);
             }
         });
 
-        function drawChartOuter(cdata,type,ctype,ctitle,xAxis,yAxis,cType,cLegend,cval) {
+        function drawChartOuter(cdata,type,ctype,ctitle,xAxis,yAxis,cType,cLegend,cval,inner_call) {
             var data = google.visualization.arrayToDataTable(cdata);
             var colors = ['#DC143C','#07ae07',  '#FF8C00', '#4682B4',  '#93cddd', '#FF1493', '#696969', '#FA8072', '#8A2BE2', '#8B008B', '#4B0082', '#1E90FF',  '#2F4F4F','#228B22','#FF0000','#B22222','#CD5C5C'];
             if(cval == '0'){
@@ -5100,7 +5308,7 @@ function chart_change_outer(rv,cv,sv,fn,sa,ct,ctID,cs,cval){
                 var chart = new google.visualization.LineChart(chart_area);
                 google.visualization.events.addListener(chart, 'ready', function(){
                     chart_area.innerHTML = '<img style="display: none;" src="' + chart.getImageURI() + '" class="img-responsive">';
-                    addChart($('#chartPO'));
+                    addChart($('#chartPO'),inner_call);
                 });
                 chart.draw(data, options);
             }
@@ -5126,7 +5334,7 @@ function chart_change_outer(rv,cv,sv,fn,sa,ct,ctID,cs,cval){
                 var chart = new google.visualization.ColumnChart(chart_area);
                 google.visualization.events.addListener(chart, 'ready', function(){
                     chart_area.innerHTML = '<img style="display: none;" src="' + chart.getImageURI() + '" class="img-responsive">';
-                    addChart($('#chartPO'));
+                    addChart($('#chartPO'),inner_call);
                 });
                 chart.draw(data, options);
             }
@@ -5135,7 +5343,7 @@ function chart_change_outer(rv,cv,sv,fn,sa,ct,ctID,cs,cval){
     }
 }
 
-function addChart(obj) {
+function addChart(obj,inner_call = '') {
     if (typeof localStorage !== 'undefined') {
         if(obj.find('img').length > 0){
             if (localStorage.getItem("params") === null) {
@@ -5148,6 +5356,42 @@ function addChart(obj) {
             }
 
             localStorage.setItem('params',JSON.stringify(params));
+            if(inner_call == 3){
+                var postdata = {
+                    pgaction : 'ReSch_campaign',
+                    CID : $.trim(params.camp_id),
+                    CName : params.list_short_name,
+                    // metaStr : metaData,
+                    SMTPStr : 'N',
+                    ftp_flag : 'N',
+                    ftpData : '',
+                    SFTP_Attachment : '',
+                    SR_Attachment : 'onlylist',
+                    SREmailStr : 'N',
+                    ShareStr : 'N',
+                    rtype : 'RI',
+                    params : JSON.stringify(params),
+                    _token : $('[name="_token"]').val()
+                };
+
+                $.ajax({
+                    url : 'report/cc_sch_data',
+                    type : 'POST',
+                    data : postdata,
+                    async : false,
+                    beforeSend : function(){
+
+                    },
+                    success : function (data) {
+
+                        localStorage.removeItem('record');
+                        localStorage.removeItem('params');
+                        localStorage.removeItem('contactfilters');
+                        localStorage.removeItem('exclusionsfilters');
+                        localStorage.removeItem('inclusionsfilters');
+                    }
+                })
+            }
             setTimeout(function () {
                 obj.html('').hide();
             },1500);
@@ -5303,16 +5547,16 @@ function d_pdf(is_download) {
         }else{
             var rpheader = $('#function_variable').val() == 'count' ? ($('#column_variable').val() == "" ? colVariable + ' by ' + rowVariable : rowVariable + ' by ' + colVariable) : (sumVariable + ' by ' + rowVariable + ' and ' + colVariable);
         }
-
+        rpheader = rpheader.replace(/\~/g, ''),
         ACFn.sendAjax('HTMLtoPDF','POST',{
             tablehtml : $('#distributionResultHtml').html(),
             charthtml : $('#chartP').html(),
             rpheader : rpheader.replace(/_/g, ' '),
             rpfooter : rpfooter,
             filename : filename,
-            cont_filters: srData.filter_condition,
-            incl_filters: srData.Customer_Inclusion_Condition,
-            excl_filters : srData.Customer_Exclusion_Condition,
+            //cont_filters: srData.filter_condition,
+            //incl_filters: srData.Customer_Inclusion_Condition,
+            //excl_filters : srData.Customer_Exclusion_Condition,
             papersize : $('#report_orientation').length ? $('#report_orientation').val() : srData.report_orientation,
             _token : $('[name="_token"]').val()
         });
@@ -5374,43 +5618,63 @@ ACFn.ajax_download_sr_file = function (F,R) {
 
 
 function ExeMutlipleRep() {
-    $('.emreport').html('<span class="spinner-grow spinner-grow-sm ds-c" role="status" aria-hidden="true"></span><h6>Loading...</h6>');
+    $('.emreport').html('<span class="spinner-border spinner-border-sm ds-c" role="status" aria-hidden="true"></span><span class="sr-only">Loading...</span>');
     $('.emreport').attr('disabled',true);
     NProgress.start();
 
-    setTimeout(function () {
+
         $('input:checkbox.em_report:checked').each(function (index,elem) {
+            setTimeout(function () {
             var dataouter = JSON.parse($(elem).val());
             dataouter.sql = atob(dataouter.sql)
             localStorage.removeItem('record');
             var sSQL = dataouter.sql;
-            var metaData = dataouter.meta_data;
-            var metaStr = metaData.split('^');
-
+           /* var metaData = dataouter.meta_data;
+            var metaStr = metaData.split('^');*/
+            var currentTime = new Date();
+            // returns the month (from 0 to 11)
+            var r9 = currentTime.getMonth() + 1;
+            // returns the day of the month (from 1 to 31)
+            var r10 = currentTime.getDate();
+            // returns the year (four digits)
+            var r8 = currentTime.getFullYear();
+            var Category = dataouter.rpmeta.Category.replace("~", " ");
+            var params = {
+                camp_id : dataouter.t_id,
+                CampaignID :  dataouter.t_id,
+                Type : 'C',
+                Objective : dataouter.rpmeta.Objective,
+                Brand : dataouter.rpmeta.Brand,
+                Channel : dataouter.rpmeta.Channel,
+                Category : Category,
+                ListDes : dataouter.rpmeta.ListDes,
+                Wave : dataouter.rpmeta.Wave,
+                Start_Date : r8 + "/" + r9 + "/" + r10,
+                Interval : dataouter.rpmeta.Interval,
+                ProductCat1 : dataouter.rpmeta.ProductCat1,
+                ProductCat2 : dataouter.rpmeta.ProductCat2,
+                SKU : dataouter.rpmeta.SKU,
+                Coupon : dataouter.rpmeta.Coupon,
+                Sort_Column : 'DS_MKC_ContactID',
+                Sort_Order : 'ASC',
+                Camp_Name : dataouter.t_name,
+                list_short_name : dataouter.list_short_name,
+                meta_description : Category,
+                sSQL : dataouter.sql,
+                list_level : dataouter.list_level,
+                selected_fields : dataouter.selected_fields,
+                schedule_action : 'ReSch_campaign'
+            };
+            localStorage.setItem('params',JSON.stringify(params));
             if (dataouter.Report_Row != "") {
-                run_report_outer(dataouter);
+                run_report_outer(dataouter,3);
             }
 
-            setTimeout(function () {
-                var record = {
-                    camp_id : dataouter.t_id,
-                    Camp_Name : dataouter.t_name,
-                    list_short_name : dataouter.list_short_name,
-                    meta_description : metaStr[3],
-                    sSQL : dataouter.sql,
-                    list_level : dataouter.list_level,
-                    selected_fields : dataouter.selected_fields,
-                    metaStr : dataouter.meta_data,
-                    schedule_action : 'ReSch_campaign'
-                };
-
-                localStorage.setItem('record',JSON.stringify(record));
-                var params = localStorage.getItem('params');
-                var postdata = {
+            //setTimeout(function () {
+                /*var postdata = {
                     pgaction : 'ReSch_campaign',
                     CID : $.trim(dataouter.t_id),
                     CName : dataouter.list_short_name,
-                    metaStr : metaData,
                     SMTPStr : 'N',
                     ftp_flag : 'N',
                     ftpData : '',
@@ -5438,22 +5702,16 @@ function ExeMutlipleRep() {
                         localStorage.removeItem('contactfilters');
                         localStorage.removeItem('exclusionsfilters');
                         localStorage.removeItem('inclusionsfilters');
-                        //$(".em_report").prop('checked',false);
-                        //$('#mutlipleReports').val('');
-                        //$('.em_report').hide();
                     }
-                })
-            },2000)
-
+                })*/
+            //},5000)
+            },4000)
         });
-    },1500)
-
-
 
     setTimeout(function () {
         $(".em_report").prop('checked',false);
         NProgress.done(true);
-        $('.emreport').html('<span class="fas fa-arrow-circle-right ds-c" role="status" aria-hidden="true"></span>');
+        $('.emreport').html('<span class="fas fa-forward ds-c" role="status" aria-hidden="true"></span>');
         $('.emreport').attr('disabled',false);
 
         //$('#mutlipleReports').val('');
@@ -5559,7 +5817,7 @@ function downloadMutliplePDF() {
     var data = {
         'title': 'Do you want to add more pdf files ?',
         'text' : '',
-        'butttontext' : 'Ok',
+        'butttontext' : 'Yes',
         'cbutttonflag' : true
     };
 
@@ -5578,6 +5836,7 @@ function downloadMutliplePDF() {
             cancelButtonColor: '#00000033',
             //customClass: 'swal-wd',
             confirmButtonText: butttontext,
+            cancelButtonText: "No",
             allowOutsideClick: false,
             customClass: {
                 popup: 'swal-wd',
@@ -5625,5 +5884,142 @@ function dispMetadata(metaHTML) {
     var parms = JSON.parse(localStorage.getItem('params'));
     ACFn.sendAjax('campaign/showmeta','POST',{metaHTML : parms.metaHTML});
     //}
+}
+
+function tagcampaign(obj,rowId,actionType) {
+    var tag = obj.is(':checked') ? 1 : 0;
+    ACFn.sendAjax('tag','post',{
+        tag : tag,
+        actionType : actionType,
+        rowId : rowId,
+        type : 'C'
+    })
+}
+
+function getFilters(F) {
+    if (typeof F == 'undefined') {
+        if($("#filter_milestone_form").length > 0){
+            F = $("#filter_milestone_form");
+        }else{
+            F = $("#filter_form");
+        }
+
+    }
+    var filters = [];
+    var filtersFlag = false;
+    if (F.length) {
+        $.each(F.serializeArray(), function (index, element) {
+            console.log(element);
+            if (typeof filters[element.name] == 'undefined') {
+                filters[element.name] = [];
+            }
+            if (element.value) {
+                filters[element.name].push(element.value);
+                filtersFlag = true;
+            }
+        });
+    }
+    var obj = $.extend({}, filters);
+    if(filtersFlag == true){
+        filtersApplied(obj, F);
+
+    }else{
+        if($("#filtersApplied").length > 0){
+            $('#filtersApplied').remove();
+            $('.clear-btn').remove();
+        }
+    }
+    console.log('Form elements');
+    console.log(obj);
+    console.log('Form elements end');
+    return obj;
+}
+
+function filtersApplied(filters, $form) {
+    if (typeof $form == 'undefined') {
+        $form = $("#filter_form");
+    }
+    var key = null;
+    for (var prop in filters) {
+        if (filters.hasOwnProperty(prop)) {
+            key++;
+        }
+    }
+    if (key > 0 && $("#filtersApplied").length == 0) {
+        //$("#collapseFilters").after('<ul id="filtersApplied" class="selected-filters" ></ul>');
+        $(".after-filter").html('<ul id="filtersApplied" class="selected-filters" ></ul>'); //<button type="button" class="btn clear-btn" onclick="clearFilters()"><i class="fa fa-refresh" aria-hidden="true"></i> Clear Filter</button>
+    }
+    var fouter = $("#filtersApplied");
+    fouter.empty();
+    $.each(filters, function (name, element) {
+        var elselect = $form.find("select[name='" + name + "']");
+        var elinput = $form.find("input[name='" + name + "']");
+        $.each(element, function (key, value) {
+            if (value == '') {
+                return;
+            }
+            var long_name = value;
+            var elcheckbox = $form.find("[name='" + name + "'][value='" + value + "'][type='checkbox']");
+            var elradio = $form.find("[name='" + name + "'][value='" + value + "'][type='radio']");
+            if (elcheckbox.length && elcheckbox.next('label').length) {
+                long_name = elcheckbox.next('label').html();
+            } else if (elradio.length && elradio.next('label').length) {
+                long_name = elradio.next('label').html();
+            } else if (elselect.length) {
+                var opt = elselect.find('option[value="' + value + '"]');
+                if (opt.length) {
+                    long_name = opt.html();
+                }
+            } else if (elinput.length) {
+                var opr = $form.find("select[name='" + name + "_op']").length ?  $form.find("select[name='" + name + "_op']").val() : '';
+                long_name = elinput.attr('data-placeholder') + ' '+ opr + ' ' + elinput.val();
+            }
+            //console.log("not allowed----",elselect.data('notallowed'));
+            if(elselect.data('notallowed') == false || elselect.data('notallowed') == undefined){
+                fouter.append('<li class="selected-filter mr-1"><span>' + long_name + '</span><a href="#" class="removeFilter" data-name="' + name + '" data-value="' + value + '" ><i class="fas fa-times-circle"></i></a></li>');
+            }
+
+        });
+
+    });
+}
+
+function downloadESDLink(obj){
+    var url = obj.data('href');
+    var tab = obj.attr('data-tab');
+    var singlecampaignid = $('#singlecampaignid').length ? $('#singlecampaignid').val() : '';
+    if(tab == 'SingleCamp' && singlecampaignid == ''){
+        $('#singlecampaignid').parents('.form-group').addClass('has-error');
+        $('#singlecampaignid').after('<span class="error-block help-block">Campaign is required</span>');
+
+        setTimeout(function () {
+            ACFn.clear_errors($('#singlecamp_tab'));
+        },2000)
+
+        return false;
+    }
+    var filters = getFilters($('#filter_form'));
+    var table = $('#basic_table_without_dynamic_pagination');
+
+    var downloadableColumns = table.attr('data-columns-visible') ? table.attr('data-columns-visible') : '';
+    ACFn.sendAjax(url,'GET',{
+        tab : tab,
+        filters : filters,
+        downloadableColumns : downloadableColumns,
+        singlecampaignid : singlecampaignid
+    },obj);
+}
+
+function ajax_quick_update(obj) {
+    var rowID = obj.data('rowid');
+    var fieldname = obj.data('field');
+    var fieldvalue = obj.val();
+    delay(function(){
+        ACFn.sendAjax('campaign/metadataquickupdate','GET',{
+            rowID : rowID,
+            fieldname : fieldname,
+            fieldvalue : fieldvalue,
+        })
+    }, 1000 );
 }
 

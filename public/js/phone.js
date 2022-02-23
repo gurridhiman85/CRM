@@ -2,9 +2,13 @@ $(document).ready(function () {
 
     ACFn.ajax_touch = function (F,R) {
         if(R.success){
-            $('#DS_MKC_ContactID_' + R.tocuh_data.DS_MKC_ContactID)
+            $('#row_' + R.tocuh_data.DS_MKC_ContactID + ' td')
                 .find('span')
                 .attr('class',R.call_class);
+
+            /*$('#DS_MKC_ContactID_' + R.tocuh_data.DS_MKC_ContactID)
+                .find('span')
+                .attr('class',R.call_class);*/
         }
     }
 
@@ -67,6 +71,13 @@ function run_report_inPhone(dataouter){
         var List_Level = dataouter.list_level;
         var sql = dataouter.sql;
         var url = 'run';
+
+        if( Report_Row.indexOf(',') != -1 ){
+            Report_Row = Report_Row.split(',');
+        }else{
+            Report_Row = [Report_Row];
+        }
+
         ACFn.sendAjax(url,'get',{
             list_level : List_Level,
             sql : sql,
@@ -95,6 +106,9 @@ function implementReportWithPhone(request_type,report_rowid) {
             },
             async: false,
             success: function (datao) {
+                if(!datao.success){
+                    ACFn.display_message(datao.messageTitle,'','success');
+                }
                 var dataouter = datao.aData;
 
                 //localStorage.removeItem('record');

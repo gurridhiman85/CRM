@@ -12,6 +12,7 @@ foreach( $ImportData[0] as $key=>$cell ){
 }
 $matches = [];
 $orgColumns = $columns;
+$hidden_fields_html = '';
 foreach( $ImportData[0] as $key=>$cell ){
     $html = ' <select class="form-control" id="col_'.$key.'" onchange="colChange($(this),'.$key.')"><option value="">Select a field</option>';
     $is_match = 0;
@@ -30,7 +31,8 @@ foreach( $ImportData[0] as $key=>$cell ){
             }
         }
     }
-    $html .= '</select><input type="hidden" id="col_hidden_'.$key.'" name="col_hidden_'.$key.'" value="'.$mt.'"/>';
+    $html .= '</select>';
+    $hidden_fields_html .= '<input type="hidden" id="col_hidden_'.$key.'" name="col_hidden_'.$key.'" value="'.$mt.'"/>';
     $columnsData[] = [
         'html' => $html,
         'is_match' => $is_match,
@@ -38,37 +40,42 @@ foreach( $ImportData[0] as $key=>$cell ){
 }
 
 ?>
-<table class="table table-bordered table-hover color-table lkp-table" id="match_fields_table">
-    <thead>
-        <tr>
 
-            @foreach( $columnsData as $key=>$column )
-                <th class="{{ $column['is_match'] == 1 ? 'matched' : 'unmatched' }}" data-class="{{ $key }}_col" data-col-key="{{ $key }}">
-                    {!! $column['html'] !!}
-                </th>
-            @endforeach
+@if(!$hidden_fields)
+    <table class="table table-bordered table-hover color-table lkp-table" id="basic_table_without_dynamic_pagination">
+        <thead>
+            <tr>
 
-        </tr>
-    </thead>
-    <tbody>
-        @php $columnslist = []; @endphp
-        @foreach( $ImportData as $key=>$singleRow )
-            @if($key == 0)
-                @foreach( $singleRow as $cell )
-                    <?php $columnslist[] = trim(strtolower($cell)); ?>
+                @foreach( $columnsData as $key=>$column )
+                    <th class="{{ $column['is_match'] == 1 ? 'matched' : 'unmatched' }}" data-class="{{ $key }}_col" data-col-key="{{ $key }}">
+                        {!! $column['html'] !!}
+                    </th>
                 @endforeach
-            @endif
-            @if($key > 0)
-                <tr>
-                    @foreach( $singleRow as $cKey=>$cell )
-                        <td class="{{ in_array($columnslist[$cKey],$matches) ? 'matched' : 'unmatched' }} {{ $cKey }}_col">
-                            {!! $cell !!}
-                        </td>
+
+            </tr>
+        </thead>
+        <tbody>
+            @php $columnslist = []; @endphp
+            @foreach( $ImportData as $key=>$singleRow )
+                @if($key == 0)
+                    @foreach( $singleRow as $cell )
+                        <?php $columnslist[] = trim(strtolower($cell)); ?>
                     @endforeach
-                </tr>
-            @endif
-        @endforeach
-    </tbody>
-</table>
+                @endif
+                @if($key > 0)
+                    <tr>
+                        @foreach( $singleRow as $cKey=>$cell )
+                            <td class="{{ in_array($columnslist[$cKey],$matches) ? 'matched' : 'unmatched' }} {{ $cKey }}_col">
+                                {!! $cell !!}
+                            </td>
+                        @endforeach
+                    </tr>
+                @endif
+            @endforeach
+        </tbody>
+    </table>
+@else
+    {!! $hidden_fields_html !!}
+@endif
 
 

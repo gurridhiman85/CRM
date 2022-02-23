@@ -1,0 +1,90 @@
+
+@media only screen and (max-width:767px) {
+    html body .font-16 {
+        font-size: 12px!important;
+    }
+    .text-center {
+        text-align: left !important;
+    }
+    .pl-1, .px-1 {
+        padding-left: 1rem !important;
+    }
+
+    #can-1 .pl-1, .px-1 {
+        padding-left: unset!important;
+        padding-right: unset!important;
+    }
+    .navbar-collapse ul li:nth-child(2) {
+        display: none;
+    }
+    .waves-light img {
+        width:87px!important;
+        margin-right: 7px !important;
+    }
+    .pr-1, .px-1 {
+        padding-right: unset!important;
+        padding-left: unset!important;
+    }
+    #can-1 .pr-1 .mb-1 .p-3 .d-flex {
+        display: flex!important;
+    }
+    #can-1 .pl-1 .mb-1 .p-3 .d-flex {
+        display: flex!important;
+    }
+
+    .fixed-layout .page-wrapper {
+        padding-top: 70px!important;
+    }
+    #can-1 .col-md-6.pr-1 {
+        margin-left: 10px!important;
+        margin-right: 10px!important;
+    }
+    #can-1 .col-md-6.pl-1 {
+        margin-left: 10px!important;
+        margin-right: 10px!important;
+    }
+
+    #sidebarnav a.waves-effect.waves-dark.text-center.pl-1.pr-1 {
+        text-align: center !important;
+    }
+
+    #main-wrapper ul.navbar-nav.mr-auto li:first-child {
+        position: absolute;
+        z-index: 999999;
+        right: -17px;
+        top: 3px;
+    }
+
+    #main-wrapper .navbar-collapse .center-title {
+        left: -60px !important;
+    }
+
+    .topbar .top-navbar .navbar-header {
+        padding-left: unset !important;
+    }
+
+    #main-wrapper .navbar-header a.nav-link.waves-effect.waves-light {
+        padding-right: 28px !important;
+    }
+
+    #main-wrapper .navbar-header img.light-logo {
+        height: 45px!important;
+    }
+
+    .topbar .top-navbar .navbar-nav > .nav-item > .nav-link {
+        padding-left: 6px;
+        padding-right: 27px;
+        font-size: 18px;
+        line-height: 50px;
+    }
+
+    i.ti-menu, i.ti-close {
+        color: #6094b2;
+    }
+
+    .horizontal-nav .sidebar-nav #sidebarnav > li > ul {
+        width: 245px !important;
+    }
+
+}
+

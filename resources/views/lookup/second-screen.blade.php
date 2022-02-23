@@ -1,7 +1,7 @@
 <style>
     button.ds-c4:hover {
         background-color: #3ea6d0;
-        color: #fff;    
+        color: #fff;
     }
     button.ds-c4 {
 		color: #5f93b2;
@@ -66,7 +66,7 @@
 							<label class="custom-control-label" for="customSwitch1"></label>
 						</div>
 					</button>-->
-                    <button type="button" class="btn btn-light font-16 s-f ds-c4" title="Save Contact" onclick="$('#updateContactBtn').trigger('click');"><i class="fas fa-save" ></i></button>
+                    <button type="button" class="btn btn-light font-16 s-f" title="Save Contact" onclick="$('#updateContactBtn').trigger('click');"><i class="fas fa-save ds-c" ></i></button>
                 </div>
             </div>
 

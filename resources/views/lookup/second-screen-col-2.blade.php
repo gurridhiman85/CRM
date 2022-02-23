@@ -95,11 +95,11 @@
                 <div class="input-group">
                     <div class="SA-pagination" style="vertical-align: middle;margin: 10px;display: none;"></div>
                     <div class="touch-pagination" style="vertical-align: middle;margin: 10px;display: none;"></div>
-                    <button type="button" id="backBtnSecond" onclick="goBack();" href="javascript:void(0);" title="Go Back"  class="btn btn-light no-border font-16 ds-c4 asBtn" style="float: right;box-shadow: none;"><i class="fas fa-arrow-circle-up ds-c4"></i></button>
+                    <button type="button" id="backBtnSecond" onclick="goBack();" href="javascript:void(0);" title="Go Back"  class="btn btn-light border-right-0 font-16 asBtn" style="float: right;box-shadow: none;"><i class="fas fa-arrow-circle-up ds-c"></i></button>
 
                     @if(isset($add) && !$add)
                         <div class="btn-group">
-                            <button type="button"  title="Download"  class="btn btn-light no-border dropdown-toggle font-16 ds-c4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="float: right;box-shadow: none;"><i class="fas fa-download ds-c4"></i></button>
+                            <button type="button"  title="Download"  class="btn btn-light border-right-0 dropdown-toggle font-16 ds-c" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="float: right;box-shadow: none;"><i class="fas fa-download ds-c"></i></button>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="javascript:void(0)" onclick="downloadCMLink($(this))" data-href="lookup/downloadreport" id="DownloadBtn" data-prefix="" data-screen="contact">Download Tab</a>
                                 <a class="dropdown-item ajax-downloadall-link" id="DownloadAllBtn"  href="javascript:void(0)" data-href="lookup/downloadallreports">Download All Tabs</a>
@@ -113,7 +113,7 @@
 							<label class="custom-control-label" for="customSwitch1"></label>
 						</div>
 					</button>-->
-                    <button type="button" class="btn btn-light font-16 s-f ds-c4" title="Save Contact" onclick="$('#updateContactBtn').trigger('click');"><i class="fas fa-save" ></i></button>
+                    <button type="button" class="btn btn-light font-16 s-f" title="Save Contact" onclick="$('#updateContactBtn').trigger('click');"><i class="fas fa-save ds-c" ></i></button>
                 </div>
             </div>
 
@@ -451,7 +451,7 @@
             </table>
         </div>
         <div id="detail" class="tab-pane" style="padding-left: 12px !important;">
-            <div id="salesDiv" style="display:block;"></div>
+            <div id="salesDiv" style="display:grid;"></div>
         </div>
         <div id="touch" class="tab-pane" style="padding-left: 12px !important;">
             <div id="touchDiv" style="display:block;"></div>

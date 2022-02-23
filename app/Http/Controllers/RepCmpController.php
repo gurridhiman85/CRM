@@ -21,6 +21,7 @@ use App\Mail\ShareReportEmail;
 use Illuminate\Support\Facades\Mail;
 use \LynX39\LaraPdfMerger\PdfManage;
 use Session;
+use Schema;
 
 class RepCmpController extends Controller
 {
@@ -91,146 +92,260 @@ class RepCmpController extends Controller
     }
 
     public function getDistriPopUp(Request $request,Ajax $ajax){
-        $listLevel = $request->input('list_level');
-        $sql = $request->input('sql');
-        if(!empty($listLevel)){
-            $aDataDF = DB::select("select Field_Display,Filter_Type from UL_RepCmp_Lookup_Fields where report = 1 and List_Level = '" . $listLevel . "' AND Filter_Type IN('lkp','Lkp','Num')");
-            $aDataDF = collect($aDataDF)->map(function($x){ return (array) $x; })->toArray();
+        try{
+            $listLevel = $request->input('list_level');
+            $sql = $request->input('sql');
+            if(!empty($listLevel)){
+                $aDataDF = DB::select("select Field_Display,Filter_Type from UL_RepCmp_Lookup_Fields where report = 1 and List_Level = '" . $listLevel . "' AND Filter_Type IN('lkp','Lkp','Num')");
+                $aDataDF = collect($aDataDF)->map(function($x){ return (array) $x; })->toArray();
 
 
-            $lkpOptions = array();
-            $numOptions = array();
-            if (!empty($aDataDF)) {
-                foreach ($aDataDF as $data) {
-                    if (in_array($data['Filter_Type'],['Lkp','lkp'])) {
-                        $lkpOptions[] = $data['Field_Display'];
-                    } else {
-                        $numOptions[] = $data['Field_Display'];
+                $lkpOptions = array();
+                $numOptions = array();
+                if (!empty($aDataDF)) {
+                    foreach ($aDataDF as $data) {
+                        if (in_array($data['Filter_Type'],['Lkp','lkp'])) {
+                            $lkpOptions[] = $data['Field_Display'];
+                        } else {
+                            $numOptions[] = $data['Field_Display'];
+                        }
                     }
                 }
+                $params = $request->input('params',[
+                    'row_variable' => '',
+                    'column_variable' => '',
+                    'function_variable' => '',
+                    'sum_variable' => '',
+                    'show_as' => '',
+                    'chart_variable' => '',
+                    'chart_axis_scale' => '',
+                    'chart_label_value' => ''
+                ]);
+                $content = View::make('layouts.summary-report-row',[
+                    'lkpOptions' => $lkpOptions,
+                    'numOptions' => $numOptions,
+                    'list_level' => $listLevel,
+                    'sql' => $sql,
+                    'params' => $params,                'popup' => true
+                ])->render();
+
+                $sdata = [
+                    'content' => $content
+                ];
+
+                $title = 'Summary Report';
+                $size = 'modal-xxl';
+
+                if (isset($title)) {
+                    $sdata['title'] = $title;
+                }
+                if (isset($size)) {
+                    $sdata['size'] = $size;
+                }
+
+                $view = View::make('layouts.modal-popup-layout', $sdata);
+                $html = $view->render();
+
+                return $ajax->success()->appendParam('params', $params)->appendParam('html', $html)->jscallback('loadModalLayout')->response();
             }
-            $params = $request->input('params',[
-                'row_variable' => '',
-                'column_variable' => '',
-                'function_variable' => '',
-                'sum_variable' => '',
-                'show_as' => '',
-                'chart_variable' => '',
-                'chart_axis_scale' => '',
-                'chart_label_value' => ''
-            ]);
-            $content = View::make('layouts.summary-report-row',[
-                'lkpOptions' => $lkpOptions,
-                'numOptions' => $numOptions,
-                'list_level' => $listLevel,
-                'sql' => $sql,
-                'params' => $params,                'popup' => true
-            ])->render();
-
-            $sdata = [
-                'content' => $content
-            ];
-
-            $title = 'Summary Report';
-            $size = 'modal-xxl';
-
-            if (isset($title)) {
-                $sdata['title'] = $title;
-            }
-            if (isset($size)) {
-                $sdata['size'] = $size;
-            }
-
-            $view = View::make('layouts.modal-popup-layout', $sdata);
-            $html = $view->render();
-
-            return $ajax->success()->appendParam('params', $params)->appendParam('html', $html)->jscallback('loadModalLayout')->response();
+        }catch (\Exception $exception){
+            return $ajax->fail()
+                ->message($exception->getMessage())
+                ->jscallback()
+                ->response();
         }
+
     }
 
     public function reportRun(Request $request, Ajax $ajax){
         try{
-            DB::statement("drop table  temp1");
-        }catch (\Exception $exception){}
 
-        $sql = $request->input('sql','SELECT * FROM emailable Order By DS_MKC_ContactID DESC');
+            if(Schema::hasTable('temp1')){
+                DB::statement("drop table  temp1");
+            }
 
-        $list_level = $request->input('list_level');
+            $sql = $request->input('sql','SELECT * FROM emailable Order By DS_MKC_ContactID DESC');
+            $list_level = $request->input('list_level');
+            $column_variable = $request->input('column_variable');
+            $row_variable = $request->input('row_variable');
+            if(!empty($row_variable) && count($row_variable) > 1){
+                $row_variablearr = $row_variable;
+                $row_variable = $row_variable_groupBy = $row_variable_orderBy = '';
+                foreach ($row_variablearr as $k => $rv){
+                    if($k+1 == count($row_variablearr)){
+                        $row_variable .= "LEFT(".$rv." + space(15), 15) as '".implode(' | ',$row_variablearr)."'";
+                        $row_variable_groupBy .= "LEFT(".$rv." + space(15), 15) ";
+                    }else{
+                        $row_variable .= "LEFT(".$rv." + space(15), 15) + ' | ' +";
+                        $row_variable_groupBy .= "LEFT(".$rv." + space(15), 15) + ' | ' +";
+                    }
+                    $row_variable_orderBy = "'".implode(' | ',$request->input('row_variable'))."'";
+                }
+            }else{
+                $row_variable = implode('',$row_variable);
+                $row_variable_groupBy = $row_variable;
+                $row_variable_orderBy = $row_variable;
 
-        $column_variable = $request->input('column_variable');
-        $row_variable = $request->input('row_variable');
-        $function_variable = $request->input('function_variable');
-        $show_as = $request->input('show_as');
-        $sum_variable = $request->input('sum_variable');
-        $chart_variable = $request->input('chart_variable');
-        $chart_axis_scale = $request->input('chart_axis_scale');
-        $chart_label_value = $request->input('chart_label_value');
+            }
 
-        $pos = strpos($sql, "Order By");
-        if ($pos != false) {
-            $sql = substr($sql, 0, $pos - 1);
-        }
-        $sqlQuery = !empty($sql) ? explode("where", strtolower($sql)) : '';
+            $function_variable = $request->input('function_variable');
+            $show_as = $request->input('show_as');
+            $sum_variable = $request->input('sum_variable');
+            $chart_variable = $request->input('chart_variable');
+            $chart_axis_scale = $request->input('chart_axis_scale');
+            $chart_label_value = $request->input('chart_label_value');
 
-        $where = "";
-        if (is_array($sqlQuery) && count($sqlQuery) > 1) { $where = " WHERE " . $sqlQuery[1]; }
+            $pos = strpos($sql, "Order By");
+            if ($pos != false) {
+                $sql = substr($sql, 0, $pos - 1);
+            }
+            $sqlQuery = !empty($sql) ? explode("where", strtolower($sql)) : '';
 
-        if (empty($column_variable) && $function_variable == "count") {
+            $where = "";
+            if (is_array($sqlQuery) && count($sqlQuery) > 1) { $where = " WHERE " . $sqlQuery[1]; }
 
-            DB::statement("SET ANSI_NULLS OFF; SET ANSI_WARNINGS OFF;select * into temp1 from (select " . $row_variable . " , count(*) as Distribution from " . $list_level . " " . $where . " group by " . $row_variable . ") t");
+            if (empty($column_variable) && $function_variable == "count") {
 
-            $dData = DB::select("select * from temp1 Order By ".$row_variable);
-            $dData = collect($dData)->map(function($x){ return (array) $x; })->toArray();
-            $colVar = 'Distribution';
-        }
-        else if (empty($column_variable) && $function_variable == "sum") {
-            if(empty($sum_variable)){
-                return $ajax->fail()
-                    ->message('Please select sum variable')
-                    ->jscallback()
+                DB::statement("SET ANSI_NULLS OFF; SET ANSI_WARNINGS OFF;select * into temp1 from (select " . $row_variable . " , count(*) as Distribution from " . $list_level . " " . $where . " group by " . $row_variable_groupBy . ") t");
+
+                $dData = DB::select("select * from temp1 Order By ".$row_variable_orderBy);
+                $dData = collect($dData)->map(function($x){ return (array) $x; })->toArray();
+                $colVar = 'Distribution';
+            }
+            else if (empty($column_variable) && $function_variable == "sum") {
+                if(empty($sum_variable)){
+                    return $ajax->success()
+                        ->message('2')
+                        ->jscallback()
+                        ->response();
+                }
+
+                DB::statement("SET ANSI_NULLS OFF; SET ANSI_WARNINGS OFF;select * into temp1 from (select " . $row_variable . ", sum(" . $sum_variable . ") as Distribution from " . $list_level . "  " . $where . " group by " . $row_variable_groupBy . ") t");
+
+                $dData = DB::select("select * from temp1 Order By ".$row_variable_orderBy);
+                $dData = collect($dData)->map(function($x){ return (array) $x; })->toArray();
+                $colVar = 'Distribution';
+            }
+            else if (empty($column_variable) && in_array($function_variable , ['cs','sc'])) {
+                if(empty($sum_variable)){
+                    return $ajax->success()
+                        ->message('3')
+                        ->jscallback()
+                        ->response();
+                }
+                DB::statement("SET ANSI_NULLS OFF; SET ANSI_WARNINGS OFF;select * into temp1 from (select " . $row_variable . ",count(*) as Number, sum(" . $sum_variable . ") as [Total] from " . $list_level . "  " . $where . " group by " . $row_variable_groupBy . ") t");
+
+                $dData = DB::select("select * from temp1 Order By ".$row_variable_orderBy);
+                $dData = collect($dData)->map(function($x){ return (array) $x; })->toArray();
+                $colVar = 'Count';
+
+                $result = [];
+                if(strtoupper($show_as) == 'NP' && $function_variable == 'cs'){
+                    $result = Helper::print_report_datatable_NPCS($dData, $colVar, $sum_variable);
+                } else if(strtoupper($show_as) == 'PN' && $function_variable == 'cs'){
+                    $result = Helper::print_report_datatable_PNCS($dData, $colVar, $sum_variable);
+                }else if(strtoupper($show_as) == 'NP'  && $function_variable == 'sc'){
+                    $result = Helper::print_report_datatable_NPSC($dData, $colVar, $sum_variable);
+                }else if(strtoupper($show_as) == 'PN'  && $function_variable == 'sc'){
+                    $result = Helper::print_report_datatable_PNSC($dData, $colVar, $sum_variable);
+                }
+                $inner_call = $request->input('inner_call',0);
+                if($inner_call == 1)
+                    $js_callback = 'ajax_run_report_result_inner';
+                elseif ($inner_call == 2)
+                    $js_callback = 'ajax_run_report_result_outer';
+                elseif ($inner_call == 3)
+                    $js_callback = 'ajax_run_report_result_outer';
+                else
+                    $js_callback = 'ajax_run_report_result';
+
+                return $ajax->success()
+                    ->appendParam('result',$result)
+                    ->appendParam('row_variable',$request->input('row_variable'))
+                    ->appendParam('column_variable',$column_variable)
+                    ->appendParam('function_variable',$function_variable)
+                    ->appendParam('show_as',$show_as)
+                    ->appendParam('sum_variable',$sum_variable)
+                    ->appendParam('chart_variable',$chart_variable)
+                    ->appendParam('chart_axis_scale',$chart_axis_scale)
+                    ->appendParam('chart_label_value',$chart_label_value)
+                    ->appendParam('show_as',$show_as)
+                    ->appendParam('inner_call',$inner_call)
+                    ->jscallback($js_callback)
                     ->response();
             }
+            else {
+                $sSqlInsert = "select * into temp1 from (select " . $row_variable . " , " . $column_variable . ", ";
 
-            DB::statement("SET ANSI_NULLS OFF; SET ANSI_WARNINGS OFF;select * into temp1 from (select " . $row_variable . ", sum(" . $sum_variable . ") as Distribution from " . $list_level . "  " . $where . " group by " . $row_variable . ") t");
+                if ($function_variable == "sum") {
+                    $column = $sum_variable;
+                } else {
+                    $column = "*";
+                }
 
-            $dData = DB::select("select * from temp1 Order By ".$row_variable);
-            $dData = collect($dData)->map(function($x){ return (array) $x; })->toArray();
-            $colVar = 'Distribution';
-        }
-        else if (empty($column_variable) && in_array($function_variable , ['cs','sc'])) {
-            if(empty($sum_variable)){
-                return $ajax->fail()
-                    ->message('Please select sum variable')
-                    ->jscallback()
-                    ->response();
+                $sSqlInsert .= $function_variable . "(" . $column . ")";
+                $sSqlInsert .= " as Distribution from " . $list_level . " " . $where . " group by " . $row_variable_groupBy . ", " . $column_variable . ") t";
+
+                DB::statement("SET ANSI_NULLS OFF; SET ANSI_WARNINGS OFF;".$sSqlInsert);
+
+                $sSqlSelect = "select distinct " . $column_variable . " from temp1 Order By " . $column_variable;
+                $dData = DB::select($sSqlSelect);
+                $dData = collect($dData)->map(function($x){ return (array) $x; })->toArray();
+                $sSqlTempSelect = "select * from temp1 pivot (sum(Distribution) for " . $column_variable . " in(";
+                $c = 0;
+                foreach ($dData as $key => $column) {
+                    if(!empty($column[$column_variable])){
+                        if ($c == 0) {
+                            $sSqlTempSelect .= "[" . $column[$column_variable] . "]";
+                        } else {
+                            $sSqlTempSelect .= ",[" . $column[$column_variable] . "]";
+                        }
+                        $c++;
+                    }
+                }
+                $sSqlTempSelect .= ")) as rv" ; //$rowvariableorderby
+                $dData = DB::select($sSqlTempSelect);
+                $dData = collect($dData)->map(function($x){ return (array) $x; })->toArray();
+                $colVar = $column_variable;
             }
-            DB::statement("SET ANSI_NULLS OFF; SET ANSI_WARNINGS OFF;select * into temp1 from (select " . $row_variable . ",count(*) as Number, sum(" . $sum_variable . ") as [Total] from " . $list_level . "  " . $where . " group by " . $row_variable . ") t");
 
-            $dData = DB::select("select * from temp1 Order By ".$row_variable);
-            $dData = collect($dData)->map(function($x){ return (array) $x; })->toArray();
-            $colVar = 'Count';
-
-            $result = [];
-            if(strtoupper($show_as) == 'NP' && $function_variable == 'cs'){
-                $result = Helper::print_report_datatable_NPCS($dData, $colVar, $sum_variable);
-            } else if(strtoupper($show_as) == 'PN' && $function_variable == 'cs'){
-                $result = Helper::print_report_datatable_PNCS($dData, $colVar, $sum_variable);
-            }else if(strtoupper($show_as) == 'NP'  && $function_variable == 'sc'){
-                $result = Helper::print_report_datatable_NPSC($dData, $colVar, $sum_variable);
-            }else if(strtoupper($show_as) == 'PN'  && $function_variable == 'sc'){
-                $result = Helper::print_report_datatable_PNSC($dData, $colVar, $sum_variable);
+            if (strtoupper($show_as) == 'PRT') {
+                $result = Helper::print_report_datatable_PRT($dData, $colVar);
+            } else if (strtoupper($show_as) == 'PCT') {
+                $result = Helper::print_report_datatable_PCT($dData, $colVar);
+            } else if (strtoupper($show_as) == 'PGT') {
+                $result = Helper::print_report_datatable_PGT($dData, $colVar);
+            } else if (strtoupper($show_as) == 'NPRT') {
+                $result = Helper::print_report_datatable_NPRT($dData, $colVar);
+            } else if (strtoupper($show_as) == 'PRTN') {
+                $result = Helper::print_report_datatable_PRTN($dData, $colVar);
+            } else if (strtoupper($show_as) == 'NPCT') {
+                $result = Helper::print_report_datatable_NPCT($dData, $colVar);
+            } else if (strtoupper($show_as) == 'PCTN') {
+                $result = Helper::print_report_datatable_PCTN($dData, $colVar);
+            } else if(strtoupper($show_as) == 'NP'){
+                $result = Helper::print_report_datatable_numberNPWC($dData, $colVar);
+            } else if(strtoupper($show_as) == 'PN'){
+                $result = Helper::print_report_datatable_numberPNWC($dData, $colVar);
+            } else if(strtoupper($show_as) == 'SBN'){
+                $result = Helper::print_report_datatable_SideByNumber($dData,$row_variable_orderBy, $column_variable, $sum_variable);
+            } else {
+                $result = Helper::print_report_datatable_number($dData, $colVar);
             }
+
             $inner_call = $request->input('inner_call',0);
             if($inner_call == 1)
                 $js_callback = 'ajax_run_report_result_inner';
             elseif ($inner_call == 2)
+                $js_callback = 'ajax_run_report_result_outer';
+            elseif ($inner_call == 3)
                 $js_callback = 'ajax_run_report_result_outer';
             else
                 $js_callback = 'ajax_run_report_result';
 
             return $ajax->success()
                 ->appendParam('result',$result)
-                ->appendParam('row_variable',$row_variable)
+                ->appendParam('row_variable',$request->input('row_variable'))
                 ->appendParam('column_variable',$column_variable)
                 ->appendParam('function_variable',$function_variable)
                 ->appendParam('show_as',$show_as)
@@ -239,89 +354,16 @@ class RepCmpController extends Controller
                 ->appendParam('chart_axis_scale',$chart_axis_scale)
                 ->appendParam('chart_label_value',$chart_label_value)
                 ->appendParam('show_as',$show_as)
+                ->appendParam('inner_call',$inner_call)
                 ->jscallback($js_callback)
                 ->response();
+
+        }catch (\Exception $exception){
+            return $ajax->success()
+                ->message($exception->getMessage())
+                ->jscallback()
+                ->response();
         }
-        else {
-            $sSqlInsert = "select * into temp1 from (select " . $row_variable . " , " . $column_variable . ", ";
-
-            if ($function_variable == "sum") {
-                $column = $sum_variable;
-            } else {
-                $column = "*";
-            }
-
-            $sSqlInsert .= $function_variable . "(" . $column . ")";
-            $sSqlInsert .= " as Distribution from " . $list_level . " " . $where . " group by " . $row_variable . ", " . $column_variable . ") t";
-
-            DB::statement("SET ANSI_NULLS OFF; SET ANSI_WARNINGS OFF;".$sSqlInsert);
-
-            $sSqlSelect = "select distinct " . $column_variable . " from temp1 Order By " . $column_variable;
-            $dData = DB::select($sSqlSelect);
-            $dData = collect($dData)->map(function($x){ return (array) $x; })->toArray();
-            $sSqlTempSelect = "select * from temp1 pivot (sum(Distribution) for " . $column_variable . " in(";
-            $c = 0;
-            foreach ($dData as $key => $column) {
-                if(!empty($column[$column_variable])){
-                    if ($c == 0) {
-                        $sSqlTempSelect .= "[" . $column[$column_variable] . "]";
-                    } else {
-                        $sSqlTempSelect .= ",[" . $column[$column_variable] . "]";
-                    }
-                    $c++;
-                }
-            }
-            $sSqlTempSelect .= ")) as " . $row_variable;
-            $dData = DB::select($sSqlTempSelect);
-            $dData = collect($dData)->map(function($x){ return (array) $x; })->toArray();
-            $colVar = $column_variable;
-        }
-
-        if (strtoupper($show_as) == 'PRT') {
-            $result = Helper::print_report_datatable_PRT($dData, $colVar);
-        } else if (strtoupper($show_as) == 'PCT') {
-            $result = Helper::print_report_datatable_PCT($dData, $colVar);
-        } else if (strtoupper($show_as) == 'PGT') {
-            $result = Helper::print_report_datatable_PGT($dData, $colVar);
-        } else if (strtoupper($show_as) == 'NPRT') {
-            $result = Helper::print_report_datatable_NPRT($dData, $colVar);
-        } else if (strtoupper($show_as) == 'PRTN') {
-            $result = Helper::print_report_datatable_PRTN($dData, $colVar);
-        } else if (strtoupper($show_as) == 'NPCT') {
-            $result = Helper::print_report_datatable_NPCT($dData, $colVar);
-        } else if (strtoupper($show_as) == 'PCTN') {
-            $result = Helper::print_report_datatable_PCTN($dData, $colVar);
-        } else if(strtoupper($show_as) == 'NP'){
-            $result = Helper::print_report_datatable_numberNPWC($dData, $colVar);
-        } else if(strtoupper($show_as) == 'PN'){
-            $result = Helper::print_report_datatable_numberPNWC($dData, $colVar);
-        } else if(strtoupper($show_as) == 'SBN'){
-            $result = Helper::print_report_datatable_SideByNumber($dData,$row_variable, $column_variable, $sum_variable);
-        } else {
-            $result = Helper::print_report_datatable_number($dData, $colVar);
-        }
-
-        $inner_call = $request->input('inner_call',0);
-        if($inner_call == 1)
-            $js_callback = 'ajax_run_report_result_inner';
-        elseif ($inner_call == 2)
-            $js_callback = 'ajax_run_report_result_outer';
-        else
-            $js_callback = 'ajax_run_report_result';
-
-        return $ajax->success()
-            ->appendParam('result',$result)
-            ->appendParam('row_variable',$row_variable)
-            ->appendParam('column_variable',$column_variable)
-            ->appendParam('function_variable',$function_variable)
-            ->appendParam('show_as',$show_as)
-            ->appendParam('sum_variable',$sum_variable)
-            ->appendParam('chart_variable',$chart_variable)
-            ->appendParam('chart_axis_scale',$chart_axis_scale)
-            ->appendParam('chart_label_value',$chart_label_value)
-            ->appendParam('show_as',$show_as)
-            ->jscallback($js_callback)
-            ->response();
 
     }
 
@@ -390,7 +432,8 @@ class RepCmpController extends Controller
         $sectiontype = $request->input('sectiontype');
         $colName = $request->input('colName');
         $secIds = $request->input('secIds');
-        $aData1 = DB::select("select Filter_Type,Lookup,Type_Num from UL_RepCmp_Lookup_Fields where Field_Display ='" . $colName . "'"); //die;
+        $list_level = $request->input('list_level');
+        $aData1 = DB::select("select Filter_Type,Lookup,Type_Num from UL_RepCmp_Lookup_Fields where List_Level = '".$list_level."' AND Field_Display ='" . $colName . "'"); //die;
         $aData1 = collect($aData1)->map(function($x){ return (array) $x; })->toArray();
         $customClass = '';
         if ($sectiontype == 2) {
@@ -411,7 +454,7 @@ class RepCmpController extends Controller
             }
             $Str = array();
             if ($aData1[0]['Lookup'] == 1) {
-                $aData = DB::select("select code_value from UL_RepCmp_Lookup_Values where code_type ='" . $colName . "'"); //die;
+                $aData = DB::select("select distinct code_value from UL_RepCmp_Lookup_Values where code_type ='" . $colName . "'"); //die;
                 $aData = collect($aData)->map(function($x){ return (array) $x; })->toArray();
                 if (isset($aData) && !empty($aData)) {
                     $options = '<select class="form-control form-control-sm ' . $customClass . '" style="width:100%" id="val' . $secIds . '" style="width:100px" onKeyPress = "GetTextInfo(this,event);" multiple="multiple" >';
@@ -441,6 +484,9 @@ class RepCmpController extends Controller
             if ($pos != false)
             {
                 $sSQL = substr($sSQL,0,$pos-1);
+            }
+            if(stripos($sSQL, "blank") !== false){
+                $sSQL = str_replace("blank", " ", $sSQL);
             }
             $sSQL = str_replace("::", ",", $sSQL);
 
@@ -490,11 +536,16 @@ class RepCmpController extends Controller
         $list_format = $request->input('list_format');
         $repdes = $request->input('repdes');
         if (trim($sSQL) != "") {
-            if (strpos($sSQL, "*") === true) {
+            if (strpos($sSQL, "*") !== false) {
                 $nSQL = str_replace("*", "TOP 1000 * ", $sSQL);
             } else {
                 $nSQL = substr($sSQL, 0, 6) . " top 1000 " . substr($sSQL, 7, strlen($sSQL));
             }
+
+            if(stripos($nSQL, "blank") !== false){
+                $nSQL = str_replace("blank", "", $nSQL);
+            }
+
             $aData1 = DB::select($nSQL);
             $aData1 = collect($aData1)->map(function($x){ return (array) $x; })->toArray();
             $aData = array_slice($aData1, 0, 1000);
@@ -532,6 +583,8 @@ class RepCmpController extends Controller
     }
 
     public function HTMLtoPDF(Request $request, Ajax $ajax){
+        ini_set('max_execution_time', 3500);
+        ini_set('memory_limit', '1024M');
         $header = ucfirst($request->input('rpheader'));
         $footer = ucfirst($request->input('rpfooter'));
         $tablehtml = $request->input('tablehtml');
@@ -593,13 +646,11 @@ class RepCmpController extends Controller
         $sdata = [
             'content' => '<form class="ajax-Form" method="post" enctype="multipart/form-data" action="downloadmultiplepdf">'.csrf_field().'<div class="form-group">
                                     <label>Upload More Files</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" style="padding: .275rem .75rem !important;">Upload</span>
-                                        </div>
+                                    <div class="input-group border">
+                                        
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" id="inputGroupFile01" name="pdffile[]" multiple>
-                                            <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                                            <input type="file" class="" id="inputGroupFile01" name="pdffile[]" multiple>
+                                         
                                         </div>
                                     </div>
                                 </div><div class="pull-right mt-1"><div class="btn-toolbar pull-right" role="toolbar" aria-label="Toolbar with button groups">
@@ -683,19 +734,31 @@ class RepCmpController extends Controller
 
         foreach ($rowidsData as $key=> $idData){
             $rowid = explode('_',$idData);
-            $sSQL = DB::select($sql.$rowid[0]);
 
-            $aData = collect($sSQL)->map(function ($x) {
+            if($t_type == 'C'){
+                $record = App\Model\CampaignTemplate::with(['rpschedule.ccschstatusmap'])->where('row_id',$rowid[0])->first();
+                $schstatusmap = isset($record->rpschedule->ccschstatusmap) ? $record->rpschedule->ccschstatusmap : [];
+                $SummaryPDF = $record->promoexpo_folder.'\\'.$this->prefix.'CAM_'.$schstatusmap[0]['file_name'].'.pdf';
+                $listPDF = $record->promoexpo_folder.'\\'.$this->prefix.'CAL_'.$schstatusmap[0]['file_name'].'.pdf';
+
+            }elseif ($t_type == 'A'){
+                $record = App\Model\ReportTemplate::with(['rpschedule.rpschstatusmap'])->where('row_id',$rowid[0])->first();
+                $schstatusmap = isset($record->rpschedule->rpschstatusmap) ? $record->rpschedule->rpschstatusmap : [];
+                $SummaryPDF = $record->promoexpo_folder.'\\'.$this->prefix.'RPS_'.$schstatusmap[0]['file_name'].'.pdf';
+                $listPDF = $record->promoexpo_folder.'\\'.$this->prefix.'RPL_'.$schstatusmap[0]['file_name'].'.pdf';
+            }
+            //$sSQL = DB::select($sql.$rowid[0]);
+
+            /*$aData = collect($sSQL)->map(function ($x) {
                 return (array)$x;
-            })->toArray();
-            if($aData){
-                $aData = $aData[0];
+            })->toArray();*/
+            if($record){
                 if($key == 0){
-                    $fileNameArr = explode('_',$aData['pdfFile']);
+                    $fileNameArr = explode('_',$schstatusmap[0]['file_name']);
                     array_pop($fileNameArr);
                     $mMultiPageFileName = implode('_',$fileNameArr).'_Multi.pdf';
                 }
-                $filename = ($rowid[1] == 'list') ? $aData['listPdfFileName'] : $aData['File_Name'];
+                $filename = ($rowid[1] == 'list') ? $listPDF : $SummaryPDF;
                 $PdfManage->addPDF(public_path($filename), 'all');
             }
         }
@@ -885,12 +948,21 @@ class RepCmpController extends Controller
     public function sendViaEmail(Request $request, Ajax $ajax){
         $eRowid = $request->input('eCampid');
         $type = $request->input('t_type');
-        $tTable = $type == 'C' ? 'UC_Campaign_Templates' : 'UR_Report_Templates';
-        $sSql = DB::select("SELECT * FROM $tTable WHERE row_id='".$eRowid."' AND t_type='".$type."'");
-        $result = collect($sSql)->map(function($x){ return (array) $x; })->toArray();
-        $result = $result[0];
+        //$tTable = $type == 'C' ? 'UC_Campaign_Templates' : 'UR_Report_Templates';
+
+        //$sSql = DB::select("SELECT * FROM $tTable WHERE row_id='".$eRowid."' AND t_type='".$type."'");
+        //$result = collect($sSql)->map(function($x){ return (array) $x; })->toArray();
+        //$result = $result[0];
+        if($type == 'C'){
+            $result = App\Model\CampaignTemplate::with('rpschedule.ccschstatusmap')->where('row_id',$eRowid)->where('t_type',$type)->first()->toArray();
+        }else{
+            $result = App\Model\ReportTemplate::with('rpschedule.rpschstatusmap')->where('row_id',$eRowid)->where('t_type',$type)->first()->toArray();
+        }
+        //dd($record);
+
         $t_name = $result['t_name'];
         $listShortName = $result['list_short_name'];
+        $file_Name = isset($result['rpschedule']['rpschstatusmap'][0]) ? $result['rpschedule']['rpschstatusmap'][0]['file_name'] : $listShortName;
         $t_id = $result['t_id'];
         $eFolder = $result['promoexpo_folder'];
         $ToUsers = $request->input('txtTo',[]);
@@ -924,8 +996,8 @@ class RepCmpController extends Controller
                         $objDemo->sharedByName = Auth::user()->User_FName. ' ' .Auth::user()->User_LName;
                         $objDemo->sharedByEmail = Auth::user()->User_Email;
                         $objDemo->listShortName = $listShortName;
+                        $objDemo->file_Name = $file_Name;
                         $objDemo->clientname = $this->clientname;
-
                         $type == 'A' ? Mail::to($user->User_Email)->send(new SendReportEmail($objDemo)) : Mail::to($user->User_Email)->send(SendCampaignEmail($objDemo));
 
                         DB::insert("INSERT INTO UL_RepCmp_Email (User_id,camp_tmpl_id,remail_to,remail_cc,remail_bcc,remail_sub,remail_comments,t_type,Email_Status) VALUES ($uid,$t_id,'$ToUser','$Cc','$Bcc','$Sub','$limitedtextarea1','$type','Sent')");
@@ -962,16 +1034,27 @@ class RepCmpController extends Controller
 
     public function saveSendViaEmail(Request $request, Ajax $ajax){
         $t_id = $request->input('eCampid');
-        $To = $request->input('txtTo');
+        $ToUsers = $request->input('txtTo',[]);
         $Cc = $request->input('txtCc');
         $Bcc = $request->input('txtBcc');
         $Sub = $request->input('txtSub');
         $type = $request->input('t_type');
         $limitedtextarea1 = $request->input('limitedtextarea1');
         $uid = Auth::user()->User_ID;
-        DB::insert("INSERT INTO UL_RepCmp_Email (User_id,camp_tmpl_id,remail_to,remail_cc,remail_bcc,remail_sub,remail_comments,t_type,Email_Status) VALUES ($uid,$t_id,'$To','$Cc','$Bcc','$Sub','$limitedtextarea1','$type','Pending')");
+        if(count($ToUsers) > 0) {
+            foreach ($ToUsers as $ToUser) {
+                $user = User::where('User_ID', $ToUser)->first();
+                if ($user) {
+                    DB::insert("INSERT INTO UL_RepCmp_Email (User_id,camp_tmpl_id,remail_to,remail_cc,remail_bcc,remail_sub,remail_comments,t_type,Email_Status) VALUES ($uid,$t_id,'$ToUser','$Cc','$Bcc','$Sub','$limitedtextarea1','$type','Pending')");
+                }
+            }
+        }
 
-        return $ajax->success()->jscallback('report_sent')->response();
+        $cm = $type == 'A' ? 'Report' : 'Campaign';
+        return $ajax->success()
+            ->jscallback('report_sent')
+            ->message($cm.' sent successfully')
+            ->response();
     }
 
     public function saveSchSendViaEmail(Request $request, Ajax $ajax){
@@ -1013,6 +1096,12 @@ class RepCmpController extends Controller
             foreach($users as $user){
                 $u[] = (int)$user['Shared_With_User_id'];
             }
+        }
+
+        if($t_type == 'A'){
+            $record = App\Model\ReportTemplate::where('row_id',$eCampid)
+                ->first();
+            $ajax->appendParam('Attach_Phone',$record->Attach_Phone);
         }
         return $ajax->success()
             ->appendParam('shared_with_user_id',$u)
@@ -1077,11 +1166,19 @@ class RepCmpController extends Controller
                 //Delete From View List
             }
 
-            $SchtempSQL = DB::select("Select [row_id],[sch_status_id] from [UL_RepCmp_Schedules] Where [camp_tmpl_id] = '$del_row'  AND t_type='$ttype'");
-
+            $SchtempSQL = DB::select("Select [row_id] from [UL_RepCmp_Schedules] Where [camp_tmpl_id] = '$del_row'  AND t_type='$ttype'");
             $aData = collect($SchtempSQL)->map(function($x){ return (array) $x; })->toArray();
             if (!empty($aData)) {
-                $sch_status_id = $aData[0]['sch_status_id'];
+                $sch_id = $aData[0]['row_id'];
+            }
+
+            $SchtempSQLs = DB::select("Select [sch_status_id] from [UL_RepCmp_Sch_status_mapping] Where [sch_id] = '$sch_id'  AND t_type='$ttype'");
+            $aDatas = collect($SchtempSQLs)->map(function($x){ return (array) $x; })->toArray();
+            $sch_status_id = [];
+            if (!empty($aDatas)) {
+                foreach ($aDatas as $aData){
+                    array_push($sch_status_id,$aData['sch_status_id']);
+                }
             }
 
             //Delete Metadata table rows
@@ -1098,7 +1195,7 @@ class RepCmpController extends Controller
             //Delete From View List
 
             //Delete From View List
-            DB::statement("Delete from [UL_RepCmp_Status] Where row_id = '" . $sch_status_id ."' AND t_type='$ttype'");
+            DB::statement("Delete from [UL_RepCmp_Status] Where row_id IN (" . implode(',',$sch_status_id) .") AND t_type='$ttype'");
 
             //Delete From View List
 
@@ -1132,12 +1229,102 @@ class RepCmpController extends Controller
 
     }
 
+    public function deleteOlderVersion(Request $request, Ajax $ajax){
+        $ttype = $request->input('type');
+        $del_row = $request->input('del_row');
+
+        try{
+            if($ttype == 'C'){
+                $prefixXlsx = $this->prefix.'CAL_';
+                $prefixSR = $this->prefix.'CAM_';
+
+            }elseif ($ttype == 'A'){
+                $prefixXlsx = $this->prefix.'RPL_';
+                $prefixSR = $this->prefix.'RPS_';
+            }
+
+            $record = App\Model\RepCmpStatus::with('schedule_map')->where('row_id',$del_row)->first();
+            if(!$record){
+                return $ajax->fail()
+                    ->jscallback()
+                    ->message('Record not found')
+                    ->response();
+            }
+
+
+
+            $public_pathsrPDF = public_path('Public\\'.$prefixSR.$record->file_name.'.pdf');
+            $private_pathsrPDF = public_path('Private\\'.$prefixSR.$record->file_name.'.pdf');
+
+            $public_pathsrXLSX = public_path('Private\\'.$prefixSR.$record->file_name.'.xlsx');
+            $private_pathsrXLSX = public_path('Private\\'.$prefixSR.$record->file_name.'.xlsx');
+
+            $public_pathlistXLSX = public_path('Private\\'.$prefixSR.$record->file_name.'.xlsx');
+            $private_pathlistXLSX = public_path('Private\\'.$prefixSR.$record->file_name.'.xlsx');
+            if(file_exists($public_pathsrPDF)){
+                unlink($public_pathsrPDF);
+            }
+            if(file_exists($private_pathsrPDF)){
+                unlink($private_pathsrPDF);
+            }
+            if(file_exists($public_pathsrXLSX)){
+                unlink($public_pathsrXLSX);
+            }
+            if(file_exists($private_pathsrXLSX)){
+                unlink($private_pathsrXLSX);
+            }
+            if(file_exists($public_pathlistXLSX)){
+                unlink($public_pathlistXLSX);
+            }
+            if(file_exists($private_pathlistXLSX)){
+                unlink($private_pathlistXLSX);
+            }
+            App\Model\RepCmpSchStatusMapping::where('sch_status_id', $del_row)->delete();
+            App\Model\RepCmpStatus::with('schedule_map')->where('row_id',$del_row)->delete();
+
+            return $ajax->success()->response();
+
+        }catch (\Exception $exception){
+            return $ajax->fail()
+                ->jscallback()
+                ->message($exception->getMessage())
+                ->response();
+        }
+
+    }
+
     public function getFtpData(Request $request, Ajax $ajax){
         $row_id = $request->input('row_id');
         $cSQL = DB::select("SELECT * From [UL_RepCmp_SFTP] Where row_id = " . $row_id);
         $aData = collect($cSQL)->map(function($x){ return (array) $x; })->toArray();
         return $ajax->success()
             ->appendParam('odata',$aData[0])
+            ->response();
+    }
+
+    public function tag(Request $request,Ajax $ajax){
+        $actionType = $request->input('actionType','tag');
+        $tag = $request->input('tag',0);
+        $type = $request->input('type');
+        $rowId = $request->input('rowId',0);
+
+        if($actionType == 'tag'){
+
+            if($type == 'A'){
+                $table = 'UR_Report_Templates';
+                $section = 'Report';
+            }else{
+                $table = 'UC_Campaign_Templates';
+                $section = 'Campaign';
+            }
+            $table = $type == 'A' ? 'UR_Report_Templates' : 'UC_Campaign_Templates';
+            $updateCol  =  ($tag == 1) ? "tag = 1" : "tag = 0";
+            $msg = ($tag == 1) ? "Tagged" : "";
+            DB::update("update " . $table . " set $updateCol where row_id = ".$rowId);
+            ($tag == 1) ? $ajax->message($section.' '.$msg.' Successfully.') : '';
+        }
+        return $ajax->success()
+            ->jscallback()
             ->response();
     }
 

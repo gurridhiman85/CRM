@@ -310,12 +310,12 @@ font-weight: 500;padding: 3px 4px !important;">Contactability
 
             <div class="divTableCell"><label class="l1">Mail Opt + Return</label></div>
             <div class="divTableCell">
-                <select class="sel2 h txtopt_mail form-control form-control-sm" name="opt_mail" style="font-size: 10px; width: 26%; background-color: rgb(239, 246, 255);">
+                <select class="sel2 h txtopt_mail form-control form-control-sm" name="opt_mail" style="font-size: 10px; width: 26%; ">
                     <option selected value="">Select Opt Status</option>
                     <option value="Optin">Optin</option>
                     <option value="Optout">Optout</option>
                 </select>
-                <select class="sel2 h txtmail_status form-control form-control-sm" name="mail_status" style="font-size: 10px; width: 73%; background-color: rgb(239, 246, 255);">
+                <select class="sel2 h txtmail_status form-control form-control-sm" name="mail_status" style="font-size: 10px; width: 73%; ">
                     <option selected value="">Select Return Status</option>
                     <option value="Returned">Returned</option>
                     <option value="Updated">Updated</option>
@@ -361,7 +361,7 @@ font-weight: 500;padding: 3px 4px !important;">Contactability
 
             <div class="divTableCell"><label class="l1">Suppression + Reason</label></div>
             <div class="divTableCell">
-                <select class="t6 h txtsuppression form-control form-control-sm" name="suppression" style="font-size: 10px; width: 26%; background-color: rgb(239, 246, 255);">
+                <select class="t6 h txtsuppression form-control form-control-sm" name="suppression" style="font-size: 10px; width: 26%; ">
                     <option value="">Select</option>
                     <option value="Deceased">Deceased</option>
                     <option value="Optout">Optout</option>
@@ -371,7 +371,7 @@ font-weight: 500;padding: 3px 4px !important;">Contactability
                     <option value="Other">Other</option>
                     <option value="None">None</option>
                 </select>
-                <input type="text" style="font-size: 10px; width: 73%; background-color: rgb(239, 246, 255);" class="t6 dis h txtemail_optout_reason form-control form-control-sm" name="company" autocomplete="off">
+                <input type="text" style="font-size: 10px; width: 73%; " class="t6 dis h txtemail_optout_reason form-control form-control-sm" name="company" autocomplete="off">
             </div>
 
             {{--<div class="divTableCell"><label class="l1">Contactable</label></div>
@@ -473,7 +473,7 @@ font-weight: 500;padding: 3px 4px !important;">Last Touch
             <div class="divTableCell">
                 <div class="form-group row">
                     <div class="col-sm-7 pl-2 pr-0">
-                        <select class=" txttouchcampaign form-control form-control-sm" name="touchcampaign" style="background-color: rgb(239, 246, 255) !important;">
+                        <select class=" txttouchcampaign form-control form-control-sm" name="touchcampaign">
                             <option selected="" value=""></option>
                             @if(count($touchcampaigns))
                                 @foreach($touchcampaigns as $touchcampaign)
@@ -484,7 +484,7 @@ font-weight: 500;padding: 3px 4px !important;">Last Touch
                     </div>
                     <div class="col-sm-4 pl-1 pr-0">
                         <div class="input-group">
-                            <input type="text" class="txttouchdate form-control form-control-sm js-datepicker" name="touchdate" style="height: 28px !important;background-color: rgb(239, 246, 255) !important;" autocomplete="off">
+                            <input type="text" class="txttouchdate form-control form-control-sm js-datepicker" name="touchdate" style="height: 28px !important;" autocomplete="off">
                             <div class="input-group-append">
                                 <span class="input-group-text t8" onclick="$('[name=lasttouchdate]').trigger('focus');"><i class="fas fa-calendar-alt font-14 ds-c"></i></span>
                             </div>

@@ -1,6 +1,9 @@
 <?php
 namespace App\Helpers;
 use App\Mail\ShareCampaignEmail;
+use App\Model\CampaignTemplate;
+use App\Model\ReportTemplate;
+use App\Model\UAFieldMapping;
 use Auth;
 use Intervention\Image\Image;
 use DB;
@@ -2789,6 +2792,31 @@ class Helper
 
     public static function generateSrPDF($row_variable,$column_variable,$function,$sum_variable,$show_as,$sSQL,$list_level,$listShortName,$imgTag,$imgPath,$eFolder,$t_name,$prefix,$SR_Attachment,$rpDesc,$report_orientation = 'portrait'){
         if (!empty($row_variable) && in_array($SR_Attachment,['onlylist','onlyreport','both'])) {
+            if(file_exists(public_path() . '/' . $eFolder . '/'.$prefix . $t_name . '.pdf')){
+                unlink(public_path() . '/' . $eFolder . '/'.$prefix . $t_name . '.pdf');
+            }
+
+            if(!empty($row_variable) && count($row_variable) > 1){
+                $row_variablearr = $row_variable;
+                $row_variable = $row_variable_groupBy = $row_variable_orderBy = '';
+                foreach ($row_variablearr as $k => $rv){
+                    if($k+1 == count($row_variablearr)){
+                        $row_variable .= "LEFT(".$rv." + space(15), 15) as '".implode(' | ',$row_variablearr)."'";
+                        $row_variable_groupBy .= "LEFT(".$rv." + space(15), 15) ";
+                    }else{
+                        $row_variable .= "LEFT(".$rv." + space(15), 15) + ' | ' +";
+                        $row_variable_groupBy .= "LEFT(".$rv." + space(15), 15) + ' | ' +";
+                    }
+                    $row_variable_orderBy = "'".implode(' | ',$row_variablearr)."'";
+                }
+            }else{
+                $row_variablearr = $row_variable;
+                $row_variable = implode('',$row_variable);
+                $row_variable_groupBy = $row_variable;
+                $row_variable_orderBy = $row_variable;
+
+            }
+
             try{
                 DB::statement("drop table  temp1");
             }catch (\Exception $e){
@@ -2809,18 +2837,18 @@ class Helper
 
             if (empty($column_variable) && $function == "Count") {
 
-                DB::statement("SET ANSI_NULLS OFF; SET ANSI_WARNINGS OFF;select * into temp1 from (select " . $row_variable . " , count(*) as Distribution from " . $list_level . " " . $where . " group by " . $row_variable . ") t");
+                DB::statement("SET ANSI_NULLS OFF; SET ANSI_WARNINGS OFF;select * into temp1 from (select " . $row_variable . " , count(*) as Distribution from " . $list_level . " " . $where . " group by " . $row_variable_groupBy . ") t");
 
-                $sSqlTempSelect = DB::select("select * from temp1 Order By ".$row_variable);
+                $sSqlTempSelect = DB::select("select * from temp1 Order By ".$row_variable_orderBy);
                 $dData = collect($sSqlTempSelect)->map(function($x){ return (array) $x; })->toArray();
 
                 $colVar = 'Distribution';
             }
             else if (empty($column_variable) && $function == "Sum") {
 
-                DB::statement("SET ANSI_NULLS OFF; SET ANSI_WARNINGS OFF;select * into temp1 from (select " . $row_variable . ", sum(" . $sum_variable . ") as Distribution from " . $list_level . "  " . $where . " group by " . $row_variable . ") t");
+                DB::statement("SET ANSI_NULLS OFF; SET ANSI_WARNINGS OFF;select * into temp1 from (select " . $row_variable . ", sum(" . $sum_variable . ") as Distribution from " . $list_level . "  " . $where . " group by " . $row_variable_groupBy . ") t");
 
-                $sSqlTempSelect = DB::select("select * from temp1 Order By ".$row_variable);
+                $sSqlTempSelect = DB::select("select * from temp1 Order By ".$row_variable_orderBy);
                 $dData = collect($sSqlTempSelect)->map(function($x){ return (array) $x; })->toArray();
                 $colVar = 'Distribution';
 
@@ -2830,9 +2858,9 @@ class Helper
                 if(empty($sum_variable)){
                     return ['status' => false,'message' => 'Please select sum valriable'];
                 }
-                DB::statement("SET ANSI_NULLS OFF; SET ANSI_WARNINGS OFF;select * into temp1 from (select " . $row_variable . ",count(*) as Number, sum(" . $sum_variable . ") as [Total] from " . $list_level . "  " . $where . " group by " . $row_variable . ") t");
+                DB::statement("SET ANSI_NULLS OFF; SET ANSI_WARNINGS OFF;select * into temp1 from (select " . $row_variable . ",count(*) as Number, sum(" . $sum_variable . ") as [Total] from " . $list_level . "  " . $where . " group by " . $row_variable_groupBy . ") t");
 
-                $dData = DB::select("select * from temp1 Order By ".$row_variable);
+                $dData = DB::select("select * from temp1 Order By ".$row_variable_orderBy);
                 $dData = collect($dData)->map(function($x){ return (array) $x; })->toArray();
                 $colVar = 'Count';
 
@@ -2847,7 +2875,7 @@ class Helper
                     $result = Helper::print_report_datatable_PNSC($dData, $colVar, $sum_variable);
                 }
                 $colVariable = empty($column_variable) ? 'Distribution' : $column_variable;
-                $rowVariable = empty($row_variable) ? 'Summary' : $row_variable;
+                $rowVariable = empty($row_variable) ? 'Summary' : "'".implode(' | ',$row_variablearr)."'";
                 $sumVariable = empty($sum_variable) ? '' : $sum_variable;
                 ;
                 $rpfooter = !empty(trim($listShortName)) ? $listShortName : '';
@@ -2881,7 +2909,7 @@ class Helper
                 }
 
                 $sSqlInsert .= $function . "(" . $column . ")";
-                $sSqlInsert .= "as Distribution from " . $list_level . " " . $where . " group by " . $row_variable . ", " . $column_variable . ") t";
+                $sSqlInsert .= "as Distribution from " . $list_level . " " . $where . " group by " . $row_variable_groupBy . ", " . $column_variable . ") t";
                 DB::statement($sSqlInsert);
 
                 $sSqlSelect = DB::select("select distinct " . $column_variable . " from temp1 Order By " . $column_variable);
@@ -2894,7 +2922,7 @@ class Helper
                         array_push($cv,"[".$column[$column_variable]."]");
                     }
                 }
-                $sSqlTempSelect = "select * from temp1 pivot (sum(Distribution) for " . $column_variable . " in(".implode(',',$cv).")) as " . $row_variable;
+                $sSqlTempSelect = "select * from temp1 pivot (sum(Distribution) for " . $column_variable . " in(".implode(',',$cv).")) as rv";
                 $aData = DB::select($sSqlTempSelect);
                 $dData = collect($aData)->map(function($x){ return (array) $x; })->toArray();
                 $colVar = $column_variable;
@@ -2919,7 +2947,7 @@ class Helper
             }
 
             $colVariable = empty($column_variable) ? 'Distribution' : $column_variable;
-            $rowVariable = empty($row_variable) ? 'Summary' : $row_variable;
+            $rowVariable = empty($row_variable) ? 'Summary' : "'".implode(' | ',$row_variablearr)."'";
             $sumVariable = empty($sum_variable) ? '' : $sum_variable;
 
             $rpfooter = !empty(trim($listShortName)) ? $listShortName : '';
@@ -2945,6 +2973,10 @@ class Helper
 
     public static function generateSrXLSX($tablehtml,$prefix,$eFolder,$t_name,$imgPath){
         try{
+            if(file_exists(public_path() . '\\' . $eFolder . '\\'.$prefix . $t_name . '.xlsx')){
+                unlink(public_path() . '\\' . $eFolder . '\\'.$prefix . $t_name . '.xlsx');
+            }
+
             $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
             $spreadhseet = $reader->loadFromString($tablehtml);
             $sheet = $spreadhseet->getActiveSheet();
@@ -3166,20 +3198,34 @@ class Helper
         $output=curl_exec($ch);
         $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $curl_errno= curl_errno($ch);
-        //echo "Curl Errno returned $curl_errno <br/>";
+        //$error_msg = curl_error($ch);
+        //echo "Curl Errno returned $curl_errno <br/> $error_msg";
         curl_close($ch);
     }
 
     public static function shareReport($eCampid,$t_type,$user_id,$users,$custom_message,$clientname,$email_flag = 0,$Is_Delivered = 0){
         try{
-            $tTable = $t_type == 'A' ? 'UR_Report_Templates' : 'UC_Campaign_Templates';
+            /*$tTable = $t_type == 'A' ? 'UR_Report_Templates' : 'UC_Campaign_Templates';
             $sSql = DB::select("SELECT * FROM $tTable WHERE row_id='".$eCampid."' AND t_type='".$t_type."'");
             $result = collect($sSql)->map(function($x){ return (array) $x; })->toArray();
             $listShortName = '';
             if(isset($result[0])){
                 $result = $result[0];
                 $listShortName = $result['list_short_name'];
+            }*/
+
+            if($t_type == 'C'){
+                $result = CampaignTemplate::with('rpschedule.ccschstatusmap')->where('row_id',$eCampid)->where('t_type',$t_type)->first()->toArray();
+                $listShortName = $result['list_short_name'];
+                $file_Name = isset($result['rpschedule']['ccschstatusmap'][0]) ? $result['rpschedule']['ccschstatusmap'][0]['file_name'] : $listShortName;
+            }else{
+                $result = ReportTemplate::with('rpschedule.rpschstatusmap')->where('row_id',$eCampid)->where('t_type',$t_type)->first()->toArray();
+                $listShortName = $result['list_short_name'];
+                $file_Name = isset($result['rpschedule']['rpschstatusmap'][0]) ? $result['rpschedule']['rpschstatusmap'][0]['file_name'] : $listShortName;
             }
+
+
+
 
             DB::statement("DELETE FROM UL_RepCmp_Share WHERE User_id = $user_id AND camp_tmpl_id = $eCampid AND t_type = '$t_type'");
             if(isset($users) && count($users) > 0){
@@ -3187,7 +3233,7 @@ class Helper
                     $user = User::where('User_ID',$ToUser)->first();
                     if($user) {
                         if($email_flag == 1){
-                            self::sendShareEmail($result,$user,$clientname,$custom_message,$listShortName,$t_type);
+                            self::sendShareEmail($result,$user,$clientname,$custom_message,$file_Name,$t_type);
                         }
                         if(!empty($custom_message)){
                             $Is_Delivered = 1;
@@ -3242,10 +3288,13 @@ class Helper
             'AddressQualities' => false,
             'DonorSegments' => false,
             'EventSegments' => false,
-            'LifecycleSegments' => false
+            'LifecycleSegments' => false,
+            'Productcat1_Des'      =>  false,
+            'Productcat2_Des'      =>  false,
+            'Product'          =>  false,
         ]){
 
-		$campaigns = $countries = $ZSS_Segments = $MemberSegments = $AddressQualities = $DonorSegments = $EventSegments =$LifecycleSegments = [];
+		$campaigns = $countries = $ZSS_Segments = $MemberSegments = $AddressQualities = $DonorSegments = $EventSegments =$LifecycleSegments = $Productcat1_Des = $Productcat2_Des = $Product = [];
 
         if($params['campaigns']){
             $campaigns = DB::table('Contact_View')
@@ -3318,6 +3367,40 @@ class Helper
                 ->orderBy('LifecycleSegment')
                 ->pluck('LifecycleSegment')->toArray();
         }
+
+        if($params['Productcat1_Des']) {
+            $Productcat1_Des = DB::table('Sales_View')
+                ->distinct()
+                ->whereNotNull('Productcat1_Des')
+                ->where('Productcat1_Des', '<>', '')
+                ->orderBy('Productcat1_Des')
+                ->pluck('Productcat1_Des')->toArray();
+        }
+
+        if($params['Productcat2_Des']) {
+            $Productcat2_Des = DB::table('Sales_View')
+                ->distinct()
+                ->whereNotNull('Productcat2_Des')
+                ->where('Productcat2_Des', '<>', '')
+                ->orderBy('Productcat2_Des')
+                ->pluck('Productcat2_Des')->toArray();
+        }
+
+        if($params['Product']) {
+            /*$Product = DB::table('Sales_View')
+                ->distinct()
+                ->whereNotNull('Product')
+                ->where('Product', '<>', '')
+                ->orderBy('Product')
+                ->pluck('Product')->toArray();*/
+            $Product = DB::table('Sales_View')
+                ->distinct('Product')
+                ->whereNotNull('Product')
+                ->where('Product', '<>', '')
+                ->orderBy('ProdA')
+                ->get([DB::raw('Product, productcat1 + \'-\'+productcat2+\'-\'+product as ProdA, productcat1 + \'-\'+product as ProdB')])->toArray();
+
+        }
         return [
             'campaigns' => $campaigns,
             'countries' => $countries,
@@ -3327,6 +3410,70 @@ class Helper
             'DonorSegments' => $DonorSegments,
             'EventSegments' => $EventSegments,
             'LifecycleSegments' => $LifecycleSegments,
+            'Productcat1_Des' => $Productcat1_Des,
+            'Productcat2_Des' => $Productcat2_Des,
+            'Product' => $Product,
+        ];
+    }
+
+
+    public static function getActivityFiltersFieldsValues($params = [
+        'Productcat1_Des'      =>  false,
+        'Productcat2_Des'      =>  false,
+        'Product'          =>  false,
+        'Class'             =>  false
+    ]){
+
+        $Productcat1_Des = $Productcat2_Des = $Product = $Class = [];
+
+        if($params['Productcat1_Des']) {
+            $Productcat1_Des = DB::table('Sales_View')
+                ->distinct()
+                ->whereNotNull('Productcat1_Des')
+                ->where('Productcat1_Des', '<>', '')
+                ->orderBy('Productcat1_Des')
+                ->pluck('Productcat1_Des')->toArray();
+        }
+
+        if($params['Productcat2_Des']) {
+            $Productcat2_Des = DB::table('Sales_View')
+                ->distinct()
+                ->whereNotNull('Productcat2_Des')
+                ->where('Productcat2_Des', '<>', '')
+                ->orderBy('Productcat2_Des')
+                ->pluck('Productcat2_Des')->toArray();
+        }
+
+        if($params['Product']) {
+            /*$Product = DB::table('Sales_View')
+                ->distinct()
+                ->whereNotNull('Product')
+                ->where('Product', '<>', '')
+                ->orderBy('Product')
+                ->pluck('Product')->toArray();*/
+            $Product = DB::table('Sales_View')
+                ->distinct('Product')
+                ->whereNotNull('Product')
+                ->where('Product', '<>', '')
+                ->orderBy('ProdA')
+                ->get([DB::raw('Product, productcat1 + \'-\'+productcat2+\'-\'+product as ProdA, productcat1 + \'-\'+product as ProdB')])->toArray();
+
+        }
+
+        if($params['Class']) {
+            $Class = DB::table('Sales_View')
+                ->distinct()
+                ->whereNotNull('Class')
+                ->where('Class', '<>', '')
+                ->orderBy('Class')
+                ->pluck('Class')->toArray();
+        }
+        return [
+
+            'Productcat1_Des' => $Productcat1_Des,
+            'Productcat2_Des' => $Productcat2_Des,
+            'Product' => $Product,
+            'Class' => $Class,
         ];
     }
 
@@ -3340,10 +3487,16 @@ class Helper
         $tDSArray = array();
         $tEVSArray = array();
         $tLSArray = array();
+        $tPC1Array = array();
+        $tPC2Array = array();
+        $tPArray = array();
+        $tTagArray = array();
 
-
-
-
+        if(isset($filters['Tag'])){
+            foreach ($filters['Tag'] as $tTag) {
+                $tTagArray[] = str_replace("'", "''", $tTag);
+            }
+        }
         if(isset($filters['ZSS_Segment'])){
             foreach ($filters['ZSS_Segment'] as $tOS) {
                 $tOSArray[] = "'%" . str_replace("'", "''", $tOS) . "%'";
@@ -3413,9 +3566,9 @@ class Helper
 
         $txtDaysSinceLastUpdate = isset($filters['DaysSinceLastUpdate'][0]) ? [$filters['DaysSinceLastUpdate_op'][0],$filters['DaysSinceLastUpdate'][0]] : ['',''];
 
-        $txtActivityCat1 = isset($filters['ActivityCat1']) ? $filters['ActivityCat1'][0] : '';
-        $txtActivityCat2 = isset($filters['ActivityCat2']) ? $filters['ActivityCat2'][0] : '';
-        $txtActivity = isset($filters['Activity']) ? $filters['Activity'][0] : '';
+        $txtProductcat1_Des = isset($filters['Productcat1_Des']) ? $filters['Productcat1_Des'][0] : '';
+        $txtProductcat2_Des = isset($filters['Productcat2_Des']) ? $filters['Productcat2_Des'][0] : '';
+        $txtProduct = isset($filters['Product']) ? $filters['Product'][0] : '';
 
         $contactids = isset($filters['contactids']) ? $filters['contactids'][0] : '';
 
@@ -3423,29 +3576,77 @@ class Helper
 
         $specWhere = "";
         $aAd = 0;
-        if ($txtActivityCat1 != "") {
-            $specWhere .= "ds_mkc_contactid in (select distinct ds_mkc_contactid from Sales_View where activitycat1='" . trim($txtActivityCat1) . "')";
+
+        if(isset($filters['Productcat1_Des'])) {
+            foreach ($filters['Productcat1_Des'] as $PC1) {
+                $tPC1Array[] = "'" . str_replace("'", "''", $PC1) . "'";
+            }
+
+            if (count($tPC1Array) > 0) {
+                if(!empty($sWhere)){
+                    $sWhere .= ' and ';
+                }
+                $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from Sales_View where Productcat1_Des= " . implode(" OR Productcat1_Des= ", $tPC1Array) . ")";
+                $aAd++;
+            }
+        }
+
+        if(isset($filters['Productcat2_Des'])) {
+            foreach ($filters['Productcat2_Des'] as $PC2) {
+                $tPC2Array[] = "'" . str_replace("'", "''", $PC2) . "'";
+            }
+
+            if (count($tPC2Array) > 0) {
+                $specWhere .= $aAd > 0 ? " and " : "";
+                $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from Sales_View where Productcat2_Des= " . implode(" OR Productcat2_Des= ", $tPC2Array) . ")";
+                $aAd++;
+            }
+        }
+
+        if(isset($filters['Product'])) {
+            foreach ($filters['Product'] as $P) {
+                $tPArray[] = "'%" . str_replace("'", "''", $P) . "%'";
+            }
+
+            if (count($tPArray) > 0) {
+                $specWhere .= $aAd > 0 ? " and " : "";
+                $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from Sales_View where productcat1 + '-'+product like " . implode(" OR productcat1 + '-'+product like ", $tPArray) . ")";
+                $aAd++;
+            }
+        }
+
+
+        /*if ($txtProductcat1_Des != "") {
+            $specWhere .= "ds_mkc_contactid in (select distinct ds_mkc_contactid from Sales_View where Productcat1_Des='" . trim($txtProductcat1_Des) . "')";
             $aAd++;
         }
 
-        if ($txtActivityCat2 != "") {
+        if ($txtProductcat2_Des != "") {
             $specWhere .= $aAd > 0 ? " and " : "";
-            $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from Sales_View where activitycat2= '" . trim($txtActivityCat2) . "')";
-        }
+            $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from Sales_View where Productcat2_Des= '" . trim($txtProductcat2_Des) . "')";
+        }*/
 
-        if ($txtActivity != "") {
+        /*if ($txtProduct != "") {
             $specWhere .= $aAd > 0 ? " and " : "";
-            $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from Sales_View where activity like '%" . trim($txtActivity) . "%')";
-        }
+            $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from Sales_View where productcat1 + '-'+product like '%" . trim($txtProduct) . "%')";
+        }*/
         if(!empty($specWhere)){
             $sWhere .=  '('.$specWhere.') ';
         }
+
 
         if (count($tCArray) > 0) {
             if(!empty($specWhere)){
                 $sWhere .= ' and ';
             }
             $sWhere .= " (isnull(Country,'') like  " . implode(" OR Country like ", $tCArray) . ")";
+        }
+
+        if (count($tTagArray) > 0) {
+            if(!empty($sWhere)){
+                $sWhere .= ' and ';
+            }
+            $sWhere .= " (isnull(Tag,'') In (" . implode(",", $tTagArray) . "))";
         }
 
         if (count($tOSArray) > 0) {
@@ -3705,18 +3906,288 @@ class Helper
         //return !empty($sWhere) ?  (!empty($urCon) ? ' WHERE '.$sWhere.' AND '.$urCon : ' WHERE '.$sWhere) : (!empty($urCon) ? ' WHERE '.$urCon : '');
     }
 
+    public static function ApplyFiltersConditionForRP($filters, $query, $ver = false){
+        $txtSearch = isset($filters['searchterm']) ? $filters['searchterm'][0] : '';
+
+        if(!empty($txtSearch)){
+            $query->where(function ($qry) use ($ver,$txtSearch){
+                if($ver){
+                    $qry->whereHas('rpschedule.rpschstatusmap',function ($qry) use ($txtSearch){
+                        $qry->where('file_name','like',"%{$txtSearch}%");
+                    });
+
+                }else{
+                    $qry->where('list_short_name','like', '%'.$txtSearch.'%');
+
+                }
+                $qry->orWhereHas('rpmeta',function ($subqry) use ($txtSearch){
+                    $subqry->where('Category','like',"%{$txtSearch}%");
+                });
+            });
+
+
+        }
+    }
+
+    public static function ApplyFiltersConditionForCC($filters, $query, $ver = false){
+        $txtSearch = isset($filters['searchterm']) ? $filters['searchterm'][0] : '';
+
+        if(!empty($txtSearch)){
+            $query->where(function ($qry) use ($ver,$txtSearch){
+                if($ver){
+                    $qry->whereHas('rpschedule.ccschstatusmap',function ($qry) use ($txtSearch){
+                        $qry->where('file_name','like',"%{$txtSearch}%");
+                    });
+
+                }else{
+                    $qry->where('list_short_name','like', '%'.$txtSearch.'%');
+
+                }
+                $qry->orWhereHas('rpmeta',function ($subqry) use ($txtSearch){
+                    $subqry->where('Category','like',"%{$txtSearch}%");
+                });
+            });
+
+
+        }
+    }
+
     public static function getDownloadableColumns($haveColumns = [],$downloadableColumns = [],$ignorePositions = []){
         try{
+            $selectColumnsAS = [];
             $selectColumns = [];
             foreach ($downloadableColumns as $columnposition => $downloadableColumn){
                 if(!in_array($downloadableColumn,$ignorePositions)){
-                    array_push($selectColumns, $haveColumns[$downloadableColumn][0].' as ['.$haveColumns[$downloadableColumn][1].']');
+                    array_push($selectColumnsAS, $haveColumns[$downloadableColumn][0].' as ['.$haveColumns[$downloadableColumn][1].']');
+                    array_push($selectColumns, $haveColumns[$downloadableColumn][0]);
                 }
             }
-            return count($selectColumns) > 0 ? implode(',',$selectColumns) : ' * ';
+            return [
+                'column_as' => count($selectColumnsAS) > 0 ? implode(',',$selectColumnsAS) : ' * ',
+                'column' => count($selectColumns) > 0 ? implode(',',$selectColumns) : ' * ',
+            ];
         }catch (\Exception $exception){
             return ' * ';
         }
     }
+
+    public static function affectedRowsTagLine($rows_affected = 0){
+        return $rows_affected . " row(s) affected.\n";
+    }
+
+    public static function messageTabContent($rows){
+        $msghtml = '<table class="table table-bordered table-hover color-table lkp-table"><thead><tr><th>Message</th></tr></thead><tbody>';
+        foreach ($rows as $row){
+            if (isset($row)){
+                $msghtml .= '<tr><td>' . self::affectedRowsTagLine($row)  . '</td></tr>';
+            }
+        }
+        $msghtml .= '</tbody></table>';
+
+        return $msghtml;
+    }
+
+    public static function queryTabContent($sqlQueries = []){
+        $sqlHtml = '';
+        if (count($sqlQueries) > 0) {
+            $sqlHtml = '<table class="table table-bordered table-hover color-table lkp-table">';
+            for ($k = 1; $k <= count($sqlQueries); $k++) {
+                if (!empty($sqlQueries[$k])) {
+                    $sqlHtml .= '<tr><td>' . $sqlQueries[$k] . '</td></tr>';
+                }
+            }
+            $sqlHtml .= '</table>';
+        }
+        return $sqlHtml;
+    }
+
+    public static function format_size($size)
+    {
+        $sizes = array(" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB");
+        if ($size == 0) {
+            return ('n/a');
+        } else {
+            return (round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . $sizes[$i]);
+        }
+    }
+
+    public static function getColumns($menu_level1,$menu_level2){
+        $columns = UAFieldMapping::where('Menu_level1',$menu_level1)->where('Menu_level2',$menu_level2)->orderBy('Column_Order')->get()->toArray();
+        $visible_columns = $hidden_columns = $all_columns = [];
+        $table_name = '';
+        if(count($columns) > 0){
+            foreach ($columns as $column){
+                if(in_array($column['Field_Visibility'],[1,2])){
+                    if(!is_null($column['Format'])){
+                        array_push($all_columns,$column['Format'].' as '.$column['Field_Name'] );
+                    }else{
+                        array_push($all_columns,$column['Field_Name'] );
+                    }
+
+
+                    array_push($visible_columns,$column);
+                    $table_name = $column['Table_Name'];
+                }
+                else
+                    array_push($hidden_columns,$column);
+            }
+        }
+
+        return [
+            'visible_columns' => $visible_columns,
+            'hidden_columns'  => $hidden_columns,
+            'all_columns'  => $all_columns,
+            'table_name'  => $table_name
+        ];
+    }
+
+    public static function getSingleColumn($menu_level1, $menu_level2,$field_name){
+        $column = UAFieldMapping::where('Menu_level1',$menu_level1)
+            ->where('Menu_level2',$menu_level2)
+            ->where('Field_Name',$field_name)
+            ->orderBy('Column_Order')
+            ->get()
+            ->toArray();
+
+        return $column;
+    }
+
+    public static function getFilterValues($evalColumns){
+        $Filters = [];
+        foreach ($evalColumns as $evalColumn){
+            if($evalColumn['Filter'] == 1){
+
+                if(!is_null($evalColumn['Format'])){
+                    $Field_Name_as = $evalColumn['Format'].' as '.$evalColumn['Field_Name'];
+                    $Field_Name = $evalColumn['Format'];
+                }
+                else{
+                    $Field_Name = $evalColumn['Field_Name'];
+                    $Field_Name_as = $Field_Name;
+                }
+
+                if($evalColumn['Numeric'] == 1){
+                    $records = DB::table($evalColumn['Table_Name'])
+                        ->distinct()
+                        ->whereNotNull(DB::raw($Field_Name))
+                        ->where(DB::raw($Field_Name), '<>', '')
+                        ->orderBy(DB::raw($Field_Name))
+                        ->pluck(DB::raw($Field_Name_as))->toArray();
+                }else{
+                    $records = DB::table($evalColumn['Table_Name'])
+                        ->distinct()
+                        ->whereNotNull($evalColumn['Field_Name'])
+                        ->where($evalColumn['Field_Name'], '<>', '')
+                        ->orderBy($evalColumn['Field_Name'])
+                        ->pluck(DB::raw($Field_Name_as))->toArray();
+                }
+
+                $Filters[$evalColumn['Field_Name']] = $records;
+                $Filters[$evalColumn['Field_Name']]['Field_Display_Name'] = $evalColumn['Field_Display_Name'];
+            }
+        }
+        return $Filters;
+    }
+
+    public static function getFiltersCondition($filters, $section = '',$visible_columns = []){
+        $txtSearch = isset($filters['searchterm']) ? $filters['searchterm'][0] : '';
+        $sWhere = '';
+        if(count($filters) > 0){
+            $applied = [];
+            foreach ($filters as $keyColumn => $filter){
+                if($keyColumn != 'searchterm'){
+
+                    if(stripos($keyColumn,'_op_') != true){
+                        if(stripos($keyColumn,'-') != false){
+                            $sepColumn = explode('-',$keyColumn);
+                            $keyColumn = $sepColumn[1];
+                        }
+                        $key = array_search($keyColumn, array_column($visible_columns, 'Field_Name'));
+                        if(isset($filters[$keyColumn.'_op_']) && !in_array($keyColumn,$applied) && $visible_columns[$key]['Filter'] == 1){
+                            $Field_Name = !is_null($visible_columns[$key]['Format']) ? $visible_columns[$key]['Format'] : $visible_columns[$key]['Field_Name'];
+                            if(!empty($sWhere)){
+                                $sWhere .= ' AND ';
+                            }
+                            $sWhere .= " (isnull(".$Field_Name.",'') ".$filters[$keyColumn.'_op_'][0]." ".$filter[0].")";
+                            array_push($applied,$keyColumn.'_op_');
+                            array_push($applied,$keyColumn);
+
+                        }else if(!in_array($keyColumn,$applied) && $visible_columns[$key]['Filter'] == 1){
+
+                            $Field_Name = !is_null($visible_columns[$key]['Format']) ? $visible_columns[$key]['Format'] : $visible_columns[$key]['Field_Name'];
+                            if(!empty($sWhere)){
+                                $sWhere .= ' AND ';
+                            }
+                            $sWhere .= " (isnull(".$Field_Name.",'') like '%" . implode("%' OR isnull(".$Field_Name.",'') like '%", $filter) . "%')";
+                            array_push($applied,$keyColumn);
+                        }
+
+                    }else if (!in_array($keyColumn,$applied) && strpos($keyColumn,'_op_') != false){
+
+                        $column = explode('_op_',$keyColumn);
+                        if(isset($filters[$column[0]])){
+                            if(stripos($column[0],'-') != false){
+                                $sepColumn = explode('-',$column[0]);
+                                $column[0] = $sepColumn[1];
+                            }
+                            $key = array_search($column[0], array_column($visible_columns, 'Field_Name'));
+                            if($visible_columns[$key]['Filter'] == 1){
+                                $Field_Name = !is_null($visible_columns[$key]['Format']) ? $visible_columns[$key]['Format'] : $visible_columns[$key]['Field_Name'];
+                                if(!empty($sWhere)){
+                                    $sWhere .= ' AND ';
+                                }
+                                $sWhere .= " (isnull(".$Field_Name.",'') ".$filters[$keyColumn][0]." " . $filters[$column[0]][0] . ")";
+                                array_push($applied,$column[0]);
+                                array_push($applied,$keyColumn);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if ($txtSearch != "") {
+            if(!empty($sWhere)){
+                $sWhere .= ' and ';
+            }
+            foreach ($visible_columns as $key=> $visible_column){
+                if($visible_column['Filter'] == 1) {
+                    $sWhere .= $key == 0 ? ' (' : '';
+                    if (($key + 1) == count($visible_columns)) {
+                        if (!is_null($visible_column['Format'])) {
+                            $sWhere .= " isnull(" . $visible_column['Format'] . " ,'') like '%" . $txtSearch . "%' )";
+                        } else {
+                            $sWhere .= " isnull(" . $visible_column['Field_Name'] . " ,'') like '%" . $txtSearch . "%' )";
+                        }
+
+                    } else {
+                        if (!is_null($visible_column['Format'])) {
+                            $sWhere .= " isnull(" . $visible_column['Format'] . " ,'') like '%" . $txtSearch . "%' OR ";
+                        } else {
+                            $sWhere .= " isnull(" . $visible_column['Field_Name'] . " ,'') like '%" . $txtSearch . "%' OR ";
+                        }
+                    }
+                }
+            }
+        }
+
+        return [
+            'Where' => !empty($sWhere) ? ' WHERE '.$sWhere : '',
+            'filters' => $filters,
+            'section' => $section
+        ];
+    }
+
+    public static function getFiltersSummaryDetail($sumColumns = [],$detailColumns = []){
+        $sumFilters = self::getFilterValues($sumColumns);
+        $detailFilters = self::getFilterValues($detailColumns);
+
+        return [
+            'sumFilters' => $sumFilters,
+            'detailFilters' => $detailFilters,
+        ];
+    }
+
+
 }
 ?>

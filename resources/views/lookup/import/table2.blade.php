@@ -40,7 +40,7 @@ die;*/
         <span class="pull-right">Preview ({{count($ImportData) -1 }} of {{count($ImportData) -1 }} contacts shown, {{count($ImportData) -1 }}) columns total</span>
     </div>--}}
 </div>
-<table class="table table-bordered table-hover color-table lkp-table" id="match_fields_table">
+<table class="table table-bordered table-hover color-table lkp-table" id="table_task">
     <thead>
     <tr>
 

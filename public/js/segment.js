@@ -172,6 +172,8 @@ function segsession() {
 //Define List Segments
 
     var element = Array('', 'ccol', 'op', 'val', 'log');
+    var segFilterCriteria = '';
+    var segFilterCondition = '';
 //List Segment Selection Criteria
     if (DFS == 'custom')   //List Segment Selection Method Custom
     {
@@ -217,7 +219,9 @@ function segsession() {
         logStr = log.join(':');
         lssc = ccolStr + '^' + opStr + '^' + valStr + '^' + logStr;*/
         noLS = document.getElementById('numRows_4').value;
-        lssc = customFiltersJSON();
+        segFilterCriteria = customFiltersJSON();
+        segFilterCondition = seg_filter_summary();
+        lssc ='';
 
     }//Custom
     else if (DFS == 'byfield') {
@@ -344,6 +348,8 @@ function segsession() {
     params.noLS = noLS;
     params.lssm = lssm;
     params.lssc = lssc;
+    params.segFilterCriteria = segFilterCriteria;
+    params.segFilterCondition = segFilterCondition;
     params.noCG = noCG;
     params.cg = cg;
     params.LSD = LSD;
@@ -358,6 +364,392 @@ function segsession() {
     if (promoexportchk == 'N') {
         $('[href="#tab_28"]').trigger('click');
     }
+}
+
+function seg_filter_summary() {
+
+    var val = new Array();
+
+
+    var WhereArray = new Array();
+
+    var noRows = document.getElementById("numRows_4").value;
+    var ccol = new Array();
+    var op = new Array();
+    var is_nm = new Array();//check is numeric
+    var log = new Array();
+    var k = 0;
+    var element = [' ', 'ccol', 'op', 'val', 'log'];
+
+    var p = 31;
+    var c = parseInt(noRows) + parseInt(p);
+
+    for (var i = p; i <= c; i++) {
+        for (j = 1; j <= 3; j++) {
+
+            var id1 = (element[1] + i) + j.toString();
+            var id2 = (element[2] + i) + j.toString();
+            var id3 = (element[3] + i) + j.toString();
+            var id4 = (element[4] + i) + j.toString();
+
+            if ($('[id=' + id1 + ']').val() != "") {
+                ccol[k] = $('[id=' + id1 + ']').val();
+                op[k] = $('[id=' + id2 + ']').val();
+                is_nm[k] = $('[id=' + id2 + ']').attr('rel');
+                val[k] = $('[id=' + id3 + ']').val();
+                if (j != 3) {
+                    //log[k] = ' OR '; //$('[id='+id4+']').val();
+                    if($('[id='+id4+']').length > 0){
+                        log[k] = $('[id='+id4+']').val();
+                    }
+                }
+                k++;
+            } else {
+                continue;
+            }
+        }
+    }
+
+    var where = new Array(), op1, flag;
+
+    for (var j = 0; j < noRows; j++) {
+
+        flag = 0;
+        where[j] = "";
+        for (var i = (j * 3); i < (j * 3) + 3; i++) {
+            switch (op[i]) {
+
+                case '0':
+                    op1 = " > ";
+                    break;
+                case '1':
+                    op1 = " < ";
+                    break;
+                case '2':
+                    op1 = " >= ";
+                    break;
+                case '3':
+                    op1 = " <= ";
+                    break;
+                case '4':
+                    op1 = " = ";
+                    break;
+                case '5':
+                    op1 = " != ";
+                    break;
+                case '6':
+                    op1 = " in ";
+                    break;
+                case '7':
+                    op1 = " not in ";
+                    break;
+                case '8':
+                    op1 = " like ";
+                    break;
+                case '8.1':
+                    op1 = " like ";
+                    break;
+                case '8.2':
+                    op1 = " like ";
+                    break;
+                case '9':
+                    op1 = " not like ";
+                    break;
+                case '9.1':
+                    op1 = " not like ";
+                    break;
+                case '9.2':
+                    op1 = " not like ";
+                    break;
+                default:
+                    op1 = "";
+                    break;
+            }
+            //if ((ccol[i] != "") && (op1 != "") && (val[i] != "")) {
+            if ((ccol[i] != "") && (op1 != "")) {
+                var reg = /^\d+$/;
+                if (flag == 0) {
+                    if (op[i] > '5' && op[i] < '8') {
+
+                        if (val[i].toString().indexOf(",") > -1) {
+                            var vValArray = val[i].toString().split(",");
+                            var nNewValVar = '';
+                            for (kk = 0; kk < vValArray.length; kk++) {
+                                if (is_nm[i] == 1) {
+                                    if (vValArray.length == 1)
+                                        nNewValVar += '(' + vValArray[kk] + ')';
+                                    else if (kk + 1 == vValArray.length)
+                                        nNewValVar += '' + vValArray[kk] + ')';
+                                    else if (vValArray.length > 1 && kk == 0)
+                                        nNewValVar += '(' + vValArray[kk] + ',';
+                                    else
+                                        nNewValVar += '' + vValArray[kk] + ',';
+                                } else {
+                                    if (vValArray.length == 1)
+                                        nNewValVar += '(\'' + vValArray[kk] + '\')';
+                                    else if (kk + 1 == vValArray.length)
+                                        nNewValVar += '\'' + vValArray[kk] + '\')';
+                                    else if (vValArray.length > 1 && kk == 0)
+                                        nNewValVar += '(\'' + vValArray[kk] + '\',';
+                                    else
+                                        nNewValVar += '\'' + vValArray[kk] + '\',';
+                                }
+                            }
+                        } else {
+                            if (is_nm[i] == 1) {
+                                nNewValVar = '(' + val[i] + ')';
+                            } else {
+                                nNewValVar = '(\'' + val[i] + '\')';
+                            }
+                        }
+
+                        if (ccol[i + 1] != " " && ccol[i + 1] != null) {
+                            where[j] += ' ' + ccol[i] + ' ' + op1 + nNewValVar;
+                        } else {
+                            where[j] += '( ' + ccol[i] + ' ' + op1 + nNewValVar + ' )';
+                        }
+                        flag = 1;
+                    } else if (op[i] > '7') {
+
+                        if (op[i] == '8') {
+                            var st = '%', ed = '%';
+                        } else if (op[i] == '8.1') {
+                            var st = '', ed = '%';
+                        } else if (op[i] === '8.2') {
+                            var st = '%', ed = '';
+                        } else if (op[i] == '9') {
+                            var st = '%', ed = '%';
+                        } else if (op[i] == '9.1') {
+                            var st = '', ed = '%';
+                        } else if (op[i] == '9.2') {
+                            var st = '%', ed = '';
+                        }
+
+                        if (val[i].indexOf(",") > -1) {
+                            var vValArray = val[i].split(",");
+                            var nNewValVar = '(';
+
+                            var collog = '';
+                            for (kk = 0; kk < vValArray.length; kk++) {
+                                if (vValArray.length == 1)
+                                    collog = collog + '( ' + ccol[i] + ' ' + op1 + ' \'' + st + vValArray[kk] + ed + '\')';
+                                else if (kk + 1 == vValArray.length)
+                                    collog = collog + ' ' + ccol[i] + ' ' + op1 + ' \'' + st + vValArray[kk] + ed + '\')';
+                                else if (vValArray.length > 1 && kk == 0)
+                                    collog = collog + '( ' + ccol[i] + ' ' + op1 + ' \'' + st + vValArray[kk] + ed + '\' OR ';
+                                else
+                                    collog = collog + ' ' + ccol[i] + ' ' + op1 + ' \'' + st + vValArray[kk] + ed + '\' OR ';   //After Start if like have more then one options
+                            }
+                        } else {
+                            collog = '(' + ccol[i] + ' ' + op1 + ' \'' + st + val[i] + ed + '\')';
+                        }
+
+
+                        if (ccol[i + 1] != " ") // For two columns
+                            where[j] += '' + collog;
+                        else
+                            where[j] += collog;
+
+                        flag = 1;
+                    } else {
+                        if (val[i].toString().indexOf(",") > -1) {
+                            var vValArray = val[i].toString().split(",");
+                            var nNewValVar = '';
+                            for (kk = 0; kk < vValArray.length; kk++) {
+                                //if (reg.test(vValArray[kk]) == true) {
+                                if (is_nm[i] == 1) {
+                                    if (vValArray.length == 1)
+                                        nNewValVar += '' + vValArray[kk] + '';
+                                    else if (kk + 1 == vValArray.length)
+                                        nNewValVar += '' + vValArray[kk] + '';
+                                    else if (vValArray.length > 1 && kk == 0)
+                                        nNewValVar += '' + vValArray[kk] + ',';
+                                    else
+                                        nNewValVar += '' + vValArray[kk] + ',';
+                                } else {
+                                    if (vValArray.length == 1)
+                                        nNewValVar += '\'' + vValArray[kk] + '\'';
+                                    else if (kk + 1 == vValArray.length)
+                                        nNewValVar += '\'' + vValArray[kk] + '\'';
+                                    else if (vValArray.length > 1 && kk == 0)
+                                        nNewValVar += '\'' + vValArray[kk] + '\',';
+                                    else
+                                        nNewValVar += '\'' + vValArray[kk] + '\',';
+                                }
+                            }
+                        } else {
+                            if (is_nm[i] == 1) {
+                                nNewValVar = '' + val[i] + '';
+                            } else {
+                                nNewValVar = '\'' + val[i] + '\'';
+                            }
+                        }
+                        if (ccol[i + 1] != " ") {
+                            where[j] += ' ' + ccol[i] + ' ' + op1 + ' ' + nNewValVar + ' ';
+
+                        } else {
+                            where[j] += '( ' + ccol[i] + ' ' + op1 + ' ' + nNewValVar + ' )';
+                        }
+                        flag = 1;
+                    }
+                } else if (log[i - 1] != " ") {
+                    if (op[i] > '5' && op[i] < '8') {
+                        if (val[i].toString().indexOf(",") > -1) {
+                            var vValArray = val[i].toString().split(",");
+                            var nNewValVar = '';
+                            for (kk = 0; kk < vValArray.length; kk++) {
+                                if (is_nm[i] == 1) {
+                                    if (vValArray.length == 1)
+                                        nNewValVar += '(' + vValArray[kk] + ')';
+                                    else if (kk + 1 == vValArray.length)
+                                        nNewValVar += '' + vValArray[kk] + ')';
+                                    else if (vValArray.length > 1 && kk == 0)
+                                        nNewValVar += '(' + vValArray[kk] + ',';
+                                    else
+                                        nNewValVar += '' + vValArray[kk] + ',';
+                                } else {
+                                    if (vValArray.length == 1)
+                                        nNewValVar += '(\'' + vValArray[kk] + '\')';
+                                    else if (kk + 1 == vValArray.length)
+                                        nNewValVar += '\'' + vValArray[kk] + '\')';
+                                    else if (vValArray.length > 1 && kk == 0)
+                                        nNewValVar += '(\'' + vValArray[kk] + '\',';
+                                    else
+                                        nNewValVar += '\'' + vValArray[kk] + '\',';
+                                }
+                            }
+                        } else {
+                            if (is_nm[i] == 1) {
+                                nNewValVar = '(' + val[i] + ')';
+                            } else {
+                                nNewValVar = '(\'' + val[i] + '\')';
+                            }
+                        }
+
+                        var vl = (j * 3) + 2;
+
+                        if ((i == vl) && (ccol[vl] != ""))
+                            where[j] += log[i - 1] + ' ' + ccol[i] + ' ' + op1 + nNewValVar + '';
+                        else
+                            where[j] += log[i - 1] + ' ' + ccol[i] + ' ' + op1 + nNewValVar + '';
+
+
+                    } else if (op[i] > '7') {
+                        if (op[i] == '8') {
+                            var st = '%', ed = '%';
+                        } else if (op[i] == '8.1') {
+                            var st = '', ed = '%';
+                        } else if (op[i] === '8.2') {
+                            var st = '%', ed = '';
+                        } else if (op[i] == '9') {
+                            var st = '%', ed = '%';
+                        } else if (op[i] == '9.1') {
+                            var st = '', ed = '%';
+                        } else if (op[i] == '9.2') {
+                            var st = '%', ed = '';
+                        }
+
+                        if (val[i].indexOf(",") > -1) {
+                            var vValArray = val[i].split(",");
+                            var nNewValVar = '(';
+                            var collog = '';
+                            for (kk = 0; kk < vValArray.length; kk++) {
+                                if (vValArray.length == 1)
+                                    collog = collog + '( ' + ccol[i] + ' ' + op1 + ' \'' + st + vValArray[kk] + ed + '\')';
+                                else if (kk + 1 == vValArray.length)
+                                    collog = collog + ' ' + ccol[i] + ' ' + op1 + ' \'' + st + vValArray[kk] + ed + '\')';
+                                else if (vValArray.length > 1 && kk == 0)
+                                    collog = collog + '( ' + ccol[i] + ' ' + op1 + ' \'' + st + vValArray[kk] + ed + '\' OR ';
+                                else
+                                    collog = collog + ' ' + ccol[i] + ' ' + op1 + ' \'' + st + vValArray[kk] + ed + '\' OR ';
+                            }
+                        } else {
+                            collog = '(' + ccol[i] + ' ' + op1 + ' \'' + st + val[i] + ed + '\')';
+                        }
+                        var vl = (j * 3) + 2;
+
+                        if ((i == vl) && (ccol[vl] != "")) {
+                            where[j] += log[i - 1] + collog + '';
+                        } else {
+                            where[j] += log[i - 1] + collog + '';
+                        }
+
+                    } else {
+                        var vl = (j * 3) + 2;
+
+                        if (val[i].toString().indexOf(",") > -1) {
+                            var vValArray = val[i].toString().split(",");
+                            var nNewValVar = '';
+                            for (kk = 0; kk < vValArray.length; kk++) {
+                                if (is_nm[i] == 1) {
+                                    if (vValArray.length == 1)
+                                        nNewValVar += '' + vValArray[kk] + '';
+                                    else if (kk + 1 == vValArray.length)
+                                        nNewValVar += '' + vValArray[kk] + '';
+                                    else if (vValArray.length > 1 && kk == 0)
+                                        nNewValVar += '' + vValArray[kk] + ',';
+                                    else
+                                        nNewValVar += '' + vValArray[kk] + ',';
+                                } else {
+                                    if (vValArray.length == 1)
+                                        nNewValVar += '\'' + vValArray[kk] + '\'';
+                                    else if (kk + 1 == vValArray.length)
+                                        nNewValVar += '\'' + vValArray[kk] + '\'';
+                                    else if (vValArray.length > 1 && kk == 0)
+                                        nNewValVar += '\'' + vValArray[kk] + '\',';
+                                    else
+                                        nNewValVar += '\'' + vValArray[kk] + '\',';
+                                }
+                            }
+                        } else {
+                            if (is_nm[i] == 1) {
+                                nNewValVar = '' + val[i] + '';
+                            } else {
+                                nNewValVar = '\'' + val[i] + '\'';
+                            }
+                        }
+                        if ((i == vl) && (ccol[vl] != ""))
+                            where[j] += log[i - 1] + ' ' + ccol[i] + ' ' + op1 + ' ' + nNewValVar + ' ';
+                        else {
+                            where[j] += log[i - 1] + ' ' + ccol[i] + ' ' + op1 + ' ' + nNewValVar + ' ';
+                        }
+                    }
+                }  // Else if
+            }  // If
+
+        }  // Inner For
+    }// Outer For
+
+    var k = 0;
+    for (var i = 0; i < where.length; i++) {
+        if (where[i] != "") {
+
+            var n = where[i].indexOf("OR");
+            if (n > 0) {
+                WhereArray[k] = " (" + where[i] + ") ";
+            } else {
+                WhereArray[k] = "" + where[i];
+            }
+            k++;
+        }
+    }
+    var str = WhereArray.join(" AND ");
+    if (str != "") {
+        str = str;
+    } else {
+        str = "";
+    }
+    var sSQL;
+
+    /***************** Change 2017-03-07 Start ***********************/
+    str = str.replace(/::/g, ",");
+    /***************** Change 2017-03-07 End ***********************/
+
+
+    /************************ Without run query get filter summery Start **********************************/
+    return str;
+
+    /************************ Without run query get filter summery End **********************************/
 }
 
 function CGroupDetails() {
@@ -1039,6 +1431,7 @@ function ViewSample() { //alert('here');
 }
 
 function ViewSelectionCriteria() {
+
     $.ajax({
         url : 'campaign/getcol',
         type : 'POST',
@@ -1634,6 +2027,7 @@ function ListSegDetails() {
                     var noRec = new Array();
                     if (DFS == 'custom') {
                         // Add 0: just to state index from 1 //
+                        noRows = response.count.length;
                         var resStr = (response.count).join(',');
                         noRec = ("0," + resStr).split(",");
                         ListSegCri = ("W1#" + result.where.join("#")).split("#");
@@ -2567,6 +2961,110 @@ function byField(obj) {
 
 }
 
+function segRenderFilters(start, section, title, clsname, color, filters) {
+    var ntitle = title.replace('^', '"');
+    ntitle = ntitle.replace('^', '"');
+    $.each(filters, function (key, data) {
+        $('#numRows_4').val(data.noLS);
+        $.each(data.rows, function (ikey, idata) {
+            var ids = (start * 10) + 1;
+            var newRowIds = parseInt(ids) + 10;
+            var newSecIds1 = parseInt(ids) + 10;
+            var newSecIds2 = parseInt(ids) + 11;
+            var newSecIds3 = parseInt(ids) + 12;
+
+            $('#row_' + ids).after('<div class="divTableRow" id="row_' + newRowIds + '"><div class="divTableCell ff"><div class="divTable blueTable"><div class="divTableBody"><div class="divTableRow"><div style="' + color + 'vertical-align: middle; visibility: hidden;" class="divTableCell" id="info_' + newRowIds + '">' + ntitle + '<input type="hidden" id="tablename_' + newRowIds + '" value="" /><input type="hidden" id="typebox_' + newRowIds + '" value="" /><input type="hidden" id="countSec_' + newRowIds + '" value="0" /></div><div style="width:1%; text-align:right !important;" id="preCross_' + newRowIds + '" class="divTableCell"></div><div style="width:1%;font-size: 10px;text-align:center;" class="divTableCell" id="plusDiv_' + newSecIds1 + '"><a onclick="addSectionNew(' + newRowIds + ',' + newRowIds + ',0,' + section + ',\'' + title + '\');" href="javascript:void(0);"><i class="fas fa-plus-circle font-14 ds-c"></i> </a></div></div></div></div></div><div class="divTableCell"><div class="divTable blueTable"><div class="divTableBody"><div class="divTableRow"><div style="width:7%" class="divTableCell" id="ccolCell_' + newSecIds1 + '"></div><div style="width:3%" class="divTableCell"  id="opCell_' + newSecIds1 + '"></div><div style="width:5%" class="divTableCell"  id="valCell_' + newSecIds1 + '"></div><div style="width:3%;text-align: center;font-size: 8px;" class="divTableCell" id="plusCell_' + newSecIds2 + '"></div><div style="width:7%" class="divTableCell" id="ccolCell_' + newSecIds2 + '"></div><div style="width:3%" class="divTableCell" id="opCell_' + newSecIds2 + '"></div><div style="width:5%" class="divTableCell" id="valCell_' + newSecIds2 + '"></div><div style="width:3%;text-align: center;font-size: 8px;" class="divTableCell" id="plusCell_' + newSecIds3 + '"></div><div style="width:7%" class="divTableCell" id="ccolCell_' + newSecIds3 + '"></div><div style="width:3%" class="divTableCell" id="opCell_' + newSecIds3 + '"></div><div style="width:5%" class="divTableCell" id="valCell_' + newSecIds3 + '"></div></div></div></div></div></div>');
+            var colids = ids;
+            var opids = ids;
+            var valds = ids;
+            var logids = ids;
+            $('#tablename_' + colids).val(idata.table[ikey]);
+            $('#typebox_' + colids).val(idata.type[ikey]);
+
+            $.each(idata.col, function (ckey, cdata) {
+                $('#ccolCell_' + colids).html('<select class="form-control form-control-sm ' + clsname + '" style="width:100%;" onchange="getCol(this,\'op' + colids + '\',\'' + colids + '\',\'' + section + '\');" class="t1" name="ccol' + colids + '" id="ccol' + colids + '"></select>');
+
+                $.each(cdata.options, function (key, val) {
+                    $('#ccol' + colids).append($("<option></option>")
+                        .attr("value", val.value).attr("selected", val.selected)
+                        .text(val.value));
+                });
+
+
+                var nextIds = parseInt(colids) + 1;
+
+                if (ckey == 0) {
+                    var rowIds = colids;
+                    $('#plusDiv_' + rowIds).html('');
+                    $('#preCross_' + rowIds).html('<a class="crosss" onclick="removeSection(' + rowIds + ',' + colids + ',' + section + ');" href="javascript:void(0);"><i class="fas fa-trash font-14"></i> </a>');
+                } else {
+                    $('#plusCell_' + colids).html('');
+                    //$('#plusCell_' + colids).text('OR');
+                }
+                var secIds = ids;
+
+                $('#plusCell_' + nextIds).html('<a onclick="addSectionNew(' + rowIds + ',' + nextIds + ',1,' + section + ',\'' + title + '\');" href="javascript:void(0);"><i class="fas fa-plus-circle font-14 ds-c"></i> </a>');
+
+                colids++;
+            });
+            $.each(idata.op, function (okey, odata) {
+
+                $('#opCell_' + opids).html('<select class="form-control form-control-sm ' + clsname + '" onchange="changeVal(this.value,' + opids + ',1);" style="width:100%;" id="op' + opids + '" name="op' + opids + '"></select>')
+                $.each(odata.options, function (key, val) {
+                    $('#op' + opids).append($("<option></option>")
+                        .attr("value", val.value).attr("selected", val.selected)
+                        .text(val.text));
+                });
+                opids++;
+            });
+            $.each(idata.val, function (vkey, vdata) {
+                if (vdata.options != "") {
+                    $('#valCell_' + valds).html('<select class="form-control form-control-sm ' + clsname + '" style="width: 100%;" id="val' + valds + '"  onkeypress="GetTextInfo(this,event);" multiple="multiple"></select>');
+                    $.each(vdata.options, function (key, val) {
+                        $('#val' + valds).append($("<option></option>")
+                            .attr("value", val.value).attr("selected", val.selected)
+                            .text(val.value));
+                    });
+                    $("#val" + valds).multiselect({
+                        close: function () {
+                            var txtT = [];
+                            $('#val' + valds + ' :selected').each(function (i, selected) {
+                                txtT[i] = $(selected).text();
+                            });
+                        },
+                        header: true, //"Region",
+                        selectedList: 1, // 0-based index
+                        nonSelectedText: 'Select Fields'
+                    }).multiselectfilter({label: 'Search'});
+
+
+                    $("#val" + valds).multiselect('refresh');
+
+                    $("#val" + valds + "_ms").attr('style', 'width:100% !important;height: 28px; background-color: white !important;height: calc(1.5em + .5rem + 2px);padding: .25rem .5rem;border-radius: .2rem;background-clip: padding-box;border: 1px solid #e9ecef;font-size: .76563rem;');
+
+                } else {
+                    $('#valCell_' + valds).html('<input class="form-control form-control-sm ' + clsname + '" style="width:100%;" id="val' + valds + '" name="val' + valds + '" type="text" value="' + vdata.value + '">');
+                }
+                valds++;
+            });
+
+            $.each(idata.log, function (okey, odata) {
+                console.log("logids------" + logids)
+                $('#plusCell_' + parseInt(logids+1)).html('<select class="form-control form-control-sm dvd ' + clsname + '" style="width:100%;" name="log' + logids + '" id="log' + logids + '"></select>')
+
+                $.each(odata.options, function (key, val) {
+                    $('#log' + logids).append($("<option></option>")
+                        .attr("value", val.value).attr("selected", val.selected)
+                        .text(val.text));
+                });
+                logids++;
+            });
+            ids++;
+            start++;
+        })
+    });
+}
+
 function getFormVal() {
 
     /********* 2018-03-23 - changes for hide buttons when view selected -- start ********/
@@ -2602,7 +3100,14 @@ function getFormVal() {
                     document.getElementById('cmbLSM').value = res.seg_method;
                     if (temp.value == 'custom') {
                         document.getElementById('txtnogrps').value = res.seg_noLS;
-                        ViewSelectionCriteria();
+                        var color = '';
+                        var customClass = '';
+                        var filtersVal = JSON.parse(res.seg_filters_criteria);
+                        var p = 31;
+                        var title = 'Filters';
+                        segRenderFilters(p, 1, title, customClass, color, filtersVal);
+
+                        //ViewSelectionCriteria();
                         document.getElementById('tdAction').style.display = 'block';
                     } else if (temp.value == 'byfield') {
                         byField_flag = 1;
@@ -2987,33 +3492,41 @@ function refreshSegment() {
         var ListSegDes = new Array();
         var ZeroRec = 0, index = 1;
         if (DFS == 'custom') {
-            noRows = document.getElementById("numRows").value;
+            noRows = document.getElementById("numRows_4").value;
             var ccol = new Array();
             var op = new Array();
+            var is_nm = new Array();//check is numeric
+            var WhereArray = new Array();
             var log = new Array();
             var k = 0;
             var element = [' ', 'ccol', 'op', 'val', 'log'];
 
-            for (var i = 1; i <= noRows; i++) {
-                for (var j = 1; j <= 3; j++) {
+            var p = 31;
+            var c = parseInt(noRows) + parseInt(p);
+
+            for (var i = p; i <= c; i++) {
+                for (j = 1; j <= 3; j++) {
 
                     var id1 = (element[1] + i) + j.toString();
                     var id2 = (element[2] + i) + j.toString();
                     var id3 = (element[3] + i) + j.toString();
+                    var id4 = (element[4] + i) + j.toString();
+
                     if ($('[id=' + id1 + ']').val() != "") {
                         ccol[k] = $('[id=' + id1 + ']').val();
                         op[k] = $('[id=' + id2 + ']').val();
+                        is_nm[k] = $('[id=' + id2 + ']').attr('rel');
                         val[k] = $('[id=' + id3 + ']').val();
                         if (j != 3) {
-                            //var id4=(element[4]+j)+i.toString();
-                            log[k] = ' OR '; //$('[id='+id4+']').val();
+                            //log[k] = ' OR '; //$('[id='+id4+']').val();
+                            if($('[id='+id4+']').length > 0){
+                                log[k] = $('[id='+id4+']').val();
+                            }
                         }
                         k++;
                     } else {
                         continue;
                     }
-
-
                 }
             }
 
@@ -3071,7 +3584,8 @@ function refreshSegment() {
                             op1 = "";
                             break;
                     }
-                    if ((ccol[i] != "") && (op1 != "") && (val[i] != "")) {
+                    //if ((ccol[i] != "") && (op1 != "") && (val[i] != "")) {
+                    if ((ccol[i] != "") && (op1 != "")) {
                         var reg = /^\d+$/;
                         if (flag == 0) {
                             if (op[i] > '5' && op[i] < '8') {
@@ -3080,7 +3594,7 @@ function refreshSegment() {
                                     var vValArray = val[i].toString().split(",");
                                     var nNewValVar = '';
                                     for (kk = 0; kk < vValArray.length; kk++) {
-                                        if (reg.test(vValArray[kk]) == true) {
+                                        if (is_nm[i] == 1) {
                                             if (vValArray.length == 1)
                                                 nNewValVar += '(' + vValArray[kk] + ')';
                                             else if (kk + 1 == vValArray.length)
@@ -3101,14 +3615,13 @@ function refreshSegment() {
                                         }
                                     }
                                 } else {
-                                    if (reg.test(val[i]) == true) {
+                                    if (is_nm[i] == 1) {
                                         nNewValVar = '(' + val[i] + ')';
                                     } else {
                                         nNewValVar = '(\'' + val[i] + '\')';
                                     }
                                 }
 
-                                //if(ccol[i+1]!=" " || ccol[i+2]!=" ")   //Old for three columns
                                 if (ccol[i + 1] != " " && ccol[i + 1] != null) {
                                     where[j] += ' ' + ccol[i] + ' ' + op1 + nNewValVar;
                                 } else {
@@ -3150,8 +3663,7 @@ function refreshSegment() {
                                     collog = '(' + ccol[i] + ' ' + op1 + ' \'' + st + val[i] + ed + '\')';
                                 }
 
-                                //if(ccol[i+1]!=" " || ccol[i+2]!=" ") // For three columns
-                                //alert(ccol[i+1]);
+
                                 if (ccol[i + 1] != " ") // For two columns
                                     where[j] += '' + collog;
                                 else
@@ -3163,7 +3675,8 @@ function refreshSegment() {
                                     var vValArray = val[i].toString().split(",");
                                     var nNewValVar = '';
                                     for (kk = 0; kk < vValArray.length; kk++) {
-                                        if (reg.test(vValArray[kk]) == true) {
+                                        //if (reg.test(vValArray[kk]) == true) {
+                                        if (is_nm[i] == 1) {
                                             if (vValArray.length == 1)
                                                 nNewValVar += '' + vValArray[kk] + '';
                                             else if (kk + 1 == vValArray.length)
@@ -3184,7 +3697,7 @@ function refreshSegment() {
                                         }
                                     }
                                 } else {
-                                    if (reg.test(val[i]) == true) {
+                                    if (is_nm[i] == 1) {
                                         nNewValVar = '' + val[i] + '';
                                     } else {
                                         nNewValVar = '\'' + val[i] + '\'';
@@ -3204,7 +3717,7 @@ function refreshSegment() {
                                     var vValArray = val[i].toString().split(",");
                                     var nNewValVar = '';
                                     for (kk = 0; kk < vValArray.length; kk++) {
-                                        if (reg.test(vValArray[kk]) == true) {
+                                        if (is_nm[i] == 1) {
                                             if (vValArray.length == 1)
                                                 nNewValVar += '(' + vValArray[kk] + ')';
                                             else if (kk + 1 == vValArray.length)
@@ -3225,41 +3738,14 @@ function refreshSegment() {
                                         }
                                     }
                                 } else {
-                                    if (reg.test(val[i]) == true) {
+                                    if (is_nm[i] == 1) {
                                         nNewValVar = '(' + val[i] + ')';
                                     } else {
                                         nNewValVar = '(\'' + val[i] + '\')';
                                     }
                                 }
 
-                                /*
-							if ( val[i].indexOf(",") > -1 ){
-								var vValArray =val[i].split(",");
-								var nNewValVar = '';
-								for(kk = 0; kk < vValArray.length; kk++){
-
-
-									if(vValArray.length == 1)
-										nNewValVar +=  '(\''+vValArray[kk]+'\')';
-									else if(kk+1== vValArray.length)
-										nNewValVar +=  '\''+vValArray[kk]+'\')';
-									else if(vValArray.length > 1 && kk == 0)
-										nNewValVar +=  '(\''+vValArray[kk]+'\',';
-									else
-										nNewValVar +=  '\''+vValArray[kk]+'\',';
-								}
-							}else{
-								nNewValVar =  '(\''+val[i]+'\')';
-							}  */
                                 var vl = (j * 3) + 2;
-
-                                /*if((i == vl) && (ccol[vl]!=""))
-								where[j] += log[i-1]+ '( '+ ccol[i]+' '+op1+nNewValVar+')' ;
-							else if(ccol[vl]==" "){
-								where[j] += log[i-1]+ '( '+ ccol[i]+' '+op1+nNewValVar+')' ;
-							}else
-								where[j] += log[i-1]+ '( '+ ccol[i]+' '+op1+nNewValVar;
-							*/
 
                                 if ((i == vl) && (ccol[vl] != ""))
                                     where[j] += log[i - 1] + ' ' + ccol[i] + ' ' + op1 + nNewValVar + '';
@@ -3272,7 +3758,7 @@ function refreshSegment() {
                                     var st = '%', ed = '%';
                                 } else if (op[i] == '8.1') {
                                     var st = '', ed = '%';
-                                } else if (op[i] == '8.2') {
+                                } else if (op[i] === '8.2') {
                                     var st = '%', ed = '';
                                 } else if (op[i] == '9') {
                                     var st = '%', ed = '%';
@@ -3294,20 +3780,13 @@ function refreshSegment() {
                                         else if (vValArray.length > 1 && kk == 0)
                                             collog = collog + '( ' + ccol[i] + ' ' + op1 + ' \'' + st + vValArray[kk] + ed + '\' OR ';
                                         else
-                                            collog = collog + ' ' + ccol[i] + ' ' + op1 + ' \'' + st + vValArray[kk] + ed + '\' OR ';   //After Start if like have more then one options
+                                            collog = collog + ' ' + ccol[i] + ' ' + op1 + ' \'' + st + vValArray[kk] + ed + '\' OR ';
                                     }
                                 } else {
                                     collog = '(' + ccol[i] + ' ' + op1 + ' \'' + st + val[i] + ed + '\')';
                                 }
                                 var vl = (j * 3) + 2;
 
-                                /*if((i == vl) && (ccol[vl]!="")){ alert('Like 1');
-								where[j] += log[i-1]+collog+')';
-							}else if(ccol[vl]==" "){ alert('Like 2');
-								where[j] += log[i-1]+collog+')';
-							}else{ alert('Like 3');
-								where[j] += log[i-1]+collog;
-							}*/
                                 if ((i == vl) && (ccol[vl] != "")) {
                                     where[j] += log[i - 1] + collog + '';
                                 } else {
@@ -3317,19 +3796,11 @@ function refreshSegment() {
                             } else {
                                 var vl = (j * 3) + 2;
 
-                                /*if((i == vl) && (ccol[vl]!=""))
-								where[j] += log[i-1]+ '( '+ ccol[i]+' '+op1+' \''+val[i]+'\' ))' ;
-							else if(ccol[vl]==" "){
-								where[j] += log[i-1]+ '( '+ ccol[i]+' '+op1+' \''+val[i]+'\' ))' ;
-							}
-							else{
-								where[j] += log[i-1]+ '( '+ ccol[i]+' '+op1+' \''+val[i]+'\' )' ;
-							}*/
                                 if (val[i].toString().indexOf(",") > -1) {
                                     var vValArray = val[i].toString().split(",");
                                     var nNewValVar = '';
                                     for (kk = 0; kk < vValArray.length; kk++) {
-                                        if (reg.test(vValArray[kk]) == true) {
+                                        if (is_nm[i] == 1) {
                                             if (vValArray.length == 1)
                                                 nNewValVar += '' + vValArray[kk] + '';
                                             else if (kk + 1 == vValArray.length)
@@ -3350,7 +3821,7 @@ function refreshSegment() {
                                         }
                                     }
                                 } else {
-                                    if (reg.test(val[i]) == true) {
+                                    if (is_nm[i] == 1) {
                                         nNewValVar = '' + val[i] + '';
                                     } else {
                                         nNewValVar = '\'' + val[i] + '\'';
@@ -3361,22 +3832,11 @@ function refreshSegment() {
                                 else {
                                     where[j] += log[i - 1] + ' ' + ccol[i] + ' ' + op1 + ' ' + nNewValVar + ' ';
                                 }
-
-
-                                /*
-							if((i == vl) && (ccol[vl]!=""))
-								where[j] += log[i-1]+ ' '+ ccol[i]+' '+op1+' \''+val[i]+'\' ' ;
-							else{
-								where[j] += log[i-1]+ ' '+ ccol[i]+' '+op1+' \''+val[i]+'\' ' ;
-							}
-							*/
-
                             }
                         }  // Else if
                     }  // If
 
                 }  // Inner For
-                //  document.getElementById('divCG1').style.display='block';
             }// Outer For
             /* To Get Count of Records */
 
@@ -3406,7 +3866,7 @@ function refreshSegment() {
             var colArray = new Array();
             var noColumn = $('#cmbNoFields').val();
             for (i = 1; i <= noColumn; i++) {
-                console.log(i+"-------"+$('#col' + i).val())
+                //console.log(i+"-------"+$('#col' + i).val())
                 colArray[i - 1] = $('#col' + i).val();
 
                 if ($('#col' + i).val() == '') {
@@ -3451,7 +3911,9 @@ function refreshSegment() {
                     var noRec = new Array();
                     if (DFS == 'custom') {
                         // Add 0: just to state index from 1 //
-                        noRec = ("0," + response).split(",");
+                        noRows = response.count.length;
+                        var resStr = (response.count).join(',');
+                        noRec = ("0," + resStr).split(",");
                         ListSegCri = ("W1#" + WhereArray.join("#")).split("#");
                         temp = 1;
                         for (i = 0; i < noRows * 3; i = i + 3) {

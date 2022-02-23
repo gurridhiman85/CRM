@@ -134,14 +134,15 @@
                                     <input type="hidden" name="source3" value="">
                                     <input type="hidden" id="Import_Filename" name="Import_Filename" value="">
                                     <input type="hidden" id="Import_Id" name="Import_Id" value="">
-                                    <input type="hidden" id="no_address" name="no_address" value="0">
-                                    <div class="col-md-12" id="overviewImport"></div>
+                                    <input type="hidden" id="no_address" name="no_address">
+                                    <div id="hidden_fields"></div>
                                 </form>
+                                <div class="col-md-12" id="overviewImport"></div>
                             </div>
                         </div>
                         <div class="fieldset" data-title="Import and Cleanse File" data-step="3">
                             <center>
-                                <span class="font-16">Please wait..........<br/>File Import and Cleansing is in progress.<br/> Your input will be required in approximately 3-5 minutes.</span>
+                                <span class="font-16" id="waitingText">Please wait..........<br/>File Import and Cleansing is in progress.<br/> Your input will be required in approximately 3-5 minutes.</span>
                                 <span id="cd_h" style="display: none;">00</span>
                                 <span id="cd_m" class="font-14">00</span>:
                                 <span id="cd_s" class="font-14">00</span>
