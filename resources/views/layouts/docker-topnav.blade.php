@@ -355,6 +355,7 @@
                         </a>
 						<div class="dropdown-menu dropdown-menu-right animated "> <!-- flipInY-->
                             @if($User_Type == 'Full_Access')
+                                <a href="javascript:void(0);" data-href="lookup/pagesetting" class="dropdown-item ajax-Link"><i class="fas fa-clone"></i> Lookup Settings</a>
                                 <a href="javascript:void(0);" data-href="users/history" class="dropdown-item ajax-Link"><i class="fas fa-address-book"></i> Users Login History</a>
                             @endif
                             <a href="javascript:void(0);" onclick="$('#changepasswordBox').modal('show');" class="dropdown-item"><i class="fas fa-unlock-alt"></i> Change Password</a>

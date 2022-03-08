@@ -1,53 +1,6 @@
 $(document).ready(function () {
    // setTimeout(function () {
-        var filtersMS = [
-            'status-filter',
-            'tag-filter',
-			'campaign-filter',
-            'zss_segment-filter',
-            'member_segment-filter',
-            'donor_segment-filter',
-            'event_segment-filter',
-            'lifecycle_segment-filter',
-            'address-filter',
-            'country-filter',
-            'Productcat1_Des-filter',
-            'Productcat2_Des-filter',
-            'Product-filter',
-        ];
 
-        $.each( filtersMS, function( index, value ){
-			if($("#"+value).length){
-				$("#"+value).multiselect({
-					//appendTo: '#filtersModel',
-					close: function () {
-						delay(function(){
-							$('#filter_form').submit();
-						}, 1000 );
-					},
-					header: true, //"Region",
-					selectedList: 0, // 0-based index
-					nonSelectedText: 'Select Values',
-					enableFiltering: true,
-					filterBehavior: 'text',
-				}).multiselectfilter({label: 'Search'});
-
-			   setTimeout(function () {
-				   $("#" + value + "_ms").attr('style',
-					   'width:100% !important;' +
-					   'height: 28px; ' +
-					   'background-color: white !important;' +
-					   'height: calc(1.5em + .5rem + 2px);' +
-					   'padding: .25rem .5rem;' +
-					   'border-radius: .2rem;' +
-					   'background-clip: padding-box;' +
-					   'border: 1px solid #e9ecef;' +
-					   'font-size: .76563rem;' +
-					   'min-height: 30px;'
-				   );
-			   },1000);
-			}
-        });
 
         $('#slimtest1').perfectScrollbar();
 
@@ -209,9 +162,9 @@ $(document).ready(function () {
             $('#LifeCycleLabelSegment').html(" Life Cycle Segment:  " + R.response.LifecycleSegment);
             //$('#LifeCycleLabelSegment').attr("style", "color:rgb(0, 102, 204);");
             /*************** Header Label End****************************************/
-            var filters = getFilters($('#filter_form'));
+            /*var filters = getFilters($('#filter_form'));
             ACFn.sendAjax('lookup/sadetails/'+R.contactid,'get',{filters : filters},$('#salesDiv'));
-            ACFn.sendAjax('lookup/touchesdetails/'+R.contactid,'get',{filters : filters},$('#touchDiv'));
+            ACFn.sendAjax('lookup/touchesdetails/'+R.contactid,'get',{filters : filters},$('#touchDiv'));*/
         }
 
     };
@@ -326,100 +279,7 @@ $(document).ready(function () {
     $("#filtersApplied li").length == 0 ? $(".clear-btn").hide() : $(".clear-btn").show();
 })
 
-function getFilters(F) {
-    if (typeof F == 'undefined') {
-        if($("#filter_milestone_form").length > 0){
-            F = $("#filter_milestone_form");
-        }else{
-            F = $("#filter_form");
-        }
 
-    }
-    var filters = [];
-    var filtersFlag = false;
-    if (F.length) {
-        $.each(F.serializeArray(), function (index, element) {
-            console.log(element);
-            if (typeof filters[element.name] == 'undefined') {
-                filters[element.name] = [];
-            }
-            if (element.value) {
-                filters[element.name].push(element.value);
-                filtersFlag = true;
-            }
-        });
-    }
-    var obj = $.extend({}, filters);
-    if(filtersFlag == true){
-        filtersApplied(obj, F);
-
-    }else{
-        if($("#filtersApplied").length > 0){
-            $('#filtersApplied').remove();
-            $('.clear-btn').remove();
-        }
-    }
-    console.log('Form elements');
-    console.log(obj);
-    console.log('Form elements end');
-    return obj;
-}
-
-function filtersApplied(filters, $form) {
-    if (typeof $form == 'undefined') {
-        $form = $("#filter_form");
-    }
-    var key = null;
-    for (var prop in filters) {
-        if (filters.hasOwnProperty(prop)) {
-            key++;
-        }
-    }
-    if (key > 0 && $("#filtersApplied").length == 0) {
-        //$("#collapseFilters").after('<ul id="filtersApplied" class="selected-filters" ></ul>');
-        $(".after-filter").html('<ul id="filtersApplied" class="selected-filters" ></ul>'); //<button type="button" class="btn clear-btn" onclick="clearFilters()"><i class="fa fa-refresh" aria-hidden="true"></i> Clear Filter</button>
-    }
-    var fouter = $("#filtersApplied");
-    fouter.empty();
-    $.each(filters, function (name, element) {
-        var elselect = $form.find("select[name='" + name + "']");
-        var elinput = $form.find("input[name='" + name + "']");
-        $.each(element, function (key, value) {
-            if (value == '') {
-                return;
-            }
-            var long_name = value;
-            var elcheckbox = $form.find("[name='" + name + "'][value='" + value + "'][type='checkbox']");
-            var elradio = $form.find("[name='" + name + "'][value='" + value + "'][type='radio']");
-            if (elcheckbox.length && elcheckbox.next('label').length) {
-                long_name = elcheckbox.next('label').html();
-            } else if (elradio.length && elradio.next('label').length) {
-                long_name = elradio.next('label').html();
-            } else if (elselect.length) {
-                var opt = elselect.find('option[value="' + value + '"]');
-                if (opt.length) {
-                    long_name = opt.html();
-                }
-            } else if (elinput.length) {
-                var opr = $form.find("select[name='" + name + "_op']").length ?  $form.find("select[name='" + name + "_op']").val() : '';
-                long_name = elinput.attr('data-placeholder') + ' '+ opr + ' ' + elinput.val();
-            }
-            //console.log("not allowed----",elselect.data('notallowed'));
-            if(elselect.data('notallowed') == false || elselect.data('notallowed') == undefined){
-                fouter.append('<li class="selected-filter mr-1"><span>' + long_name + '</span><a href="#" class="removeFilter" data-name="' + name + '" data-value="' + value + '" ><i class="fas fa-times-circle"></i></a></li>');
-            }
-
-        });
-
-    });
-}
-
-function applyFilters() {
-    delay(function(){
-        $('#filter_form').submit();
-    }, 1000 );
-
-}
 var MergeKeys = [];
 function singleClick(obj) {
 
@@ -596,7 +456,7 @@ function downloadCMLink(obj){
     var prefix = obj.attr('data-prefix');
     var contactid = $('#selectedCompId').val();
     var filters = getFilters($('#filter_form'));
-    var downloadableColumns = $('#yajra-table').attr('data-columns-visible') ? $('#yajra-table').attr('data-columns-visible') : '';
+    var downloadableColumns = $('#basic_table2').attr('data-columns-visible') ? $('#basic_table2').attr('data-columns-visible') : '';
     ACFn.sendAjax(url,'GET',{
         prefix : prefix,
         screen : screen,
@@ -613,4 +473,28 @@ function showCreateCampaign() {
         filters : filters,
         downloadableColumns : downloadableColumns
     });
+}
+
+function setTab (tabname,tabid,contactid) {
+    $('.custom-tab').html();
+    $('.s-f').hide();
+    $('.sub-pagination').show();
+    $('#DownloadBtn').attr('data-screen',tabid);
+    var filters = getFilters($('#filter_form'));
+
+    ACFn.sendAjax(
+        'lookup/subtabs',
+        'get',
+        {
+            tabname : tabname,
+            tabid : tabid,
+            contactid : contactid,
+            filters : filters
+        },
+        $('[data-tabid="'+tabid+'"]')
+    );
+
+    //ACFn.sendAjax('lookup/touchesdetails/'+R.contactid,'get',{filters : filters},$('#touchDiv'));
+
+
 }

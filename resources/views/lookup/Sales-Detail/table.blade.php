@@ -1,25 +1,25 @@
-<table id="basic_table" class="table table-bordered table-hover color-table lkp-table no-wrap">
+<table id="basic_table2" class="table table-bordered table-hover color-table lkp-table" style="width: 100%;" data-message="No campaign available" > <!-- data-order="[[1,'desc']]" -->
     <thead>
         <tr>
-            <th>Contact ID</th>
-            <th>HH ID</th>
-            <th>Date</th>
-            <th>Amount</th>
-            <th>Class</th>
-            <th>Activity Cat 1</th>
-            <th>Activity Cat 2</th>
-            <th>Activity</th>
-            <th>Memo</th>
-            <th>Account</th>
-            <th>Client Message</th>
-            <th>Customer</th>
+            @foreach($visible_columns as $visible_column)
+                @if(in_array($visible_column['Field_Visibility'],[1,2]))
+                    <th
+                            class="{!! $visible_column['Class_Name'] !!}"
+                            onclick="custom_sorting($(this));"
+                            data-field_name="{!! $visible_column['Field_Name'] !!}"
+                            @if($visible_column['Field_Visibility'] == 1)
+                            data-visible="false"
+                            @endif>
+                        {!! $visible_column['Field_Display_Name'] !!}
+                    </th>
+                @endif
+            @endforeach
         </tr>
     </thead>
     <tbody>
-        @if(count($records) > 0)
-            @foreach($records as $record)
-                @include('lookup.Sales-Detail.table-single-row')
-            @endforeach
-        @endif
+        @foreach($records as $record)
+            @include('lookup.Sales-Detail.table-single-row')
+        @endforeach
     </tbody>
 </table>
+

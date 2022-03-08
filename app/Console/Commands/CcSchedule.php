@@ -784,7 +784,7 @@ class CcSchedule extends Command
   m.campaignid=d.campaignid and m.segmentid=d.segmentid and m.groupid=d.groupid
   where d.campaignid=$CID");
 
-                DB::select("EXEC sp_CRM_Campaign_to_Phone ".$CID.", '".$list_short_name."'");
+                DB::statement("EXEC sp_CRM_Campaign_to_Phone ".$CID.", '".$list_short_name."'");
             }
 
             //To Drop Temp table

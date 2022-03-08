@@ -133,6 +133,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/testDn', 'LookupController@testDn');
     Route::get('/testreader', 'LookupController@testReader');
     Route::get('/lookup/showcreatecampaign', 'LookupController@showCreateCampaign');
+    Route::get('/lookup/subtabs', 'LookupController@subTabs');
+    Route::get('/lookup/pagesetting', 'LookupController@pageSetting');
 
     //activitydetails
     Route::get('/activity', 'ActivityController@index');

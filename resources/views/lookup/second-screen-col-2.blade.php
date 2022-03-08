@@ -55,7 +55,10 @@
 
 </style>
 <form name="frmCust" class="ajax-Form" action="lookup/save" method="post">
-    <div class="row mb-4" style="border-bottom: 1px solid #dee2e6;">
+    <div class="row">
+        <div class="after-filter mt-1"></div>
+    </div>
+    <div class="row mb-2" style="border-bottom: 1px solid #dee2e6;">
         <div class="col-md-8">
             <ul class="nav nav-tabs customtab2 mt-2 border-bottom-0 font-14" role="tablist">
 
@@ -74,7 +77,16 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
+                    @foreach($tabs as $tab)
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" data-tabid="{{str_replace(' ','_',$tab)}}" href="#{{str_replace(' ','_',$tab)}}" role="tab" aria-selected="false" onclick="setTab('{{ $tab }}','{{str_replace(' ','_',$tab)}}','{{ $contactid }}');">
+                                <span class="hidden-sm-up"></span>
+                                <span class="hidden-xs-down">{{ ucfirst($tab) }}</span>
+                            </a>
+                        </li>
+                    @endforeach
+
+                    {{--<li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#detail" role="tab" aria-selected="false" onclick="$('.s-f').hide();$('.SA-pagination').show();$('.touch-pagination').hide();$('#DownloadBtn').attr('data-screen','detail');">
                             <span class="hidden-sm-up"></span>
                             <span class="hidden-xs-down">Activity Detail</span>
@@ -86,33 +98,26 @@
                             <span class="hidden-sm-up"></span>
                             <span class="hidden-xs-down">Touch</span>
                         </a>
-                    </li>
+                    </li>--}}
                 @endif
             </ul>
         </div>
         <div class="col-md-4">
             <div class="btn-toolbar pull-right mr-2" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="all-pagination pt-2 pr-2 sub-pagination"></div>
                 <div class="input-group">
-                    <div class="SA-pagination" style="vertical-align: middle;margin: 10px;display: none;"></div>
-                    <div class="touch-pagination" style="vertical-align: middle;margin: 10px;display: none;"></div>
                     <button type="button" id="backBtnSecond" onclick="goBack();" href="javascript:void(0);" title="Go Back"  class="btn btn-light border-right-0 font-16 asBtn" style="float: right;box-shadow: none;"><i class="fas fa-arrow-circle-up ds-c"></i></button>
 
                     @if(isset($add) && !$add)
+                        <div class="c-btn" style="display: none;"></div>
                         <div class="btn-group">
-                            <button type="button"  title="Download"  class="btn btn-light border-right-0 dropdown-toggle font-16 ds-c" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="float: right;box-shadow: none;"><i class="fas fa-download ds-c"></i></button>
+                            <button type="button"  title="Download"  class="btn btn-light dropdown-toggle font-16 ds-c" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="float: right;box-shadow: none;"><i class="fas fa-download ds-c"></i></button>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="javascript:void(0)" onclick="downloadCMLink($(this))" data-href="lookup/downloadreport" id="DownloadBtn" data-prefix="" data-screen="contact">Download Tab</a>
                                 <a class="dropdown-item ajax-downloadall-link" id="DownloadAllBtn"  href="javascript:void(0)" data-href="lookup/downloadallreports">Download All Tabs</a>
                             </div>
                         </div>
                     @endif
-					<!--
-					<button type="button" class="btn border-0 s-f " title="Auto Save">
-						<div class="custom-control custom-switch pull-right">
-							<input type="checkbox" alt="AutoSave" value="1" class="custom-control-input " id="customSwitch1">
-							<label class="custom-control-label" for="customSwitch1"></label>
-						</div>
-					</button>-->
                     <button type="button" class="btn btn-light font-16 s-f" title="Save Contact" onclick="$('#updateContactBtn').trigger('click');"><i class="fas fa-save ds-c" ></i></button>
                 </div>
             </div>
@@ -450,12 +455,16 @@
                 </tbody>
             </table>
         </div>
-        <div id="detail" class="tab-pane" style="padding-left: 12px !important;">
-            <div id="salesDiv" style="display:grid;"></div>
+
+        @foreach($tabs as $tab)
+            <div id="{{ str_replace(' ','_',$tab) }}" class="tab-pane custom-tab" style="padding-left: 12px !important;"  role="tabpanel"></div>
+        @endforeach
+        {{--<div id="detail" class="tab-pane" style="padding-left: 12px !important;">
+
         </div>
         <div id="touch" class="tab-pane" style="padding-left: 12px !important;">
             <div id="touchDiv" style="display:block;"></div>
-        </div>
+        </div>--}}
     </div>
 </form>
 <script>

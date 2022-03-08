@@ -411,6 +411,26 @@
                                                 </div>
                                             @endforeach
                                         </div>
+
+                                        <div class="row">
+                                            @foreach($metadataFilters as $Field_Name => $metadataFilter)
+                                                @php
+                                                    $Field_ID = $Field_Name.'-metadata-filter';
+                                                    $Field_Name = 'm-'.$Field_Name;
+                                                    $multiselect_filters_fields[] = $Field_ID;
+                                                @endphp
+                                                <div class="col-md-4 mt-1 Metadata">
+                                                    <label class="control-label">{!! $metadataFilter['Field_Display_Name'] !!}</label>
+                                                    <select name="{!! $Field_Name !!}" id="{!! $Field_ID !!}" class="form-control form-control-sm" multiple="multiple" data-placeholder="Select Values">
+                                                        @foreach($metadataFilter as $MDF)
+                                                            @if($MDF == $metadataFilter['Field_Display_Name']) @continue @endif
+                                                            @php $MDF = !is_numeric($MDF) ? trim($MDF) : $MDF; @endphp
+                                                            <option value="{!! $MDF !!}">{!! $MDF !!}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                     <div class="form-actions pull-right" >
                                         <input type="hidden" name="searchterm" class="form-control form-control-sm" placeholder="" data-placeholder="">
@@ -494,7 +514,7 @@
             if(flag === 1){
                 $('[title=Filters]').show();
 
-                if($.inArray(section, ['Metadata','SingleCamp']) !== -1){
+                if($.inArray(section, ['SingleCamp']) !== -1){
                     $('[title=Filters]').hide()
                 }
 
@@ -503,9 +523,17 @@
                 if(section === 'Edetail'){
                     $('.Edetail').removeAttr('style');
                     $('.Esummary').hide();
-                }else{
+                    $('.Metadata').hide();
+                }else if(section === 'Metadata'){
+                    $('.Metadata').removeAttr('style');
                     $('.Edetail').hide();
+                    $('.Esummary').hide();
+                }else{
                     $('.Esummary').removeAttr('style');
+                    $('.Edetail').hide();
+                    $('.Metadata').hide();
+                    $('[title="Campaign"]').hide();
+                    $('[title="Create New"]').hide();
                 }
             }else{
                 $('[title=Filters]').hide()

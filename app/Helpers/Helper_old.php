@@ -3999,16 +3999,11 @@ class Helper
     public static function getColumns($menu_level1,$menu_level2){
         $columns = UAFieldMapping::where('Menu_level1',$menu_level1)->where('Menu_level2',$menu_level2)->orderBy('Column_Order')->get()->toArray();
         $visible_columns = $hidden_columns = $all_columns = $filter_columns = [];
-        $table_name = $sort = '';
+        $table_name = '';
         if(count($columns) > 0){
             foreach ($columns as $column){
                 if ($column['Filter'] == 1)
                     array_push($filter_columns,$column);
-
-                if($column['Sort'] == 1){
-                    $sort .= !empty($sort) ? ', ' : '';
-                    $sort .= $column['Field_Name']. ' ' . $column['Sort_Order'];
-                }
 
                 if(in_array($column['Field_Visibility'],[1,2])){
                     if(!is_null($column['Format'])){
@@ -4033,10 +4028,10 @@ class Helper
             'hidden_columns'  => $hidden_columns,
             'all_columns'  => $all_columns,
             'filter_columns'  => $filter_columns,
-            'table_name'  => $table_name,
-            'sort'      => !empty($sort) ? ' ORDER BY '.$sort : ''
+            'table_name'  => $table_name
         ];
     }
+
 
     public static function getSingleColumn($menu_level1, $menu_level2,$field_name){
         $column = UAFieldMapping::where('Menu_level1',$menu_level1)
@@ -4081,6 +4076,8 @@ class Helper
                     }
                     $Filters[$evalColumn['Field_Name']] = $records;
                 }
+
+
 
                 $Filters[$evalColumn['Field_Name']]['Field_Display_Name'] = $evalColumn['Field_Display_Name'];
                 $Filters[$evalColumn['Field_Name']]['Filter_Field_Type'] = $evalColumn['Filter_Field_Type'];

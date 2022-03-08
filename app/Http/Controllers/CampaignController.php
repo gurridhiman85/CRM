@@ -73,59 +73,42 @@ class CampaignController extends Controller
             'Offer_Category' => $filtersFieldsValues['Offer_Category'],
         ]);*/
 
-        $eSummary = Helper::getColumns('Campaign','Evaulation Summary');
-        $eDetail = Helper::getColumns('Campaign','Evaulation Detail');
+        $eSummary = Helper::getColumns('Campaign','Evaluation Summary');
+        $eDetail = Helper::getColumns('Campaign','Evaluation Detail');
+        $mMetadata = Helper::getColumns('Campaign','Metadata');
 
-        $results = Helper::getFiltersSummaryDetail($eSummary['visible_columns'],$eDetail['visible_columns']);
+        $results = Helper::getFiltersSummaryDetail($eSummary['visible_columns'],$eDetail['visible_columns'],$mMetadata['visible_columns']);
         return view('campaign.index',[
             'sumFilters' => $results['sumFilters'],
-            'detailFilters' => $results['detailFilters']
+            'detailFilters' => $results['detailFilters'],
+            'metadataFilters' => $results['metadataFilters']
         ]);
     }
 
     public static function implement_query($reqlevel,$filters = []){
-        $eSummary = Helper::getColumns('Campaign','Evaulation Summary');
-        $eDetail = Helper::getColumns('Campaign','Evaulation Detail');
-        $levels = [
-            'Esummary' => [
-                'columns' => $eSummary['all_columns'],
-                'visible_columns' => $eSummary['visible_columns'],
-                'sql'   => 'select '.implode(',',$eSummary['all_columns']).' from (SELECT ROW_NUMBER() over (Order By Campaign_ID Desc) as ROWNUMBER,* from '.$eSummary['table_name'].') _myResults',
-                'filter' => 1
-            ],
-            'Edetail' => [
-                'columns'  =>  $eDetail['all_columns'],
-                'visible_columns' => $eDetail['visible_columns'],
-                'sql'   => 'select '.implode(',',$eDetail['all_columns']).' from (SELECT ROW_NUMBER() over (Order By Campaign_ID Desc) as ROWNUMBER,* from '.$eDetail['table_name'].') _myResults ',
-                'filter' => 1
-            ],
-            'Metadata' => [
-                'columns'  =>  ['RowID', 'CampaignID', 'Objective', 'Brand', 'Channel', 'Category', 'ListDes', 'Wave', 'Start_Date', 'Interval', 'ProductCat1', 'ProductCat2', 'SKU', 'Coupon', 'SegmentID', 'SegmentDes', 'GroupID', 'GroupDes', 'SummaryID', 'Cost', 'Quantity', 'File_Name', 'DS_Analysis', 'End_Date', 'CampaignDes'],
-                'visible_columns' => [],
-                'sql'   => 'select  RowID,CampaignID, Objective, Brand, Channel, Category, ListDes, Wave, Start_Date, Interval, ProductCat1, ProductCat2, SKU, Coupon, SegmentID, SegmentDes, GroupID, GroupDes, SummaryID, Cost, Quantity, File_Name, DS_Analysis, End_Date, CampaignDes from UC_Campaign_Metadata',
-                'filter' => 0
-            ]
+        $eSummary = Helper::getColumns('Campaign',$reqlevel);
+        $level_values = [
+            'columns' => $eSummary['all_columns'],
+            'visible_columns' => $eSummary['visible_columns'],
+            'sql'   => 'select '.implode(',',$eSummary['all_columns']).' from '.$eSummary['table_name'],
+            'filter' => 1
         ];
 
-        foreach ($levels as $level=>$level_values){
-            if($level == $reqlevel){
-                if($level_values['filter'] == 1){
-                    $where = Helper::getFiltersCondition($filters,$reqlevel,$level_values['visible_columns']);
-                    $sql = $level_values['sql']." ".$where['Where'];
-                }else{
-                    $sql = $level_values['sql'];
-                }
-
-                $records = DB::select($sql);
-                $records = collect($records)->map(function($x){ return (array) $x; })->toArray();
-                return [
-                    'sql'  => $sql,
-                    'records' => $records,
-                    'columns' => $level_values['columns'],
-                    'visible_columns' => $level_values['visible_columns'],
-                ];
-            }
+        if($level_values['filter'] == 1){
+            $where = Helper::getFiltersCondition($filters,$reqlevel,$level_values['visible_columns']);
+            $sql = $level_values['sql']." ".$where['Where'];
+        }else{
+            $sql = $level_values['sql'];
         }
+
+        $records = DB::select($sql);
+        $records = collect($records)->map(function($x){ return (array) $x; })->toArray();
+        return [
+            'sql'  => $sql,
+            'records' => $records,
+            'columns' => $level_values['columns'],
+            'visible_columns' => $level_values['visible_columns'],
+        ];
     }
 
     public function getCampaign(Request $request,Ajax $ajax){
@@ -541,7 +524,7 @@ where (sc.camp_id = za.t_id AND za.t_type = 'C') $uWhere";
 
             //$records = DB::select($sSQL);
 
-            $result = self::implement_query('Esummary',$filters);
+            $result = self::implement_query('Evaluation Summary',$filters);
 
             /*$nSQL = "select count(*) as cnt from (SELECT ROW_NUMBER() over ($sort) as ROWNUMBER,* from UC_Campaign_Summary) _myResults";
 
@@ -583,7 +566,7 @@ where (sc.camp_id = za.t_id AND za.t_type = 'C') $uWhere";
                 ->response();
         }
         else if($tabid == 24){ // Evaluation Details
-            $result = self::implement_query('Edetail',$filters);
+            $result = self::implement_query('Evaluation Detail',$filters);
 
             $sort_column = "Campaign_ID";
             $sort_dir = "DESC";
@@ -622,11 +605,13 @@ where (sc.camp_id = za.t_id AND za.t_type = 'C') $uWhere";
         }
         else if($tabid == 32){ // Outer Metadata
             $result = self::implement_query('Metadata',$filters);
+
             $sort_column = "Campaign_ID";
             $sort_dir = "DESC";
-            $tabName = 'metadata';
+            $tabName = 'Metadata';
             $data = [
                 'records' => $result['records'],
+                'visible_columns' => $result['visible_columns'],
                 'uid' => $uid,
                 'tab' => $tabName,
                 'sort_column' => $sort_column,
@@ -634,7 +619,11 @@ where (sc.camp_id = za.t_id AND za.t_type = 'C') $uWhere";
                 'filters' => json_encode($filters)
             ];
 
-            $html = View::make('campaign.tabs.Metadata.index',$data)->render();
+            if($rType == 'pagination'){
+                $html = View::make('campaign.tabs.Metadata.table',$data)->render();
+            }else{
+                $html = View::make('campaign.tabs.Metadata.index',$data)->render();
+            }
 
             return $ajax->success()
                 ->appendParam('records',$result['records'])
@@ -2590,7 +2579,7 @@ where (sc.camp_id = za.t_id AND za.t_type = 'C') $uWhere";
         }
 
         return $ajax->fail()
-            ->jscallback('ajax_single_campaign')
+            ->jscallback('ajax_phone_campaign')
             ->response();
     }
 }

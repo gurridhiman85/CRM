@@ -65,17 +65,19 @@ class PhoneController extends Controller
         $filtersFieldsValues = Helper::getLookupFiltersFieldsValues([
             'campaigns' => true,
             'countries' => true,
-            'ZSS_Segments' => true,
-            'MemberSegments' => true,
-            'AddressQualities' => true,
-            'DonorSegments' => true,
-            'EventSegments' => true,
-            'LifecycleSegments' => true,
-            'Productcat1_Des'      =>  true,
-            'Productcat2_Des'      =>  true,
-            'Product'          =>  true,
+            'ZSS_Segments' => false,
+            'MemberSegments' => false,
+            'AddressQualities' => false,
+            'DonorSegments' => false,
+            'EventSegments' => false,
+            'LifecycleSegments' => false,
+            'Productcat1_Des'      =>  false,
+            'Productcat2_Des'      =>  false,
+            'Product'          =>  false,
         ]);
 
+        $lLookupFirstScreen = Helper::getColumns('Lookup','First Screen');
+        $lLookupFirstScreenFilters = Helper::getFilterValues($lLookupFirstScreen['filter_columns']);
         $record = ReportTemplate::where('Attach_Phone',1)
             ->first();
         $report_row_id = 0;
@@ -86,7 +88,7 @@ class PhoneController extends Controller
         return view('lookup.phone.index',[
             'campaigns' => $filtersFieldsValues['campaigns'],
             'countries' => $filtersFieldsValues['countries'],
-            'ZSS_Segments'=>$filtersFieldsValues['ZSS_Segments'],
+            /*'ZSS_Segments'=>$filtersFieldsValues['ZSS_Segments'],
             'MemberSegments' => $filtersFieldsValues['MemberSegments'],
             'AddressQualities' => $filtersFieldsValues['AddressQualities'],
             'DonorSegments' => $filtersFieldsValues['DonorSegments'],
@@ -94,7 +96,8 @@ class PhoneController extends Controller
             'LifecycleSegments'=>$filtersFieldsValues['LifecycleSegments'],
             'Productcat1_Des'      =>  $filtersFieldsValues['Productcat1_Des'],
             'Productcat2_Des'      =>  $filtersFieldsValues['Productcat2_Des'],
-            'Product'          =>  $filtersFieldsValues['Product'],
+            'Product'          =>  $filtersFieldsValues['Product'],*/
+            'lLookupFirstScreenFilters'         =>  $lLookupFirstScreenFilters,
             'report_row_id' => $report_row_id
         ]);
     }

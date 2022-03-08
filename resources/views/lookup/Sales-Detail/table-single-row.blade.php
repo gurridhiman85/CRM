@@ -1,14 +1,25 @@
 <tr>
-    <td>{!! $record->DS_MKC_ContactID !!}</td>
-    <td>{!! $record->DS_MKC_HouseholdID !!}</td>
-    <td>{!! $record->Date !!}</td>
-    <td class="text-right pr-3">{!! number_format($record->Amount) !!}</td>
-    <td>{!! $record->Class !!}</td>
-    <td>{!! $record->Productcat1_Des !!}</td>
-    <td>{!! $record->Productcat2_Des !!}</td>
-    <td>{!! $record->Product !!}</td>
-    <td>{!! $record->memo !!}</td>
-    <td>{!! $record->Account !!}</td>
-    <td>{!! $record->ClientMessage !!}</td>
-    <td>{!! $record->customer !!}</td>
+        @php
+                $pkey = array_search('1', array_column($visible_columns, 'Primary_Column'));
+                $primary_column = $visible_columns[$pkey]['Field_Name'];
+        @endphp
+        @foreach($visible_columns as $visible_column)
+            @if(in_array($visible_column['Field_Visibility'],[1,2]))
+                @php
+                    if(strpos($visible_column['Field_Name'],'.') != false){
+                        $Field_Name_Split = explode('.',$visible_column['Field_Name']);
+                        $Field_Name = $Field_Name_Split[1];
+                    }else{
+                        $Field_Name = $visible_column['Field_Name'];
+                    }
+                @endphp
+                <td
+                    class="{!! $visible_column['Class_Name'] !!}"
+                    @if($visible_column['Field_Visibility'] == 1)
+                    data-visible="false"
+                    @endif>
+                    {!!  isset($record[$Field_Name] ) ? $record[$Field_Name]  : '' !!}
+                </td>
+            @endif
+        @endforeach
 </tr>

@@ -2,306 +2,47 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e8b59f35-a7e7-4f75-880d-0936740d2ea4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/ActivityController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/CommonController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/EmailController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/ImportbulkccController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/TaxonomyController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/ZoomcleanseController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Mail/DashboardLinks.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Model/EmailConfiguration.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Model/RepCmpEmail.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Model/RepCmpSFTP.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Model/RepCmpSchStatusMapping.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Model/UAFieldMapping.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Model/XrefProductProductdes.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/activity.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/dashboard_charts.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/importbulkcc.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/zoomcleanse.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/activity/activity-dn-tab-col-2.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/activity/pagination-html.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/activity/table-single-row.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/activity/table.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/activity/xlsx.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/campaign/phone-campaign.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/Metadata/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/Metadata/pagination-html.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/Metadata/table-single-row.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/Metadata/table.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/Singlecamp/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/create/execute.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/campaign/xlsx.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/dashboard/chart.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/email/tabs/completed/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/email/tabs/completed/pagination-html.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/email/tabs/completed/table-single-row.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/email/tabs/completed/table.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/email/tabs/new/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/email/tabs/new/inner-tab-content.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/importbulkcc/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/layouts/wl-docker-footer.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/layouts/wl-docker-horizontal.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/layouts/wl-docker-leftsidebar.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/layouts/wl-docker-topnav.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/lookup/create-campaign.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/lookup/phone/add.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/mails/dashboard_links.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/report/tabs/create/execute.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/report/tabs/older_versions/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/report/tabs/older_versions/pagination-html.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/report/tabs/older_versions/table-single-row.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/report/tabs/older_versions/table.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/columns/anomly.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/columns/product.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/columns/productcat1.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/columns/productcat1_des.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/columns/productcat2.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/columns/productcat2_des.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/columns/productdescription.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level/pagination-html.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level/table-single-row.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level/table.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level2/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level2/pagination-html.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level2/table-single-row.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level2/table.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level3/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level3/pagination-html.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level3/table-single-row.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level3/table.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level4/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level4/pagination-html.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level4/table-single-row.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level4/table.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/users/dlogin.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/zoomcleanse/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/zoomcleanse/popup.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/zoomcleanse/step2-table.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/zoomcleanse/step3-table.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/zoomcleanse/step4-table.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/zoomcleanse/step5-table.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/zoomcleanse/step6-table.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/zoomcleanse/step7-table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/DB_CRMLV_v16D_AB.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/DB_CRMLV_v16D_AB.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Helpers/Helper_old.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/Metadata/table-single-row_old.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/lookup/Sales-Detail/table-single-row.blade_v2.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/lookup/Sales-Detail/table.blade_v2.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/lookup/page-settings.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/lookup/table-single-row.blade_v2.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/lookup/table.blade_v2.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/lookup/xlsx.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Console/Commands/ArSchedule.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Console/Commands/ArSchedule.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Console/Commands/CcSchedule.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Console/Commands/CcSchedule.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Console/Commands/PhoneReportSchedule.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Console/Commands/PhoneReportSchedule.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Console/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Console/Kernel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/DocumentFolder.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/DocumentFolder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Exceptions/Handler.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Exceptions/Handler.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Helpers/Helper.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Helpers/Helper.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Auth/ForgotPasswordController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/ForgotPasswordController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Auth/LoginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/LoginController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Auth/RegisterController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/RegisterController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Auth/ResetPasswordController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/ResetPasswordController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Auth/VerificationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/VerificationController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/CampaignController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/CampaignController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/CampaignExportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/CampaignExportController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/CampaignMetaDataController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/CampaignMetaDataController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/CampaignSegmentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/CampaignSegmentController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Controller.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Controller.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/DashboardController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/DashboardController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/HelpController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/HelpController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ImportcontactController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ImportcontactController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ImportzoomController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ImportzoomController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/LookupController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/LookupController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/MailController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/MailController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PhoneController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PhoneController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/RepCmpController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/RepCmpController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ReportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ReportController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ReportTemplate.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/SettingsController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/SettingsController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Kernel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/Authenticate.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/Authenticate.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/CheckForMaintenanceMode.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/CheckForMaintenanceMode.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/EncryptCookies.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/EncryptCookies.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/RedirectIfAuthenticated.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/RedirectIfAuthenticated.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/TrimStrings.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/TrimStrings.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/TrustProxies.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/TrustProxies.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/VerifyCsrfToken.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/VerifyCsrfToken.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Mail/DemoEmail.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Mail/DemoEmail.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Mail/SendCampaignEmail.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Mail/SendCampaignEmail.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Mail/SendReportEmail.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Mail/SendReportEmail.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Mail/ShareCampaignEmail.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Mail/ShareCampaignEmail.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Mail/ShareReportEmail.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Mail/ShareReportEmail.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/Attachment.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/Attachment.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/CampaignTemplate.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/CampaignTemplate.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/Department.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/Department.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/Designation.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/Designation.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/DocumentAttachment.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/DocumentAttachment.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/DocumentPermission.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/DocumentPermission.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/DocumentPermissionDetail.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/DocumentPermissionDetail.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/Permissions.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/Permissions.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/Profile.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/Profile.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/ProfileMaster.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/ProfileMaster.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/RepCmpCompleted.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/RepCmpCompleted.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/RepCmpMetaData.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/RepCmpMetaData.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/RepCmpSchedule.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/RepCmpSchedule.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/RepCmpShare.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/RepCmpShare.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/RepCmpStatus.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/RepCmpStatus.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/ReportTemplate.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/ReportTemplate.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/Setting.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/Setting.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/UserAuthenticate.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/UserAuthenticate.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/UserDetail.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/UserDetail.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/UserMeta.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/UserMeta.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Providers/AppServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/AppServiceProvider.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Providers/AuthServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/AuthServiceProvider.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Providers/BroadcastServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/BroadcastServiceProvider.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Providers/EventServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/EventServiceProvider.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Providers/RouteServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/RouteServiceProvider.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/app.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/constant.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/constant.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/mail.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/mail.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/css/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/app.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/css/style-horizontal.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/style-horizontal.min.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/css/yuicombo.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/yuicombo.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/ajax.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/ajax.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/elite/js/custom.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/elite/js/custom.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/activity.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/activity.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/campaign.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/campaign.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/cbpFWTabs.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/cbpFWTabs.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/dashboard1.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/dashboard1.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/form-layout.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/form-layout.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/importcontact.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/importcontact.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/importzoom.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/importzoom.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/init.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/init.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/jquery.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/jquery.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/jquery.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/jquery.min.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/lookup.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/lookup.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/metadata.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/metadata.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/phone.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/phone.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/printThis.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/printThis.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/report.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/report.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/segment.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/segment.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/yuicombo.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/yuicombo.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/bootstrap.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/bootstrap.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/ExampleComponent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/ExampleComponent.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/report.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/lang/en/auth.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/lang/en/auth.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/lang/en/pagination.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/lang/en/pagination.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/lang/en/passwords.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/lang/en/passwords.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/lang/en/validation.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/lang/en/validation.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/sass/_variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/sass/_variables.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/sass/app.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/sass/app.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/assetlib/css.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/assetlib/css.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/assetlib/js.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/assetlib/js.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/activity/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/activity/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/activity/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/activity/pagination-html.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/campaign/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/EDetails/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/EDetails/pagination-html.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/EDetails/table-single-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/EDetails/table-single-row.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/EDetails/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/EDetails/table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/pagination-html.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/table-single-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/table-single-row.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/completed/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/completed/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/completed/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/completed/pagination-html.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/completed/table-single-row-old.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/completed/table-single-row-old.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/completed/table-single-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/completed/table-single-row.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/completed/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/completed/table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/create/export.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/create/export.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/create/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/create/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/create/metadata.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/create/metadata.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/create/new-v1.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/create/new-v1.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/create/segment.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/create/segment.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/running/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/running/pagination-html.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/running/table-single-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/running/table-single-row.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/running/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/running/table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/scheduled/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/scheduled/pagination-html.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/scheduled/table-single-row-old.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/scheduled/table-single-row-old.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/scheduled/table-single-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/scheduled/table-single-row.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/scheduled/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/scheduled/table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/dashboard/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/dashboard/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/errors/401.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/errors/401.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/errors/403.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/errors/403.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/errors/404.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/errors/404.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/errors/419.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/errors/419.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/errors/429.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/errors/429.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/errors/500.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/errors/500.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/errors/503.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/errors/503.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/errors/illustrated-layout.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/errors/illustrated-layout.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/errors/layout.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/errors/layout.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/importzoom/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/importzoom/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/importzoom/step2-table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/importzoom/step2-table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/importzoom/step3-table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/importzoom/step3-table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/importzoom/step4-table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/importzoom/step4-table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/importzoom/step5-table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/importzoom/step5-table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/importzoom/step6-table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/importzoom/step6-table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/importzoom/step7-table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/importzoom/step7-table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/docker-horizontal.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/docker-horizontal.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/docker-leftsidebar.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/docker-leftsidebar.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/Metadata/table-single-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/Metadata/table-single-row.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/Metadata/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/Metadata/table.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/email/tabs/completed/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/email/tabs/completed/pagination-html.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/layouts/docker-topnav.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/docker-topnav.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/docker.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/docker.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/guest.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/guest.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/modal/modals.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/modal/modals.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/pdf-v2.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/pdf-v2.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/pdf.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/summary-report-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/summary-report-row.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/lookup/Sales-Detail/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/Sales-Detail/pagination-html.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/lookup/Sales-Detail/table-single-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/Sales-Detail/table-single-row.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/lookup/common/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/common/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/lookup/contact-tab.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/contact-tab.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/lookup/filters/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/filters/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/lookup/find-duplicate/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/find-duplicate/table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/lookup/import/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/import/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/lookup/import/name.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/import/name.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/lookup/import/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/import/table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/lookup/import/table2.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/import/table2.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/lookup/Sales-Detail/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/Sales-Detail/table.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/lookup/create-campaign.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/create-campaign.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/lookup/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/lookup/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/pagination-html.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/lookup/phone/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/phone/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/lookup/phone/table-single-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/phone/table-single-row.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/lookup/phone/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/phone/table.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/lookup/phone/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/phone/pagination-html.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/lookup/second-screen-col-2.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/second-screen-col-2.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/lookup/second-screen.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/second-screen.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/lookup/table-single-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/table-single-row.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/lookup/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/report/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/completed/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/completed/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/completed/table-single-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/completed/table-single-row.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/completed/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/completed/table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/create/new-v1.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/create/new-v1.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/create/outer-schedule.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/create/outer-schedule.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/running/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/running/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/completed/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/completed/pagination-html.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/older_versions/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/older_versions/pagination-html.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/running/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/running/pagination-html.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/running/table-single-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/running/table-single-row.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/running/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/running/table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/scheduled/table-single-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/scheduled/table-single-row.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/scheduled/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/scheduled/table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/users/login.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/users/login.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/html/button.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/button.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/html/footer.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/footer.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/html/header.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/header.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/html/layout.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/layout.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/html/message.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/message.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/html/panel.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/panel.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/html/promotion.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/promotion.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/html/promotion/button.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/promotion/button.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/html/subcopy.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/subcopy.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/html/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/html/themes/default.css" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/themes/default.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/button.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/button.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/footer.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/footer.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/header.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/header.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/layout.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/layout.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/message.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/message.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/panel.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/panel.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/promotion.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/promotion.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/promotion/button.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/promotion/button.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/subcopy.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/subcopy.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/mail/markdown/table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/notifications/email.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/notifications/email.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/pagination/bootstrap-4.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/pagination/bootstrap-4.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/pagination/default.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/pagination/default.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/pagination/semantic-ui.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/pagination/semantic-ui.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/pagination/simple-bootstrap-4.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/pagination/simple-bootstrap-4.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/pagination/simple-default.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/pagination/simple-default.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/welcome.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/welcome.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/channels.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/channels.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/console.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/console.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/scheduled/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/scheduled/pagination-html.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -335,29 +76,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/views/lookup/create-campaign.blade.php">
+        <entry file="file://$PROJECT_DIR$/resources/views/lookup/index.blade.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="244">
-              <caret line="64" column="7" lean-forward="true" selection-end-line="64" selection-end-column="7" />
-              <folding>
-                <element signature="e#3391#7919#0#HTML" />
-                <element signature="e#7950#13840#0#HTML" />
-                <element signature="e#13870#14917#0#HTML" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/LookupController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="402">
-              <caret line="1674" column="25" lean-forward="true" selection-start-line="1640" selection-start-column="8" selection-end-line="1674" selection-end-column="25" />
-              <folding>
-                <element signature="e#40#68#0#PHP" expanded="true" />
-                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-              </folding>
+            <state relative-caret-position="567">
+              <caret line="27" column="46" selection-start-line="27" selection-start-column="46" selection-end-line="27" selection-end-column="46" />
             </state>
           </provider>
         </entry>
@@ -365,75 +87,39 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/routes/web.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="502">
-              <caret line="247" column="66" selection-start-line="247" selection-start-column="55" selection-end-line="247" selection-end-column="66" />
+            <state relative-caret-position="2625">
+              <caret line="136" column="24" selection-start-line="136" selection-start-column="24" selection-end-line="136" selection-end-column="24" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/CampaignController.php">
+        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/LookupController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="223">
-              <caret line="2582" column="196" selection-start-line="2582" selection-start-column="196" selection-end-line="2582" selection-end-column="196" />
+            <state relative-caret-position="37863">
+              <caret line="1840" column="31" selection-start-line="1840" selection-start-column="31" selection-end-line="1840" selection-end-column="31" />
               <folding>
-                <element signature="e#40#63#0#PHP" expanded="true" />
-                <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#label#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
+                <element signature="e#40#69#0#PHP" expanded="true" />
+                <element signature="e#98085#99340#0#PHP" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ImportzoomController.php">
+        <entry file="file://$PROJECT_DIR$/resources/views/lookup/second-screen-col-2.blade.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
-              <caret line="169" column="25" selection-start-line="167" selection-start-column="8" selection-end-line="169" selection-end-column="25" />
-              <folding>
-                <element signature="e#40#63#0#PHP" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/Console/Commands/CcSchedule.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="454">
-              <caret line="786" column="93" lean-forward="true" selection-start-line="786" selection-start-column="16" selection-end-line="786" selection-end-column="93" />
+            <state relative-caret-position="2289">
+              <caret line="109" selection-start-line="105" selection-start-column="12" selection-end-line="109" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/resources/views/campaign/phone-campaign.blade.php">
+        <entry file="file://$PROJECT_DIR$/resources/views/lookup/page-settings.blade.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="504">
-              <caret line="28" column="18" lean-forward="true" selection-start-line="28" selection-start-column="18" selection-end-line="28" selection-end-column="18" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/views/campaign/tabs/Singlecamp/index.blade.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="15" column="45" lean-forward="true" selection-start-line="10" selection-start-column="36" selection-end-line="15" selection-end-column="45" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/views/campaign/index.blade.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="523">
-              <caret line="307" column="173" selection-start-line="307" selection-start-column="159" selection-end-line="307" selection-end-column="173" />
-              <folding>
-                <element signature="e#18150#18188#0#HTML" expanded="true" />
-              </folding>
+            <state relative-caret-position="286">
+              <caret line="126" column="132" selection-start-line="126" selection-start-column="132" selection-end-line="126" selection-end-column="132" />
             </state>
           </provider>
         </entry>
@@ -450,36 +136,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>tab-ajax</find>
-      <find>getEvalDetailFiltersFieldsValues</find>
-      <find>ApplyFiltersCondition</find>
-      <find>auto</find>
-      <find>download</find>
-      <find>apply_filters</find>
-      <find>.ui-multiselect-filter input</find>
-      <find>clientname</find>
-      <find>getFilters(</find>
-      <find>camp_id</find>
-      <find>list_name</find>
-      <find>list_format</find>
-      <find>session(</find>
-      <find>getDownloadableColumns</find>
-      <find>select * in</find>
-      <find>order by</find>
-      <find>listShortname(</find>
-      <find>$columns = Helper::getDownloadableColumns</find>
-      <find>replace</find>
-      <find>sql</find>
-      <find>Category</find>
-      <find>Start_Date</find>
       <find>session</find>
       <find>$cColumns</find>
       <find>$expcolsarray</find>
       <find>execute</find>
       <find>get_fil</find>
       <find>campaign_data</find>
+      <find>alread</find>
       <find>lookuptype</find>
       <find>validator</find>
+      <find>downloadESDLink</find>
+      <find>init.js</find>
+      <find>get</find>
+      <find>n applyFilters()</find>
+      <find>getf</find>
+      <find>apply</find>
+      <find>getFil</find>
+      <find>tab-</find>
+      <find>getfil</find>
+      <find>tab-ajax</find>
+      <find>btn</find>
+      <find>ajax_SA_Details</find>
+      <find>salesDiv</find>
+      <find>getColumns</find>
+      <find>Apply2ndScreenFiltersCondition</find>
+      <find>touch-pagination</find>
+      <find>setta</find>
+      <find>ajax_</find>
+      <find>s-f</find>
+      <find>subtabs</find>
+      <find>Last Touch</find>
     </findStrings>
     <replaceStrings>
       <replace>h7</replace>
@@ -508,35 +194,14 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/resources/views/campaign/tabs/older_versions/pagination-html.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/campaign/tabs/running/pagination-html.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/campaign/tabs/scheduled/pagination-html.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/campaign/tabs/Metadata/pagination-html.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/campaign/tabs/Metadata/index.blade.php" />
-        <option value="$PROJECT_DIR$/app/Model/RepCmpMetaData.php" />
-        <option value="$PROJECT_DIR$/app/Model/UAFieldMapping.php" />
-        <option value="$PROJECT_DIR$/resources/views/campaign/tabs/EDetails/table.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/campaign/xlsx.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/campaign/tabs/Metadata/table.blade.php" />
-        <option value="$PROJECT_DIR$/public/js/phone.js" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/PhoneController.php" />
-        <option value="$PROJECT_DIR$/resources/views/campaign/tabs/completed/table.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/report/tabs/completed/table.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/campaign/tabs/older_versions/table.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/report/tabs/older_versions/table.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/table-single-row.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/campaign/tabs/EDetails/table-single-row.blade.php" />
         <option value="$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/table.blade.php" />
         <option value="$PROJECT_DIR$/resources/views/campaign/tabs/Metadata/table-single-row.blade.php" />
         <option value="$PROJECT_DIR$/resources/views/campaign/tabs/Singlecamp/index.blade.php" />
         <option value="$PROJECT_DIR$/public/css/style-horizontal.min.css" />
-        <option value="$PROJECT_DIR$/public/elite/js/custom.js" />
         <option value="$PROJECT_DIR$/resources/views/activity/table.blade.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/CommonController.php" />
         <option value="$PROJECT_DIR$/resources/views/activity/table-single-row.blade.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/ActivityController.php" />
-        <option value="$PROJECT_DIR$/public/js/activity.js" />
-        <option value="$PROJECT_DIR$/resources/views/activity/index.blade.php" />
         <option value="$PROJECT_DIR$/resources/views/taxonomy/tabs/level/table.blade.php" />
         <option value="$PROJECT_DIR$/resources/views/taxonomy/tabs/level/index.blade.php" />
         <option value="$PROJECT_DIR$/resources/views/taxonomy/tabs/level/table-single-row.blade.php" />
@@ -546,19 +211,40 @@
         <option value="$PROJECT_DIR$/resources/views/taxonomy/index.blade.php" />
         <option value="$PROJECT_DIR$/resources/views/lookup/common/index.blade.php" />
         <option value="$PROJECT_DIR$/resources/views/campaign/tabs/create/new-v1.blade.php" />
-        <option value="$PROJECT_DIR$/public/js/campaign.js" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/LookupController.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/ReportController.php" />
-        <option value="$PROJECT_DIR$/public/js/init.js" />
-        <option value="$PROJECT_DIR$/public/js/lookup.js" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/index.blade.php" />
-        <option value="$PROJECT_DIR$/app/Helpers/Helper.php" />
+        <option value="$PROJECT_DIR$/resources/views/campaign/phone-campaign.blade.php" />
         <option value="$PROJECT_DIR$/resources/views/lookup/create-campaign.blade.php" />
         <option value="$PROJECT_DIR$/app/Console/Commands/CcSchedule.php" />
-        <option value="$PROJECT_DIR$/resources/views/campaign/index.blade.php" />
-        <option value="$PROJECT_DIR$/routes/web.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/CampaignController.php" />
-        <option value="$PROJECT_DIR$/resources/views/campaign/phone-campaign.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/campaign/index.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/activity/index.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/activity/pagination-html.blade.php" />
+        <option value="$PROJECT_DIR$/public/js/campaign.js" />
+        <option value="$PROJECT_DIR$/public/js/activity.js" />
+        <option value="$PROJECT_DIR$/resources/views/email/tabs/completed/pagination-html.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/lookup/pagination-html.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/lookup/phone/pagination-html.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/report/tabs/completed/pagination-html.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/report/tabs/older_versions/pagination-html.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/report/tabs/running/pagination-html.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/report/tabs/scheduled/pagination-html.blade.php" />
+        <option value="$PROJECT_DIR$/public/js/init.js" />
+        <option value="$PROJECT_DIR$/resources/views/lookup/table.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/lookup/table-single-row.blade.php" />
+        <option value="$PROJECT_DIR$/public/elite/js/custom.js" />
+        <option value="$PROJECT_DIR$/resources/views/lookup/Sales-Detail/table.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/lookup/Sales-Detail/table-single-row.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/lookup/index.blade.php" />
+        <option value="$PROJECT_DIR$/app/Helpers/Helper.php" />
+        <option value="$PROJECT_DIR$/resources/views/lookup/Sales-Detail/pagination-html.blade.php" />
+        <option value="$PROJECT_DIR$/public/js/lookup.js" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/PhoneController.php" />
+        <option value="$PROJECT_DIR$/resources/views/lookup/phone/index.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/lookup/second-screen-col-2.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/layouts/docker-topnav.blade.php" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/LookupController.php" />
+        <option value="$PROJECT_DIR$/routes/web.php" />
+        <option value="$PROJECT_DIR$/resources/views/lookup/page-settings.blade.php" />
       </list>
     </option>
   </component>
@@ -573,6 +259,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -602,6 +289,12 @@
               <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
               <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
               <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="Helpers" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
               <item name="Http" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -619,6 +312,18 @@
             <path>
               <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
               <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
+              <item name="public" type="462c0819:PsiDirectoryNode" />
+              <item name="elite" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
+              <item name="public" type="462c0819:PsiDirectoryNode" />
+              <item name="js" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -632,31 +337,7 @@
               <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
               <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="campaign" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="campaign" type="462c0819:PsiDirectoryNode" />
-              <item name="tabs" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="campaign" type="462c0819:PsiDirectoryNode" />
-              <item name="tabs" type="462c0819:PsiDirectoryNode" />
-              <item name="Singlecamp" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="taxonomy" type="462c0819:PsiDirectoryNode" />
+              <item name="lookup" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
@@ -667,7 +348,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -679,15 +359,15 @@
     <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/app/Http/Controllers/CampaignController.php" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\resources\views\taxonomy\tabs" />
-      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\app\Http\Controllers" />
-      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\resources\views\activity" />
-      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\resources\views\campaign\tabs\Singlecamp" />
-      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\app\Model" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\resources\js" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\app\Helpers" />
+      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\app\Http\Controllers" />
+      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\public\js" />
+      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\resources\views" />
+      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\resources\views\lookup\Sales-Detail" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -898,7 +578,11 @@
       <workItem from="1644989495908" duration="4749000" />
       <workItem from="1645078489060" duration="1726000" />
       <workItem from="1645161064031" duration="36824000" />
-      <workItem from="1645503003749" duration="18539000" />
+      <workItem from="1645503003749" duration="26419000" />
+      <workItem from="1645767358156" duration="29987000" />
+      <workItem from="1646107734324" duration="34865000" />
+      <workItem from="1646287021287" duration="25893000" />
+      <workItem from="1646649408135" duration="594000" />
     </task>
     <task id="LOCAL-00001" summary="changes">
       <created>1619516469281</created>
@@ -911,7 +595,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1440060000" />
+    <option name="totallyTimeSpent" value="1539279000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -924,10 +608,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="830" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.3939828" visible="true" weight="0.2442953" />
-      <window_info id="Structure" order="1" sideWeight="0.6060172" side_tool="true" weight="0.2442953" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.38968483" visible="true" weight="0.25704697" />
+      <window_info id="Structure" order="1" sideWeight="0.6103152" side_tool="true" weight="0.2536913" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32808024" />
@@ -976,305 +659,533 @@
     <option name="LAST_COMMIT_MESSAGE" value="changes" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/public/css/style-horizontal.min.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="398853">
-          <caret line="18993" column="53" selection-start-line="18993" selection-start-column="4" selection-end-line="18993" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/js/ajax.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="13629">
-          <caret line="649" column="45" selection-start-line="649" selection-start-column="45" selection-end-line="649" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/elite/js/custom.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7224">
-          <caret line="344" column="12" selection-start-line="344" selection-start-column="12" selection-end-line="344" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/CampaignExportController.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/pagination-html.blade.php">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/activity/first-screen.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/campaign/tabs/Metadata/pagination-html.blade.php">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/taxonomy/columns/product.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/find-duplicate/pagination-html.blade.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/phone/pagination-html.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="7" column="44" lean-forward="true" selection-start-line="1" selection-start-column="4" selection-end-line="7" selection-end-column="44" />
+        <state relative-caret-position="144">
+          <caret line="7" column="8" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/CommonController.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/report/tabs/older_versions/pagination-html.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="672">
-          <caret line="50" column="71" selection-start-line="50" selection-start-column="10" selection-end-line="50" selection-end-column="71" />
+        <state relative-caret-position="144">
+          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/importzoom/step5-table.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/report/tabs/completed/pagination-html.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2058">
-          <caret line="98" column="9" selection-start-line="98" selection-start-column="9" selection-end-line="98" selection-end-column="9" />
+        <state relative-caret-position="126">
+          <caret line="6" column="8" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/importzoom/index.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/email/tabs/completed/pagination-html.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="7" column="74" selection-start-line="5" selection-start-column="4" selection-end-line="7" selection-end-column="74" />
+        <state relative-caret-position="125">
+          <caret line="6" column="8" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/activity/table.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/report/tabs/scheduled/pagination-html.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="23" selection-start-column="11" selection-end-column="23" />
+        <state relative-caret-position="145">
+          <caret line="7" column="4" selection-start-line="7" selection-start-column="4" selection-end-line="7" selection-end-column="4" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/activity/xlsx.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/taxonomy/tabs/level/pagination-html.blade.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/report/tabs/running/pagination-html.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
-          <caret line="1" column="17" selection-start-line="1" selection-start-column="9" selection-end-line="1" selection-end-column="17" />
+        <state relative-caret-position="125">
+          <caret line="6" column="8" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/activity/index.blade.php">
+    <entry file="file://$PROJECT_DIR$/public/js/report.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2982">
-          <caret line="142" column="32" selection-start-line="142" selection-start-column="32" selection-end-line="142" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/js/activity.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
-          <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/taxonomy/tabs/level1/table.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="5" column="39" lean-forward="true" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="39" />
-          <folding>
-            <element signature="n#style#0;n#table#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/taxonomy/tabs/level2/table.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="5" column="30" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="30" />
-          <folding>
-            <element signature="n#style#0;n#table#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/taxonomy/tabs/level3/table.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="n#style#0;n#table#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/taxonomy/tabs/level4/table.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="7" column="26" selection-start-line="7" selection-start-column="16" selection-end-line="7" selection-end-column="26" />
-          <folding>
-            <element signature="n#style#0;n#table#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/table-single-row.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="11" lean-forward="true" selection-end-line="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/table.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="521">
-          <caret line="39" lean-forward="true" selection-end-line="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/taxonomy/tabs/level/index.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
-          <caret line="1" column="33" lean-forward="true" selection-start-line="1" selection-start-column="33" selection-end-line="1" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/taxonomy/tabs/level/table.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="63">
-          <caret line="3" column="37" selection-start-line="3" selection-start-column="21" selection-end-line="3" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/taxonomy/tabs/level/table-single-row.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="16" column="65" selection-start-line="16" selection-start-column="48" selection-end-line="16" selection-end-column="65" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/constant.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="8" column="16" selection-start-line="8" selection-start-column="5" selection-end-line="8" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/taxonomy/xlsx.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="605">
-          <caret line="31" lean-forward="true" selection-start-line="31" selection-end-line="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/campaign/xlsx.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="23" column="33" lean-forward="true" selection-end-line="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/TaxonomyController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="333">
-          <caret line="46" column="42" selection-start-line="46" selection-start-column="42" selection-end-line="46" selection-end-column="42" />
-          <folding>
-            <element signature="e#11804#12768#0#PHP" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/assets/bower_components/multiselect/css/jquery.multiselect.filter.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="63">
-          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/taxonomy/index.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="541">
-          <caret line="460" column="43" selection-start-line="460" selection-start-column="43" selection-end-line="460" selection-end-column="43" />
-          <folding>
-            <element signature="e#159#1797#0#HTML" />
-            <element signature="e#12200#13645#0#HTML" />
-            <element signature="e#18955#20248#0#HTML" />
-            <element signature="e#20298#23059#0#HTML" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/activity/table-single-row.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="353">
-          <caret line="23" column="285" selection-end-line="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/layouts/modal/modals.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="419">
-          <caret line="182" column="105" selection-start-line="182" selection-start-column="96" selection-end-line="182" selection-end-column="105" />
+        <state relative-caret-position="-25">
           <folding>
             <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#div#1;n#!!top" />
+            <element signature="e#184#190#0" expanded="true" />
+            <element signature="e#190#196#0" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="e#244#250#0" expanded="true" />
+            <element signature="e#250#256#0" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="e#240#246#0" expanded="true" />
+            <element signature="e#246#252#0" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#4;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#5;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#6;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#7;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#8;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#9;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#10;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#input#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
+            <element signature="e#650#656#0" expanded="true" />
+            <element signature="e#656#662#0" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#4;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#5;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#6;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#7;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#8;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#9;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#10;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#4;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#5;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#6;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#7;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#8;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#9;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#10;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="e#2978#2984#0" expanded="true" />
+            <element signature="e#2984#2990#0" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#4;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#5;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#6;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#7;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#8;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#9;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#10;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#4;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#5;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#6;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#7;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#8;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#9;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#10;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="e#2980#2986#0" expanded="true" />
+            <element signature="e#2986#2992#0" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#4;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#5;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#6;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#7;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#8;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#9;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#10;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
+            <element signature="n#style#1;n#select#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#4;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#5;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#6;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#7;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#8;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#9;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#10;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
+            <element signature="n#style#1;n#select#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
+            <element signature="e#129#133#1" expanded="true" />
+            <element signature="e#160#164#1" expanded="true" />
+            <element signature="e#191#195#0" expanded="true" />
+            <element signature="e#223#227#0" expanded="true" />
+            <element signature="n#style#0;n#input#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#input#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#input#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ActivityController.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/pagination-html.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1911">
-          <caret line="71" column="37" selection-start-line="71" selection-start-column="37" selection-end-line="71" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Console/Commands/ArSchedule.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="297" column="29" selection-start-line="297" selection-start-column="29" selection-end-line="297" selection-end-column="58" />
+        <state relative-caret-position="315">
+          <caret line="15" column="51" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="51" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/js/init.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="28476">
-          <caret line="1369" selection-start-line="1369" selection-end-line="1369" />
+        <state relative-caret-position="-759">
+          <caret line="1401" column="6" selection-start-line="1401" selection-start-column="4" selection-end-line="1403" selection-end-column="45" />
           <folding>
             <element signature="e#3526#3963#0" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ReportController.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/table.blade_v2.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="22848">
-          <caret line="1107" column="13" selection-start-line="1107" selection-start-column="13" selection-end-line="1107" selection-end-column="13" />
+        <state relative-caret-position="-252" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/activity/index.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="962">
+          <caret line="152" column="15" lean-forward="true" selection-start-line="118" selection-start-column="12" selection-end-line="152" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/CampaignController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="94" column="10" lean-forward="true" selection-start-line="94" selection-start-column="10" selection-end-line="94" selection-end-column="10" />
           <folding>
             <element signature="e#40#63#0#PHP" expanded="true" />
+            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/campaign/tabs/create/new-v1.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/xlsx.blade.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ActivityController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="24528">
-          <caret line="1168" column="56" selection-start-line="1168" selection-start-column="47" selection-end-line="1168" selection-end-column="56" />
+        <state relative-caret-position="110">
+          <caret line="369" column="21" lean-forward="true" selection-start-line="369" selection-start-column="21" selection-end-line="369" selection-end-column="21" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/js/lookup.js">
+    <entry file="file://$PROJECT_DIR$/app/Console/Commands/CcSchedule.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="4" column="14" selection-start-line="4" selection-start-column="14" selection-end-line="4" selection-end-column="14" />
+        <state relative-caret-position="2896">
+          <caret line="786" column="29" selection-start-line="786" selection-start-column="29" selection-end-line="786" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/table-single-row.blade_v2.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="11" column="91" lean-forward="true" selection-start-line="11" selection-start-column="8" selection-end-line="11" selection-end-column="91" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/table-single-row.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="8" column="85" selection-start-line="8" selection-start-column="85" selection-end-line="8" selection-end-column="85" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/table.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="23" selection-start-column="11" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/Sales-Detail/table.blade_v2.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="294">
+          <caret line="14" column="24" selection-start-line="14" selection-start-column="16" selection-end-line="14" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/Sales-Detail/table.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="20" column="51" selection-start-line="20" selection-start-column="51" selection-end-line="20" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Helpers/Helper_old.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
           <folding>
-            <element signature="e#2231#8548#0" />
-            <element signature="e#8592#9821#0" />
-            <element signature="e#9867#10764#0" />
-            <element signature="e#10806#11039#0" />
-            <element signature="e#11084#11370#0" />
-            <element signature="e#11414#11826#0" />
-            <element signature="n#!!block;n#getFilters#0" />
-            <element signature="n#!!block;n#filtersApplied#0" />
-            <element signature="n#!!block;n#applyFilters#0" />
-            <element signature="n#!!block;n#singleClick#0" />
-            <element signature="n#!!block;n#refreshMergeList#0" />
-            <element signature="n#!!block;n#doMerge#0" />
-            <element signature="n#!!block;n#blankMergeData#0" />
-            <element signature="n#!!block;n#goBack#0" />
-            <element signature="n#!!block;n#selectAll#0" />
-            <element signature="n#!!block;n#singleCheckbox#0" />
-            <element signature="n#!!block;n#mergeBulk#0" />
-            <element signature="n#!!block;n#reviewContact#0" />
-            <element signature="n#!!block;n#reviewDupsContact#0" />
+            <element signature="e#23#30#0" expanded="true" />
+            <element signature="e#39#45#0" expanded="true" />
+            <element signature="e#45#51#0" expanded="true" />
+            <element signature="e#28#35#0" expanded="true" />
+            <element signature="n#style#0;n#a#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#i#0;n#a#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#i#0;n#a#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#i#0;n#a#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#i#0;n#a#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#a#0;n#td#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/phone/add.blade.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/Sales-Detail/table-single-row.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="416">
+          <caret line="20" column="81" selection-start-line="20" selection-start-column="81" selection-end-line="20" selection-end-column="81" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/taxonomy/index.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="63">
+          <caret line="164" column="81" selection-start-line="164" selection-start-column="48" selection-end-line="164" selection-end-column="81" />
+          <folding>
+            <element signature="e#159#1797#0#HTML" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/TaxonomyController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="48" column="9" lean-forward="true" selection-start-line="39" selection-start-column="8" selection-end-line="48" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/first-screen.blade.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/elite/js/custom.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="354">
+          <caret line="308" column="58" selection-start-line="308" selection-start-column="44" selection-end-line="308" selection-end-column="58" />
+          <folding>
+            <element signature="e#11552#13318#0" />
+            <element signature="e#13407#14220#0" />
+            <element signature="e#15995#18311#0" />
+            <element signature="e#18975#21321#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/phone/table.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="n#style#0;n#table#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Helpers/Helper.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="3496" column="60" selection-start-line="3496" selection-start-column="60" selection-end-line="3496" selection-end-column="60" />
+        <state relative-caret-position="383">
+          <caret line="4036" column="66" selection-start-line="4036" selection-start-column="66" selection-end-line="4036" selection-end-column="66" />
           <folding>
             <element signature="e#23#30#0" expanded="true" />
             <element signature="e#39#45#0" expanded="true" />
@@ -1453,273 +1364,150 @@
             <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#img#0;n#a#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="e#149369#149922#0#PHP" />
-            <element signature="e#149932#150445#0#PHP" />
-            <element signature="e#150455#150972#0#PHP" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/js/campaign.js">
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/phone/second_screen/table.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3447">
-          <caret line="2809" column="9" selection-start-line="2809" selection-start-column="9" selection-end-line="2809" selection-end-column="9" />
+        <state relative-caret-position="189">
+          <caret line="9" column="47" lean-forward="true" selection-start-line="3" selection-start-column="12" selection-end-line="9" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/Sales-Detail/pagination-html.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="32" column="25" selection-start-line="32" selection-start-column="20" selection-end-line="32" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/phone.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2625">
+          <caret line="125" column="41" selection-start-line="125" selection-start-column="41" selection-end-line="125" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/lookup.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="110">
+          <caret line="478" column="28" selection-start-line="478" selection-start-column="28" selection-end-line="478" selection-end-column="28" />
           <folding>
-            <element signature="e#76#1486#0" />
-            <element signature="e#2576#3373#0" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="e#184#190#0" expanded="true" />
-            <element signature="e#190#196#0" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="e#244#250#0" expanded="true" />
-            <element signature="e#250#256#0" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="e#240#246#0" expanded="true" />
-            <element signature="e#246#252#0" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#4;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#5;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#6;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#7;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#8;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#9;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#10;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#input#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-            <element signature="e#650#656#0" expanded="true" />
-            <element signature="e#656#662#0" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#4;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#5;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#6;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#7;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#8;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#9;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#10;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#4;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#5;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#6;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#7;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#8;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#9;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#10;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="e#2978#2984#0" expanded="true" />
-            <element signature="e#2984#2990#0" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#4;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#5;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#6;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#7;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#8;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#9;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#10;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#4;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#5;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#6;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#7;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#8;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#9;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#10;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="e#2980#2986#0" expanded="true" />
-            <element signature="e#2986#2992#0" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#4;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#5;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#6;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#7;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#8;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#9;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#10;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="e#186001#190597#0" />
-            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-            <element signature="n#style#1;n#select#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#3;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#4;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#5;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#6;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#7;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#8;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#9;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#10;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-            <element signature="n#style#1;n#select#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#a#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-            <element signature="e#129#133#1" expanded="true" />
-            <element signature="e#160#164#1" expanded="true" />
-            <element signature="e#191#195#0" expanded="true" />
-            <element signature="e#223#227#0" expanded="true" />
-            <element signature="n#style#0;n#input#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#input#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#input#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
+            <element signature="n#!!block;n#singleClick#0" />
+            <element signature="n#!!block;n#refreshMergeList#0" />
+            <element signature="n#!!block;n#doMerge#0" />
+            <element signature="n#!!block;n#blankMergeData#0" />
+            <element signature="n#!!block;n#goBack#0" />
+            <element signature="n#!!block;n#selectAll#0" />
+            <element signature="n#!!block;n#singleCheckbox#0" />
+            <element signature="n#!!block;n#mergeBulk#0" />
+            <element signature="n#!!block;n#reviewContact#0" />
+            <element signature="n#!!block;n#reviewDupsContact#0" />
+            <element signature="n#!!block;n#downloadCMLink#0" />
+            <element signature="n#!!block;n#showCreateCampaign#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/PhoneController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="231">
+          <caret line="75" column="40" selection-start-line="75" selection-start-column="40" selection-end-line="75" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/filters/phone.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="15" column="89" selection-start-line="15" selection-start-column="74" selection-end-line="15" selection-end-column="89" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/phone/index.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="437">
+          <caret line="50" column="52" selection-start-line="50" selection-start-column="52" selection-end-line="50" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/common/index.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-357">
+          <caret line="50" column="49" selection-start-line="49" selection-start-column="12" selection-end-line="50" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/layouts/docker-topnav-horizontal.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1764" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/layouts/docker-horizontal.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-753">
+          <folding>
+            <element signature="n#style#0;n#head#0;n#html#0;n#!!top" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/layouts/docker-topnav.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="357" column="80" selection-start-line="357" selection-start-column="80" selection-end-line="357" selection-end-column="80" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/create-campaign.blade.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/contact-tab.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="231">
+          <caret line="12" column="45" lean-forward="true" selection-end-line="651" />
+          <folding>
+            <element signature="n#style#0;n#div#3;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/resources/views/lookup/index.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="21" column="34" lean-forward="true" selection-start-line="21" selection-start-column="34" selection-end-line="21" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/lookup/common/index.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="73" column="234" selection-start-line="73" selection-start-column="20" selection-end-line="73" selection-end-column="234" />
-          <folding>
-            <element signature="e#29#1554#0#Blade" />
-            <element signature="e#3528#3566#0#HTML" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/campaign/index.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="523">
-          <caret line="307" column="173" selection-start-line="307" selection-start-column="159" selection-end-line="307" selection-end-column="173" />
-          <folding>
-            <element signature="e#18150#18188#0#HTML" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/campaign/tabs/Singlecamp/index.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="15" column="45" lean-forward="true" selection-start-line="10" selection-start-column="36" selection-end-line="15" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/lookup/create-campaign.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="244">
-          <caret line="64" column="7" lean-forward="true" selection-end-line="64" selection-end-column="7" />
-          <folding>
-            <element signature="e#3391#7919#0#HTML" />
-            <element signature="e#7950#13840#0#HTML" />
-            <element signature="e#13870#14917#0#HTML" />
-          </folding>
+        <state relative-caret-position="567">
+          <caret line="27" column="46" selection-start-line="27" selection-start-column="46" selection-end-line="27" selection-end-column="46" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/routes/web.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="502">
-          <caret line="247" column="66" selection-start-line="247" selection-start-column="55" selection-end-line="247" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Console/Commands/CcSchedule.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="454">
-          <caret line="786" column="93" lean-forward="true" selection-start-line="786" selection-start-column="16" selection-end-line="786" selection-end-column="93" />
+        <state relative-caret-position="2625">
+          <caret line="136" column="24" selection-start-line="136" selection-start-column="24" selection-end-line="136" selection-end-column="24" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/LookupController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="402">
-          <caret line="1674" column="25" lean-forward="true" selection-start-line="1640" selection-start-column="8" selection-end-line="1674" selection-end-column="25" />
+        <state relative-caret-position="37863">
+          <caret line="1840" column="31" selection-start-line="1840" selection-start-column="31" selection-end-line="1840" selection-end-column="31" />
           <folding>
-            <element signature="e#40#68#0#PHP" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="e#40#69#0#PHP" expanded="true" />
+            <element signature="e#98085#99340#0#PHP" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app-before_yajra/Http/Controllers/SettingsController.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/second-screen-col-2.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="124" column="8" lean-forward="true" selection-start-line="124" selection-start-column="8" selection-end-line="137" selection-end-column="9" />
+        <state relative-caret-position="2289">
+          <caret line="109" selection-start-line="105" selection-start-column="12" selection-end-line="109" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ImportzoomController.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/page-settings.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="169" column="25" selection-start-line="167" selection-start-column="8" selection-end-line="169" selection-end-column="25" />
-          <folding>
-            <element signature="e#40#63#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/composer.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="11" column="31" selection-start-line="11" selection-start-column="30" selection-end-line="11" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/CampaignController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="2582" column="196" selection-start-line="2582" selection-start-column="196" selection-end-line="2582" selection-end-column="196" />
-          <folding>
-            <element signature="e#40#63#0#PHP" expanded="true" />
-            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#label#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/campaign/phone-campaign.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="28" column="18" lean-forward="true" selection-start-line="28" selection-start-column="18" selection-end-line="28" selection-end-column="18" />
+        <state relative-caret-position="286">
+          <caret line="126" column="132" selection-start-line="126" selection-start-column="132" selection-end-line="126" selection-end-column="132" />
         </state>
       </provider>
     </entry>

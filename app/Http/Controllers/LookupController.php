@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\UAFieldMapping;
 use Illuminate\Http\Request;
 use App\Library\Ajax;
 use App\Helpers\Helper;
@@ -61,7 +62,7 @@ class LookupController extends Controller
         if(!in_array('Lookup Contact',$visiblities) && $User_Type != 'Full_Access'){
             return view('layouts.error_pages.404');
         }
-        $filtersFieldsValues = Helper::getLookupFiltersFieldsValues([
+        /*$filtersFieldsValues = Helper::getLookupFiltersFieldsValues([
             'campaigns'         => false,
             'countries'         => true,
             'ZSS_Segments'      => true,
@@ -73,29 +74,95 @@ class LookupController extends Controller
             'Productcat1_Des'      =>  true,
             'Productcat2_Des'      =>  true,
             'Product'          =>  true,
-        ]);
+        ]);*/
+
+        $lLookupFirstScreen = Helper::getColumns('Lookup','First Screen');
+        //array_multisort(array_column($lLookupFirstScreen['visible_columns'], 'Filter_Order'), SORT_ASC, $lLookupFirstScreen['visible_columns']);
+        $lLookupFirstScreenFilters = Helper::getFilterValues($lLookupFirstScreen['filter_columns']);
 
         return view('lookup.index',[
-            'countries'         =>  $filtersFieldsValues['countries'],
-            'ZSS_Segments'      =>  $filtersFieldsValues['ZSS_Segments'],
-            'MemberSegments'    =>  $filtersFieldsValues['MemberSegments'],
-            'AddressQualities'  =>  $filtersFieldsValues['AddressQualities'],
-            'DonorSegments'     =>  $filtersFieldsValues['DonorSegments'],
-            'EventSegments'     =>  $filtersFieldsValues['EventSegments'],
-            'LifecycleSegments' =>  $filtersFieldsValues['LifecycleSegments'],
-            'Productcat1_Des'      =>  $filtersFieldsValues['Productcat1_Des'],
-            'Productcat2_Des'      =>  $filtersFieldsValues['Productcat2_Des'],
-            'Product'          =>  $filtersFieldsValues['Product'],
-            /*'Productcat1_Des'      =>  ['Contribution','Membership','Kessei'],
-            'Productcat2_Des'      =>  ['Individual'],
-            'Product'          =>  ['Contribution/Individual'],*/
+            'lLookupFirstScreenFilters'         =>  $lLookupFirstScreenFilters,
         ]);
+    }
+
+    public static function implement_query($reqlevel,$filters = [],$pagination,$add_sort_end = true,$contactid =''){
+        $lLookup = Helper::getColumns('Lookup',$reqlevel);
+        $sort = $lLookup['sort'];
+
+        //$sort = ($sort == "") ? "Order by sa.Date DESC " : "Order by $sort $dir";
+
+        $levels = [
+            'First Screen' => [
+                'columns' => $lLookup['all_columns'],
+                'visible_columns' => $lLookup['visible_columns'],
+                'filter_columns' => $lLookup['filter_columns'],
+                'sql'   => 'SELECT * from (select *, row_number () over (partition by rown   '.$sort.') as ROWNUMBER FROM   (SELECT ROW_NUMBER() over (partition by DS_MKC_ContactID '.$sort.') as ROWN,'.implode(',',$lLookup['all_columns']).' from '.$lLookup['table_name'].' ?where? ) _myResults where ROWN = 1 ) as a ',
+                'filter' => 1
+            ],
+            'Activity Detail' => [
+                'columns' => $lLookup['all_columns'],
+                'visible_columns' => $lLookup['visible_columns'],
+                'filter_columns' => $lLookup['filter_columns'],
+                'sql'   => 'SELECT * FROM (SELECT ROW_NUMBER() over ('.$sort.') as ROWNUMBER, '.implode(',',$lLookup['all_columns']).' from Sales_View  sa INNER JOIN Contact_View ac ON
+		 ?where? sa.DS_MKC_ContactID = ac.DS_MKC_ContactID AND ac.DS_MKC_ContactID = '.$contactid.') _myResults',
+                'filter' => 1
+            ],
+            'Touch' => [
+                'columns' => $lLookup['all_columns'],
+                'visible_columns' => $lLookup['visible_columns'],
+                'filter_columns' => $lLookup['filter_columns'],
+                'sql' => 'SELECT * FROM (SELECT ROW_NUMBER() over ('.$sort.') as ROWNUMBER,'.implode(',',$lLookup['all_columns']).'  from  contact c INNER JOIN touch t ON t.DS_MKC_ContactID = c.DS_MKC_ContactID WHERE t.DS_MKC_ContactID = '.$contactid.') _myResults',
+                'filter' => 0
+            ]
+        ];
+
+        //c.DS_MKC_ContactID,cocntact.dflname, t.RowID,t.TouchCampaign,t.TouchStatus,t.TouchChannel,t.TouchDate,t.TouchNotes
+
+/*"select * from (select ROW_NUMBER() over (order by [touch].[rowID] desc, [touch].[TouchDate] desc,
+    [touch].[ds_mkc_contactid] asc ) as ROWNUMBER, contact.DS_MKC_ContactID,contact.dflname, touch.RowID,touch.TouchCampaign,touch.TouchStatus,touch.TouchChannel,touch.TouchDate,touch.TouchNotes from
+   contact INNER JOIN touch ON touch.DS_MKC_ContactID = contact.DS_MKC_ContactID WHERE touch.DS_MKC_ContactID = 4100281
+ ) _myResults WHERE ROWNUMBER > 0 and ROWNUMBER <= 17";*/
+        foreach ($levels as $level=>$level_values){
+            if($level == $reqlevel){
+                if($level_values['filter'] == 1){
+                    if($reqlevel == 'First Screen'){
+
+                        $where = Helper::getFiltersCondition($filters,$reqlevel,$level_values['filter_columns']);
+                        $sql = str_replace('?where?',$where['Where'],$level_values['sql']);
+                    }elseif ($reqlevel == 'Activity Detail'){
+                        $where = self::Apply2ndScreenFiltersCondition($filters);
+                        $where  = !empty($where) ? $where.' AND ' : '';
+                        $sql = str_replace('?where?',$where,$level_values['sql']);
+                    }
+
+                    $sSql = $add_sort_end ? $sql.$pagination.' '.$sort : $sql.$pagination;
+                    $nSql = $sql;
+                }else{
+                    $sql = str_replace('?where?','',$level_values['sql']);
+                    $sSql = $add_sort_end ? $sql.$pagination.' '.$sort : $sql.$pagination;
+                    $nSql = $sql;
+                }
+
+                $records = DB::select($sSql);
+                $records = collect($records)->map(function($x){ return (array) $x; })->toArray();
+
+                $total_records = count(DB::select($nSql));
+                return [
+                    'sql'  => $sql,
+                    'records' => $records,
+                    'total_records' => $total_records,
+                    'columns' => $level_values['columns'],
+                    'visible_columns' => $level_values['visible_columns'],
+                ];
+            }
+        }
     }
 
     public function getFirstScreen(Request $request,Ajax $ajax){
         $tabid = $request->input('tabid');
         $rType = $request->input('rtype','');
         $filters = $request->input('filters',[]);
+        $contactids = $request->input('contactids',[]);
         $mergeKeys = !is_null($request->input('mergeKeys')) ? $request->input('mergeKeys') : [];
         $mKeys = [];
         if(count($mergeKeys) > 0){
@@ -103,74 +170,60 @@ class LookupController extends Controller
                 $mKeys[] = $mk['id'];
             }
         }
-        $sort = $request->input('sort') ? $request->input('sort') : '';
-        $dir = $request->input('dir') ? $request->input('dir') : 'DESC';
+        $sort_column = $request->input('sort_column') ? $request->input('sort_column') : '';
+        $sort_dir = $request->input('sort_dir') ? $request->input('sort_dir') : 'DESC';
+
+        if(!empty($sort_column)){
+            $sort = "Order by ".$sort_column." ".$sort_dir." ";
+        }else{
+            $sort = "Order by tag desc, update_date  DESC ";
+        }
 
         $page = $request->input('page',1);
         $records_per_page = 15;//config('constant.record_per_page');
         $position = ($page-1) * $records_per_page;
-        $contactids = isset($filters['contactids']) ? explode(',',$filters['contactids'][0]) : [];
+
         if($tabid == 20){
-            if ($sort == "DS_MKC_ContactID") {
-                $sort = "DS_MKC_ContactID";
-            }
-            $sort_column = $sort;
-            $sort_dir = $dir;
-            $sort = ($sort == "" || $sort == "select") ? "Order by tag desc, update_date  DESC " : "Order by $sort $dir";
 
-            $whereClause = Helper::ApplyFiltersCondition($filters,Auth::user()->User_ID);
+            $pagination = " WHERE ROWNUMBER > $position and ROWNUMBER <= " . ($position + $records_per_page);
+            $result = self::implement_query('First Screen',$filters,$pagination,true);
+            $tabName = 'First Screen';
+            array_splice( $result['visible_columns'], 1, 0, [[
+                'Field_Name' => 'merge',
+                'Field_Display_Name' => 'Merge',
+                'Class_Name'    => 'text-center',
+                'Field_Visibility'  => 2,
+                'Editable'  => null,
+            ]] );
 
-
-            $sWhere1 = " WHERE ROWNUMBER > $position and ROWNUMBER <= " . ($position + $records_per_page);
-
-
-
-            $sSql = "SELECT * from (select *, row_number () over (partition by rown   $sort  ) as ROWNUMBER FROM   (SELECT ROW_NUMBER() over (partition by DS_MKC_ContactID $sort) as ROWN,DS_MKC_ContactID,DS_MKC_HouseholdID,Email,EmailSegment,email2,phone,dqcode_phone,Extendedname, Company,JobTitle,Address,City,State,Zip,dqcode_address,Salutation,DharmaName,Firstname,Middlename,Lastname,Suffix,Salutation2,DharmaName2,FirstName2,Middlename2,Lastname2,Suffix2,Life2date_SpendAmt,isnull(tag,0) as tag,create_date, update_date, case when create_date=cast(getdate() as date) then 1 else 0 end as a,TouchDate from Contact_View ".$whereClause['finalClause'].") _myResults where ROWN = 1 ) as a  $sWhere1 $sort";
-            /*$records = DB::select($sSql);
-
-            $all_records = DB::select("SELECT count(distinct(DS_MKC_ContactID)) as count FROM Contact_View ac ".$whereClause['finalClause']);
-
-            $total_records = collect($all_records)->map(function($x){ return (array) $x; })->toArray();*/
-
+            $data = [
+                'records' => $result['records'],
+                'visible_columns' => $result['visible_columns'],
+                'tab' => $tabName,
+                'mKeys' => $mKeys,
+                'contactids' => $contactids,
+                'filters' => json_encode($filters)
+            ];
 
 
             if($rType == 'pagination'){
-                $html = View::make('lookup.table', [
-                    //'records' => $records,
-                    'contactids' => $contactids,
-                    'mKeys' => $mKeys,
-                    'sql' => $sSql,
-                    'finalClause' => $whereClause['finalClause'],
-                    'sWhere1' => $sWhere1,
-                    'sort_column' => $sort_column,
-                    'sort_dir' => $sort_dir
-                ])->render();
+                $html = View::make('lookup.table', $data)->render();
             }else{
-                $html = View::make('lookup.first-screen',[
-                    //'records' => $records,
-                    'contactids' => $contactids,
-                    'mKeys' => $mKeys,
-                    'sql' => $sSql,
-                    'finalClause' => $whereClause['finalClause'],
-                    'sWhere1' => $sWhere1,
-                    'sort_column' => $sort_column,
-                    'sort_dir' => $sort_dir
-                ])->render();
+                $html = View::make('lookup.first-screen',$data)->render();
             }
 
-            /*$paginationhtml = View::make('lookup.pagination-html',[
-                'total_records' => $total_records[0]['count'],
-                'records' => $records,
+            $paginationhtml = View::make('lookup.pagination-html',[
+                'total_records' => $result['total_records'],
+                'records' => $result['records'],
                 'position' => $position,
                 'records_per_page' => $records_per_page,
-                'page' => $page
-            ])->render();*/
+                'page' => $page,
+                'tab' => $tabName
+            ])->render();
             return $ajax->success()
                 ->appendParam('html',$html)
-                //->appendParam('total_records',$total_records[0]['count'])
-                ->appendParam('sql',$sSql)
-                ->appendParam('whereClause',$whereClause)
-                ->appendParam('paginationHtml','')
+                ->appendParam('sql',$result['sql'])
+                ->appendParam('paginationHtml',$paginationhtml)
                 ->jscallback('load_ajax_tab')
                 ->response();
         }
@@ -193,6 +246,8 @@ class LookupController extends Controller
         $sort_dir = $table_order[0]['dir'];
 
         $sort = ($sort_column == "" || $sort_column == "select") ? "Order by tag desc, case when create_date=cast(getdate() as date) then 1 else 0 end desc, update_date desc " : "Order by $sort_column $sort_dir";
+
+        //$sSql = "SELECT * from (select *, row_number () over (partition by rown   $sort  ) as ROWNUMBER FROM   (SELECT ROW_NUMBER() over (partition by DS_MKC_ContactID $sort) as ROWN,DS_MKC_ContactID,DS_MKC_HouseholdID,Email,Emailname,EmailSegment,email2,phone,dqcode_phone,Extendedname, Company,JobTitle,Address,City,State,Zip,dqcode_address,Salutation,DharmaName,Firstname,Middlename,Lastname,Suffix,Salutation2,DharmaName2,FirstName2,Middlename2,Lastname2,Suffix2,Life2date_SpendAmt,isnull(tag,0) as tag,update_date,create_date , case when create_date=cast(getdate() as date) then 1 else 0 end as a,TouchDate from Contact_View ".$finalClause.") _myResults where ROWN = 1 ) as a   $sort";
 
         $sSql = "SELECT * from (select *, row_number () over (partition by rown   $sort  ) as ROWNUMBER FROM   (SELECT ROW_NUMBER() over (partition by DS_MKC_ContactID $sort) as ROWN,DS_MKC_ContactID,DS_MKC_HouseholdID,Email,Emailname,EmailSegment,email2,phone,dqcode_phone,Extendedname, Company,JobTitle,Address,City,State,Zip,dqcode_address,Salutation,DharmaName,Firstname,Middlename,Lastname,Suffix,Salutation2,DharmaName2,FirstName2,Middlename2,Lastname2,Suffix2,Life2date_SpendAmt,isnull(tag,0) as tag,update_date,create_date , case when create_date=cast(getdate() as date) then 1 else 0 end as a,TouchDate from Contact_View ".$finalClause.") _myResults where ROWN = 1 ) as a   $sort";
         //dd($sSql);
@@ -273,10 +328,13 @@ class LookupController extends Controller
     }
 
     public function downloadReport(Request $request,Ajax $ajax){
+        ini_set('max_execution_time', -1);
+        ini_set('memory_limit', '1024M');
         $fileprefix = $request->input('prefix');
         $screen = $request->input('screen');
 
         if($screen == 'first'){
+
             $filters = $request->input('filters',[]);
             $downloadableColumns = json_decode($request->input('downloadableColumns',''));
             $sort = $request->input('sort') ? $request->input('sort') : '';
@@ -291,12 +349,33 @@ class LookupController extends Controller
             //$sort = ($sort == "" || $sort == "select") ? "Order by update_date desc  " : "Order by $sort $dir";
 
             if ($fileprefix == 'lookup'){
+                $sort = "Order by tag desc, update_date  DESC ";
+                $pagination = "";
+                $results = self::implement_query('First Screen',$filters,$pagination,$sort);
 
-                $sort = ($sort == "" || $sort == "select") ? "Order by tag desc, case when create_date=cast(getdate() as date) then 1 else 0 end desc, Updated desc  " : "Order by $sort $dir";
-                $columns = Helper::getDownloadableColumns(LookupController::FIRST_SCREEN_COLUMNS,$downloadableColumns,[1]);
-                $sSQL = "SELECT * from (select *, row_number () over (partition by rown   $sort ) as ROWNUMBER FROM
-(SELECT
-ROW_NUMBER() over (partition by DS_MKC_ContactID order by DS_MKC_ContactID  asc) as ROWN, ".$columns['column_as']." from Contact_View $lookupClause) _myResults where ROWN = 1 ) as a $sort";
+                $view = View::make('activity.xlsx',[
+                    'records' => $results['records'],
+                    'downloadColumnsIndex' => $downloadableColumns,
+                    'columns' => $results['columns'],
+                    'visible_columns' => $results['visible_columns']
+                ])->render();
+                $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
+                $spreadhseet = $reader->loadFromString($view);
+                $sheet = $spreadhseet->getActiveSheet();
+                $spreadhseet->setActiveSheetIndex(0);
+                $sTitle = 'Lookup';
+                $spreadhseet->getActiveSheet()->setTitle($sTitle);
+
+                $file_Name = $this->prefix.'Lookup_'. date('Y') . date('m') . date('d');
+
+                $writer = new Xlsx($spreadhseet);
+                $writer->save(public_path()."\\downloads\\".$file_Name.".xlsx");
+                $sBaseUrl = config('constant.BaseUrl');
+                return $ajax->success()
+                    ->jscallback()
+                    ->form_reset(false)
+                    ->redirectTo($sBaseUrl . "downloads/" . $file_Name. '.xlsx')
+                    ->response();
             }
             elseif ($fileprefix == 'phone'){
                 $sort = ($sort == "" || $sort == "select") ? "Order by TouchCampaign desc,TouchDate  DESC, TouchStatus  DESC " : "Order by $sort $dir";
@@ -758,6 +837,13 @@ FROM Contact_View where DS_MKC_ContactID = '$contactid'";
 
     public function secondScreen($contactid, Request $request,Ajax $ajax){
 
+        $tabs = UAFieldMapping::distinct()
+            ->where('menu_level1', 'Lookup')
+            ->where('menu_level2','!=','First Screen')
+            ->orderBy('menu_level2')
+            ->pluck('menu_level2')
+            ->toArray();
+
         $records = DB::select("SELECT
 Extendedname,Country,DS_MKC_ContactID,DS_MKC_Household_Num,LetterName,JobTitle,ds_mkc_householdid,extendedname,Country,Address,Salutation,Salutation2,City,DharmaName,DharmaName2,State,FirstName
 ,Firstname2,Zip,MiddleName,Middlename2,Company,lastname,lastname2,suffix,suffix2,gender,Arrival,Transportation,AddressQuality,Nxi_Expand
@@ -795,10 +881,15 @@ Life2date_NZoom_Ot,	Last_5Yrs_NZoom_Ot, Last_6Mth_NZoom_Ot,	CurrentYr_NZoom_Ot,	
 			  FROM Contact_View where  DS_MKC_ContactID = $contactid");
         $records = collect($records)->map(function($x){ return (array) $x; })->toArray();
 
-        $html = View::make('lookup.second-screen-col-2',['add'=>false])->render();
+        $html = View::make('lookup.second-screen-col-2',[
+            'add'=>false,
+            'tabs' => $tabs,
+            'contactid' => $contactid
+        ])->render();
         return $ajax->success()
             ->appendParam('html',$html)
             ->appendParam('contactid',$contactid)
+            ->appendParam('tabs',$tabs)
             ->appendParam('response',$records[0])
             ->jscallback('ajax_second_screen')
             ->response();
@@ -806,9 +897,9 @@ Life2date_NZoom_Ot,	Last_5Yrs_NZoom_Ot, Last_6Mth_NZoom_Ot,	CurrentYr_NZoom_Ot,	
 
     public static function Apply2ndScreenFiltersCondition($filters){
 
-        $txtProductcat1_Des = isset($filters['Productcat1_Des']) ? $filters['Productcat1_Des'][0] : '';
-        $txtProductcat2_Des = isset($filters['Productcat2_Des']) ? $filters['Productcat2_Des'][0] : '';
-        $txtActivity = isset($filters['Product']) ? $filters['Product'][0] : '';
+        $txtProductcat1_Des = isset($filters['s-Productcat1_Des']) ? $filters['s-Productcat1_Des'][0] : '';
+        $txtProductcat2_Des = isset($filters['s-Productcat2_Des']) ? $filters['s-Productcat2_Des'][0] : '';
+        $txtProduct = isset($filters['s-Product']) ? $filters['s-Product'][0] : '';
 
         $sWhere = "";
 
@@ -822,9 +913,9 @@ Life2date_NZoom_Ot,	Last_5Yrs_NZoom_Ot, Last_6Mth_NZoom_Ot,	CurrentYr_NZoom_Ot,	
             $specWhere .= $aAd > 0 ? " and " : "";
             $specWhere .= " sa.ds_mkc_contactid in (select distinct ds_mkc_contactid from Sales_View where Productcat2_Des= '" . trim($txtProductcat2_Des) . "') ";
         }
-        if (!empty($txtActivity)) {
+        if (!empty($txtProduct)) {
             $specWhere .= $aAd > 0 ? " and " : "";
-            $specWhere .= " sa.ds_mkc_contactid in (select distinct ds_mkc_contactid from Sales_View where activity like '%" . trim($txtActivity) . "%') ";
+            $specWhere .= " sa.ds_mkc_contactid in (select distinct ds_mkc_contactid from Sales_View where Product like '%" . trim($txtProduct) . "%') ";
         }
 
         if(!empty($specWhere)){
@@ -844,41 +935,111 @@ Life2date_NZoom_Ot,	Last_5Yrs_NZoom_Ot, Last_6Mth_NZoom_Ot,	CurrentYr_NZoom_Ot,	
 
         $where = self::Apply2ndScreenFiltersCondition($filters);
         $where  = !empty($where) ? $where.' AND ' : '';
-        $sWhere1 = " WHERE ROWNUMBER > $position and ROWNUMBER <= " . ($position + $records_per_page);
+        $pagination = " WHERE ROWNUMBER > $position and ROWNUMBER <= " . ($position + $records_per_page);
 
         $sort = $request->input('sort') ? $request->input('sort') : '';
         $dir = $request->input('dir') ? $request->input('dir') : '';
 
         $sort = ($sort == "") ? "Order by sa.Date DESC " : "Order by $sort $dir";
 
-        $records = DB::select("SELECT * FROM (SELECT ROW_NUMBER() over ($sort) as ROWNUMBER, sa.DS_MKC_ContactID,sa.DS_MKC_HouseholdID,sa.Date, cast(sa.Amount as int) as Amount,sa.Productcat2_Des,sa.Productcat1_Des,sa.Product,sa.memo,sa.Account,sa.Class , sa.ClientMessage,sa.customer from Sales_View  sa INNER JOIN Contact_View ac ON
+        $result = self::implement_query('Activity Details',$filters,$pagination,$sort,false,$contactid);
+
+        /*$records = DB::select("SELECT * FROM (SELECT ROW_NUMBER() over ($sort) as ROWNUMBER, sa.DS_MKC_ContactID,sa.DS_MKC_HouseholdID,sa.Date, cast(sa.Amount as int) as Amount,sa.Productcat2_Des,sa.Productcat1_Des,sa.Product,sa.memo,sa.Account,sa.Class , sa.ClientMessage,sa.customer from Sales_View  sa INNER JOIN Contact_View ac ON
 		 $where sa.DS_MKC_ContactID = ac.DS_MKC_ContactID AND ac.DS_MKC_ContactID = $contactid) _myResults $sWhere1");
 
         $all_records = DB::select("SELECT count(*) as count from Sales_View sa INNER JOIN Contact_View ac ON $where sa.DS_MKC_ContactID = ac.DS_MKC_ContactID AND ac.DS_MKC_ContactID = $contactid");
 
-        $total_records = collect($all_records)->map(function($x){ return (array) $x; })->toArray();
+        $total_records = collect($all_records)->map(function($x){ return (array) $x; })->toArray();*/
+        $tabName = 'Activity Details';
+        $data = [
+            'records' => $result['records'],
+            'visible_columns' => $result['visible_columns'],
+            'tab' => $tabName,
+            'contactid' => $contactid,
+            'add' => false,
+            'filters' => json_encode($filters)
+        ];
 
         if($rType == 'pagination'){
-            $html = View::make('lookup.Sales-Detail.table',['records' => $records,'contactid' => $contactid])->render();
+            $html = View::make('lookup.Sales-Detail.table',$data)->render();
         }else {
-            $html = View::make('lookup.Sales-Detail.SA-Detail', ['records' => $records, 'contactid' => $contactid,
-                'add' => false])->render();
+            $html = View::make('lookup.Sales-Detail.SA-Detail', $data)->render();
         }
         $paginationhtml = View::make('lookup.Sales-Detail.pagination-html',[
-            'total_records' => $total_records[0]['count'],
-            'records' => $records,
+            'total_records' => $result['total_records'],
+            'records' => $result['records'],
             'position' => $position,
             'records_per_page' => $records_per_page,
             'contactid' => $contactid,
             'page' => $page
         ])->render();
         return $ajax->success()
-            ->appendParam('sql',"SELECT * FROM (SELECT ROW_NUMBER() over ($sort) as ROWNUMBER, sa.DS_MKC_ContactID,sa.DS_MKC_HouseholdID,sa.Date, cast(sa.Amount as int) as Amount,sa.Productcat2_Des,sa.Productcat1_Des,sa.Product,sa.memo,sa.Account,sa.Class , sa.ClientMessage,sa.customer from Sales_View  sa INNER JOIN Contact_View ac ON
-		 $where sa.DS_MKC_ContactID = ac.DS_MKC_ContactID AND ac.DS_MKC_ContactID = $contactid) _myResults $sWhere1")
-            ->appendParam('records',$records)
+            ->appendParam('sql',$result['sql'])
+            ->appendParam('records',$result['records'])
+            ->appendParam('total_records',$result['total_records'])
             ->appendParam('html',$html)
             ->appendParam('pagination_html',$paginationhtml)
             ->jscallback('ajax_SA_Details')
+            ->response();
+    }
+
+    public function subTabs(Request $request,Ajax $ajax){
+        $contactid = $request->input('contactid');
+        $tabid = $request->input('tabid');
+        $tabname = $request->input('tabname');
+        $page = $request->input('page',1);
+        $records_per_page = 15;
+        $position = ($page-1) * $records_per_page;
+
+        $rType = $request->input('rtype','');
+        $filters = $request->input('filters',[]);
+
+        //$where = self::Apply2ndScreenFiltersCondition($filters);
+        //$where  = !empty($where) ? $where.' AND ' : '';
+        $pagination = " WHERE ROWNUMBER > $position and ROWNUMBER <= " . ($position + $records_per_page);
+
+        $sort = $request->input('sort') ? $request->input('sort') : '';
+        $dir = $request->input('dir') ? $request->input('dir') : '';
+
+        //$sort = ($sort == "") ? "Order by sa.Date DESC " : "Order by $sort $dir";
+
+        $result = self::implement_query($tabname,$filters,$pagination,false,$contactid);
+        /*$records = DB::select("SELECT * FROM (SELECT ROW_NUMBER() over ($sort) as ROWNUMBER, sa.DS_MKC_ContactID,sa.DS_MKC_HouseholdID,sa.Date, cast(sa.Amount as int) as Amount,sa.Productcat2_Des,sa.Productcat1_Des,sa.Product,sa.memo,sa.Account,sa.Class , sa.ClientMessage,sa.customer from Sales_View  sa INNER JOIN Contact_View ac ON
+		 $where sa.DS_MKC_ContactID = ac.DS_MKC_ContactID AND ac.DS_MKC_ContactID = $contactid) _myResults $sWhere1");
+
+        $all_records = DB::select("SELECT count(*) as count from Sales_View sa INNER JOIN Contact_View ac ON $where sa.DS_MKC_ContactID = ac.DS_MKC_ContactID AND ac.DS_MKC_ContactID = $contactid");
+
+        $total_records = collect($all_records)->map(function($x){ return (array) $x; })->toArray();*/
+        $tabName = 'Activity Detail';
+        $data = [
+            'records' => $result['records'],
+            'visible_columns' => $result['visible_columns'],
+            'tab' => $tabName,
+            'contactid' => $contactid,
+            'add' => false,
+            'filters' => json_encode($filters)
+        ];
+
+        if($rType == 'pagination'){
+            $html = View::make('lookup.Sales-Detail.table',$data)->render();
+        }else {
+            $html = View::make('lookup.Sales-Detail.SA-Detail', $data)->render();
+        }
+        $paginationhtml = View::make('lookup.Sales-Detail.pagination-html',[
+            'total_records' => $result['total_records'],
+            'records' => $result['records'],
+            'position' => $position,
+            'records_per_page' => $records_per_page,
+            'contactid' => $contactid,
+            'page' => $page
+        ])->render();
+        return $ajax->success()
+            ->appendParam('sql',$result['sql'])
+            ->appendParam('records',$result['records'])
+            ->appendParam('total_records',$result['total_records'])
+            ->appendParam('html',$html)
+            ->appendParam('paginationHtml',$paginationhtml)
+            ->jscallback('load_ajax_tab')
             ->response();
     }
 
@@ -894,7 +1055,9 @@ Life2date_NZoom_Ot,	Last_5Yrs_NZoom_Ot, Last_6Mth_NZoom_Ot,	CurrentYr_NZoom_Ot,	
         //$sort = $request->input('sort') ? $request->input('sort') : '';
         //$dir = $request->input('dir') ? $request->input('dir') : '';
         //$sort = ($sort == "") ? "Order by sa.Date DESC " : "Order by $sort $dir";
+        /*"select contact.DS_MKC_ContactID,contact.dflname, touch.RowID,touch.TouchCampaign,touch.TouchStatus,touch.TouchChannel,touch.TouchDate,touch.TouchNotes from contact INNER JOIN touch ON touch.DS_MKC_ContactID = contact.DS_MKC_ContactID WHERE touch.DS_MKC_ContactID = $contactid ORDER BY touch.rowID,touch.TouchDate DESC ORDER BY touch.ds_mkc_contactid ASC ";*/
 
+        "select * from (select [contact].[DS_MKC_ContactID], [contact].[dflname], [touch].[RowID], [touch].[TouchCampaign], [touch].[TouchStatus], [touch].[TouchChannel], [touch].[TouchDate], [touch].[TouchNotes], row_number() over (order by [touch].[rowID] desc, [touch].[TouchDate] desc, [touch].[ds_mkc_contactid] asc) as row_num from [contact] inner join [touch] on [touch].[DS_MKC_ContactID] = [contact].[DS_MKC_ContactID] where [touch].[DS_MKC_ContactID] = ?) as temp_table where row_num between 0 and 15 order by row_num ";
         $records = DB::table('contact')
             ->join('touch', 'touch.DS_MKC_ContactID', '=', 'contact.DS_MKC_ContactID')
             ->where('touch.DS_MKC_ContactID', '=', $contactid)
@@ -1658,6 +1821,37 @@ Life2date_NZoom_Ot,	Last_5Yrs_NZoom_Ot, Last_6Mth_NZoom_Ot,	CurrentYr_NZoom_Ot,	
 
         $title = 'Create Campaign';
         $size = 'modal-md';
+
+        if (isset($title)) {
+            $sdata['title'] = $title;
+        }
+        if (isset($size)) {
+            $sdata['size'] = $size;
+        }
+
+        $view = View::make('layouts.modal-popup-layout', $sdata);
+        $html = $view->render();
+
+        return $ajax->success()
+            ->appendParam('html', $html)
+            ->jscallback('loadModalLayout')
+            ->response();
+    }
+
+    public function pageSetting(Request $request,Ajax $ajax){
+        $cContactColums = Helper::getColumns('Lookup','Contact');
+        $sSummarycolums = Helper::getColumns('Lookup','Activity Summary');
+
+
+
+        $content = View::make('lookup.page-settings',[])->render();
+
+        $sdata = [
+            'content' => $content
+        ];
+
+        $title = 'Lookup Page Settings';
+        $size = 'modal-xxl';
 
         if (isset($title)) {
             $sdata['title'] = $title;

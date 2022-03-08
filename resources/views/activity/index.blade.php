@@ -55,26 +55,10 @@
                                         <div class="form-body">
                                             <div class="card-body pt-0">
                                                 @php
-                                                    $multiselect_filters_fields = [];
+                                                    $filter = \App\Helpers\Helper::generateLeftSideFilterHtml($activityFilters,'s');
+                                                    echo $filter['html'];
+                                                    $multiselect_filters_fields = $filter['multiselect_filters_fields']
                                                 @endphp
-                                                @foreach($activityFilters as $Field_Name => $activityFilter)
-                                                    @php
-                                                        $Field_ID = $Field_Name.'-filter';
-                                                        $Field_Name = 's-'.$Field_Name;
-                                                        $multiselect_filters_fields[] = $Field_ID;
-                                                    @endphp
-                                                    <div class="form-group">
-                                                        <label class="control-label">{!! $activityFilter['Field_Display_Name'] !!}</label>
-                                                        <select name="{!! $Field_Name !!}" id="{!! $Field_ID !!}" class="form-control form-control-sm" multiple="multiple" data-placeholder="Select Values">
-                                                            @foreach($activityFilter as $AF)
-                                                                @if($AF == $activityFilter['Field_Display_Name']) @continue @endif
-                                                                @php $AF = !is_numeric($AF) ? trim($AF) : $AF; @endphp
-                                                                <option value="{!! trim($AF) !!}">{!! trim($AF) !!}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                @endforeach
-
 
                                                 <div class="form-actions pull-right d-none" >
                                                     <input type="hidden" name="contactids" id="contactid" onemptied="blankMergeData();" onchange="blankMergeData();" class="form-control form-control-sm" placeholder="" data-placeholder="">
