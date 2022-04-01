@@ -73,43 +73,78 @@ class CampaignController extends Controller
             'Offer_Category' => $filtersFieldsValues['Offer_Category'],
         ]);*/
 
-        $eSummary = Helper::getColumns('Campaign','Evaluation Summary');
+        /*$eSummary = Helper::getColumns('Campaign','Evaluation Summary');
         $eDetail = Helper::getColumns('Campaign','Evaluation Detail');
-        $mMetadata = Helper::getColumns('Campaign','Metadata');
+        $mMetadata = Helper::getColumns('Campaign','Metadata');*/
 
-        $results = Helper::getFiltersSummaryDetail($eSummary['visible_columns'],$eDetail['visible_columns'],$mMetadata['visible_columns']);
+        $levels = App\Model\UAFieldMapping::distinct()
+            ->where('menu_level1', 'Campaign')
+            ->orderBy('menu_level2')
+            ->pluck('menu_level2')
+            ->toArray();
+
+        foreach ($levels as $level){
+            $lLevelColumns = Helper::getColumns('Campaign',$level);
+            $lLevelFilters[$level] = Helper::getFilterValues($lLevelColumns['visible_columns']);
+        }
+
+        //$results = Helper::getFiltersSummaryDetail($eSummary['visible_columns'],$eDetail['visible_columns'],$mMetadata['visible_columns']);
         return view('campaign.index',[
-            'sumFilters' => $results['sumFilters'],
+            /*'sumFilters' => $results['sumFilters'],
             'detailFilters' => $results['detailFilters'],
-            'metadataFilters' => $results['metadataFilters']
+            'metadataFilters' => $results['metadataFilters'],*/
+            'lLevelFilters'       => $lLevelFilters,
+            'alllevels' => $levels
         ]);
     }
 
-    public static function implement_query($reqlevel,$filters = []){
-        $eSummary = Helper::getColumns('Campaign',$reqlevel);
-        $level_values = [
-            'columns' => $eSummary['all_columns'],
-            'visible_columns' => $eSummary['visible_columns'],
-            'sql'   => 'select '.implode(',',$eSummary['all_columns']).' from '.$eSummary['table_name'],
-            'filter' => 1
+    public static function implement_query($reqlevel,$filters = [],$pagination,$add_sort_end = true,$sort = ''){
+        $lLevel = Helper::getColumns('Campaign',$reqlevel);
+        $sort = empty($sort) ? $lLevel['sort'] : $sort;
+
+        //$sort = ($sort == "") ? "Order by sa.Date DESC " : "Order by $sort $dir";
+
+
+        $levels = [
+            $reqlevel => [
+                'columns' => $lLevel['all_columns'],
+                'visible_columns' => $lLevel['visible_columns'],
+                'filter_columns' => $lLevel['filter_columns'],
+                'sql'   => 'select '.implode(',',$lLevel['all_columns']).' from (SELECT *,ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS ROWNUMBER FROM '.$lLevel['table_name'].') as t',
+                'filter' => 1
+            ]
+
         ];
 
-        if($level_values['filter'] == 1){
-            $where = Helper::getFiltersCondition($filters,$reqlevel,$level_values['visible_columns']);
-            $sql = $level_values['sql']." ".$where['Where'];
-        }else{
-            $sql = $level_values['sql'];
+        foreach ($levels as $level=>$level_values){
+            if($level == $reqlevel){
+                if($level_values['filter'] == 1){
+                    $where = Helper::getFiltersCondition($filters,$reqlevel,$level_values['filter_columns']);
+                    $sql = str_replace('?where?',$where['Where'],$level_values['sql']);
+                    $sSql = $add_sort_end ? $sql.$pagination.' '.$sort : $sql.$pagination;
+
+                    $nSql = $sql;
+                }else{
+                    $sql = str_replace('?where?','',$level_values['sql']);
+                    $sSql = $add_sort_end ? $sql.$pagination.' '.$sort : $sql.$pagination;
+                    $nSql = $sql;
+                }
+
+                $records = DB::select($sSql);
+                $records = collect($records)->map(function($x){ return (array) $x; })->toArray();
+
+                $total_records = count(DB::select($nSql));
+                return [
+                    'sql'  => $sSql,
+                    'records' => $records,
+                    'total_records' => $total_records,
+                    'columns' => $level_values['columns'],
+                    'visible_columns' => $level_values['visible_columns'],
+                ];
+            }
         }
-
-        $records = DB::select($sql);
-        $records = collect($records)->map(function($x){ return (array) $x; })->toArray();
-        return [
-            'sql'  => $sql,
-            'records' => $records,
-            'columns' => $level_values['columns'],
-            'visible_columns' => $level_values['visible_columns'],
-        ];
     }
+
 
     public function getCampaign(Request $request,Ajax $ajax){
 
@@ -151,7 +186,7 @@ class CampaignController extends Controller
 
             $uWhere = "AND (User_ID = '$uid' OR is_public = 'Y' $uW)";
         }*/
-        if($tabid == 20){  // Running
+        if($tabid == '0'){  // Running
 
             /*$query = App\Model\CampaignTemplate::query()->with(['rpmeta','rpschedule.ccschstatusmap']);
             if($User_Type != 'Full_Access') {
@@ -282,7 +317,7 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
                 ->response();
 
         }
-        else if($tabid == 21){ // Scheduled
+        else if($tabid == 1){ // Scheduled
 
             /*$query = App\Model\CampaignTemplate::query()->with('rpmeta','rpschedule.ccschstatusmap');
             if($User_Type != 'Full_Access') {
@@ -389,7 +424,7 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
                 ->response();
 
         }
-        else if($tabid == 22){ // Completed
+        else if($tabid == 2){ // Completed
             $sWhere1 = " WHERE ROWNUMBER > $position and ROWNUMBER <= " . ($position + $records_per_page);
             $sort = ($sort == "") ? "Order By CampaignId DESC" : $sort == 'CampaignId' ? "Order By CampaignId DESC" : "Order By $sort $dir";
 
@@ -515,190 +550,7 @@ where (sc.camp_id = za.t_id AND za.t_type = 'C') $uWhere";
                 ->jscallback('load_ajax_tab')
                 ->response();
         }
-        else if($tabid == 23){ // Evaluation Summary
-            $sWhere1 = " WHERE ROWNUMBER > $position and ROWNUMBER <= " . ($position + $records_per_page);
-            $sort = "Order By Campaign_ID DESC";
-
-            /*$sSQL = "select [Campaign_ID],
-[Description],[Universe],[Objective],[Brand],[Channel],[Offer_Category],[All_Incr_Profit] as [Camp_Tot_Profit],[All_Incr_ROI] as [Camp_Tot_ROI],[All_Incr_Resp_Rate] as [Camp_Tot_Resp_Rate],[Cat1_Incr_Profit] as [Camp_Cat_Profit],[Cat1_Incr_ROI] as [Camp_Cat_ROI],[Cat1_Incr_Resp_Rate] as [Camp_Cat_Resp_Rate],[Redemption_Rate],[All_Redeemers] as [Total_Redeemers],[open_rate] as [Open_Rate],[click_rate] as [Click_Rate],[Pgm_Redeemers] as [Camp_Redeemers],[New_Redeemers],[Redeemers_Pass_Along],[Offer],[Cost],[Start_Date],[End_Date],[Shopping_Cat],[Coupon_Code] from (SELECT ROW_NUMBER() over ($sort) as ROWNUMBER,* from UC_Campaign_Summary) _myResults  $sWhere1";*/
-
-            //$records = DB::select($sSQL);
-
-            $result = self::implement_query('Evaluation Summary',$filters);
-
-            /*$nSQL = "select count(*) as cnt from (SELECT ROW_NUMBER() over ($sort) as ROWNUMBER,* from UC_Campaign_Summary) _myResults";
-
-            $all_records = DB::select($nSQL);
-            $total_records = collect($all_records)->map(function($x){ return (array) $x; })->toArray();*/
-            $sort_column = "Campaign_ID";
-            $sort_dir = "DESC";
-            $tabName = 'evaluation summary';
-            $data = [
-                'records' => $result['records'],
-                'visible_columns' => $result['visible_columns'],
-                'uid' => $uid,
-                'tab' => $tabName,
-                'sort_column' => $sort_column,
-                'sort_dir' => $sort_dir,
-                'filters' => json_encode($filters)
-            ];
-            if($rType == 'pagination'){
-                $html = View::make('campaign.tabs.ESummary.table',$data)->render();
-            }else{
-                $html = View::make('campaign.tabs.ESummary.index',$data)->render();
-            }
-
-            /*$paginationhtml = View::make('campaign.tabs.ESummary.pagination-html',[
-                'total_records' => $total_records[0]['cnt'],
-                'records' => $records,
-                'position' => $position,
-                'records_per_page' => $records_per_page,
-                'page' => $page,
-                'tab' => $tabName
-            ])->render();*/
-            return $ajax->success()
-                //->appendParam('total_records',$total_records)
-                ->appendParam('records',$result['records'])
-                ->appendParam('html',$html)
-                ->appendParam('sql',$result['sql'])
-                ->appendParam('paginationHtml','')
-                ->jscallback('load_ajax_tab')
-                ->response();
-        }
-        else if($tabid == 24){ // Evaluation Details
-            $result = self::implement_query('Evaluation Detail',$filters);
-
-            $sort_column = "Campaign_ID";
-            $sort_dir = "DESC";
-            $tabName = 'evaluation details';
-            $data = [
-                'records' => $result['records'],
-                'visible_columns' => $result['visible_columns'],
-                'uid' => $uid,
-                'tab' => $tabName,
-                'sort_column' => $sort_column,
-                'sort_dir' => $sort_dir,
-                'filters' => json_encode($filters)
-            ];
-            if($rType == 'pagination'){
-                $html = View::make('campaign.tabs.EDetails.table',$data)->render();
-            }else{
-                $html = View::make('campaign.tabs.EDetails.index',$data)->render();
-            }
-
-            /*$paginationhtml = View::make('campaign.tabs.EDetails.pagination-html',[
-                //'total_records' => $total_records[0]['cnt'],
-                'records' => $records,
-                'position' => $position,
-                'records_per_page' => $records_per_page,
-                'page' => $page,
-                'tab' => $tabName
-            ])->render();*/
-            return $ajax->success()
-                //->appendParam('total_records',$total_records)
-                ->appendParam('records',$result['records'])
-                ->appendParam('sql',$result['sql'])
-                ->appendParam('html',$html)
-                ->appendParam('paginationHtml','')
-                ->jscallback('load_ajax_tab')
-                ->response();
-        }
-        else if($tabid == 32){ // Outer Metadata
-            $result = self::implement_query('Metadata',$filters);
-
-            $sort_column = "Campaign_ID";
-            $sort_dir = "DESC";
-            $tabName = 'Metadata';
-            $data = [
-                'records' => $result['records'],
-                'visible_columns' => $result['visible_columns'],
-                'uid' => $uid,
-                'tab' => $tabName,
-                'sort_column' => $sort_column,
-                'sort_dir' => $sort_dir,
-                'filters' => json_encode($filters)
-            ];
-
-            if($rType == 'pagination'){
-                $html = View::make('campaign.tabs.Metadata.table',$data)->render();
-            }else{
-                $html = View::make('campaign.tabs.Metadata.index',$data)->render();
-            }
-
-            return $ajax->success()
-                ->appendParam('records',$result['records'])
-                ->appendParam('html',$html)
-                ->appendParam('paginationHtml','')
-                ->jscallback('load_ajax_tab')
-                ->response();
-        }
-        else if($tabid == 33){ // Outer Metadata
-            $campaigns = App\Model\CampaignTemplate::orderByDesc('t_id')->get(['t_id','t_name']);
-            //dd($campaigns);
-            $html = View::make('campaign.tabs.Singlecamp.index',['campaigns' => $campaigns])->render();
-
-            return $ajax->success()
-                ->appendParam('html',$html)
-                ->appendParam('paginationHtml','')
-                ->jscallback('load_ajax_tab')
-                ->response();
-        }
-        else if($tabid == 25 || $tabid == 26) {
-            //control groups
-            $SQL = "SELECT [code_value] from [UC_Campaign_Lookup] WHERE code_type = 'CGD' order by code_value ";
-            $aDataCGD = DB::select($SQL);
-            $aDataCGD = collect($aDataCGD)->map(function($x){ return (array) $x; })->toArray();
-            $cgoptions1 = '<option value="">---</option>';
-            $cgoptions2 = '<option value="">---</option>';
-            foreach ($aDataCGD as $value){
-                $cgoptions1 .= '<option value="'.$value['code_value'].'">'.$value['code_value'].'</option>';
-           }
-
-            $list_levels = DB::select("select * from  UL_RepCmp_Lookup_Level_Camp");
-            $html = View::make('campaign.tabs.create.new-v1', [
-                'tabid' => $tabid,
-                'cgoptions1' => $cgoptions1,
-                'list_levels' => $list_levels
-            ])->render();
-
-            return $ajax->success()
-                ->appendParam('html', $html)
-                ->jscallback('load_ajax_tab')
-                ->response();
-        }
-        else if($tabid == 27) {
-            $html = View::make('campaign.tabs.create.segment', ['tabid' => $tabid])->render();
-
-            return $ajax->success()
-                ->appendParam('html', $html)
-                ->jscallback('load_ajax_tab')
-                ->response();
-        }
-        else if($tabid == 28) {
-            $html = View::make('campaign.tabs.create.export', ['tabid' => $tabid])->render();
-
-            return $ajax->success()
-                ->appendParam('html', $html)
-                ->jscallback('load_ajax_tab')
-                ->response();
-        }
-        else if($tabid == 29) {
-            $html = View::make('campaign.tabs.create.metadata', ['tabid' => $tabid])->render();
-
-            return $ajax->success()
-                ->appendParam('html', $html)
-                ->jscallback('load_ajax_tab')
-                ->response();
-        }
-        else if($tabid == 30) {
-            $html = View::make('campaign.tabs.create.execute', ['tabid' => $tabid])->render();
-
-            return $ajax->success()
-                ->appendParam('html', $html)
-                ->jscallback('load_ajax_tab')
-                ->response();
-        }
-        else if ($tabid == 31){
+        else if ($tabid == 3){
             $txtSearch = isset($filters['searchterm']) ? $filters['searchterm'][0] : '';
             $query = App\Model\CampaignTemplate::query()->with('rpschedule.ccschstatusmap');
             if($User_Type != 'Full_Access') {
@@ -775,6 +627,233 @@ where (sc.camp_id = za.t_id AND za.t_type = 'C') $uWhere";
                 ->jscallback('load_ajax_tab')
                 ->response();
         }
+        else if($tabid == 4){ // Evaluation Summary
+            $sWhere1 = " WHERE ROWNUMBER > $position and ROWNUMBER <= " . ($position + $records_per_page);
+            $sort = "Order By Campaign_ID DESC";
+
+            /*$sSQL = "select [Campaign_ID],
+[Description],[Universe],[Objective],[Brand],[Channel],[Offer_Category],[All_Incr_Profit] as [Camp_Tot_Profit],[All_Incr_ROI] as [Camp_Tot_ROI],[All_Incr_Resp_Rate] as [Camp_Tot_Resp_Rate],[Cat1_Incr_Profit] as [Camp_Cat_Profit],[Cat1_Incr_ROI] as [Camp_Cat_ROI],[Cat1_Incr_Resp_Rate] as [Camp_Cat_Resp_Rate],[Redemption_Rate],[All_Redeemers] as [Total_Redeemers],[open_rate] as [Open_Rate],[click_rate] as [Click_Rate],[Pgm_Redeemers] as [Camp_Redeemers],[New_Redeemers],[Redeemers_Pass_Along],[Offer],[Cost],[Start_Date],[End_Date],[Shopping_Cat],[Coupon_Code] from (SELECT ROW_NUMBER() over ($sort) as ROWNUMBER,* from UC_Campaign_Summary) _myResults  $sWhere1";*/
+
+            //$records = DB::select($sSQL);
+
+            $result = self::implement_query('Evaluation Summary',$filters);
+
+            /*$nSQL = "select count(*) as cnt from (SELECT ROW_NUMBER() over ($sort) as ROWNUMBER,* from UC_Campaign_Summary) _myResults";
+
+            $all_records = DB::select($nSQL);
+            $total_records = collect($all_records)->map(function($x){ return (array) $x; })->toArray();*/
+            $sort_column = "Campaign_ID";
+            $sort_dir = "DESC";
+            $tabName = 'evaluation summary';
+            $data = [
+                'records' => $result['records'],
+                'visible_columns' => $result['visible_columns'],
+                'uid' => $uid,
+                'tab' => $tabName,
+                'sort_column' => $sort_column,
+                'sort_dir' => $sort_dir,
+                'filters' => json_encode($filters)
+            ];
+            if($rType == 'pagination'){
+                $html = View::make('campaign.tabs.ESummary.table',$data)->render();
+            }else{
+                $html = View::make('campaign.tabs.ESummary.index',$data)->render();
+            }
+
+            /*$paginationhtml = View::make('campaign.tabs.ESummary.pagination-html',[
+                'total_records' => $total_records[0]['cnt'],
+                'records' => $records,
+                'position' => $position,
+                'records_per_page' => $records_per_page,
+                'page' => $page,
+                'tab' => $tabName
+            ])->render();*/
+            return $ajax->success()
+                //->appendParam('total_records',$total_records)
+                ->appendParam('records',$result['records'])
+                ->appendParam('html',$html)
+                ->appendParam('sql',$result['sql'])
+                ->appendParam('paginationHtml','')
+                ->jscallback('load_ajax_tab')
+                ->response();
+        }
+        else if($tabid == 5){ // Evaluation Details
+            $result = self::implement_query('Evaluation Detail',$filters);
+
+            $sort_column = "Campaign_ID";
+            $sort_dir = "DESC";
+            $tabName = 'evaluation details';
+            $data = [
+                'records' => $result['records'],
+                'visible_columns' => $result['visible_columns'],
+                'uid' => $uid,
+                'tab' => $tabName,
+                'sort_column' => $sort_column,
+                'sort_dir' => $sort_dir,
+                'filters' => json_encode($filters)
+            ];
+            if($rType == 'pagination'){
+                $html = View::make('campaign.tabs.EDetails.table',$data)->render();
+            }else{
+                $html = View::make('campaign.tabs.EDetails.index',$data)->render();
+            }
+
+            /*$paginationhtml = View::make('campaign.tabs.EDetails.pagination-html',[
+                //'total_records' => $total_records[0]['cnt'],
+                'records' => $records,
+                'position' => $position,
+                'records_per_page' => $records_per_page,
+                'page' => $page,
+                'tab' => $tabName
+            ])->render();*/
+            return $ajax->success()
+                //->appendParam('total_records',$total_records)
+                ->appendParam('records',$result['records'])
+                ->appendParam('sql',$result['sql'])
+                ->appendParam('html',$html)
+                ->appendParam('paginationHtml','')
+                ->jscallback('load_ajax_tab')
+                ->response();
+        }
+        else if($tabid == 6){ // Outer Metadata
+            $result = self::implement_query('Metadata',$filters);
+
+            $sort_column = "Campaign_ID";
+            $sort_dir = "DESC";
+            $tabName = 'Metadata';
+            $data = [
+                'records' => $result['records'],
+                'visible_columns' => $result['visible_columns'],
+                'uid' => $uid,
+                'tab' => $tabName,
+                'sort_column' => $sort_column,
+                'sort_dir' => $sort_dir,
+                'filters' => json_encode($filters)
+            ];
+
+            if($rType == 'pagination'){
+                $html = View::make('campaign.tabs.Metadata.table',$data)->render();
+            }else{
+                $html = View::make('campaign.tabs.Metadata.index',$data)->render();
+            }
+
+            return $ajax->success()
+                ->appendParam('records',$result['records'])
+                ->appendParam('html',$html)
+                ->appendParam('paginationHtml','')
+                ->jscallback('load_ajax_tab')
+                ->response();
+        }
+        else if($tabid == 7){ // Outer Metadata
+            $campaigns = App\Model\CampaignTemplate::orderByDesc('t_id')->get(['t_id','t_name']);
+            //dd($campaigns);
+            $html = View::make('campaign.tabs.Singlecamp.index',['campaigns' => $campaigns])->render();
+
+            return $ajax->success()
+                ->appendParam('html',$html)
+                ->appendParam('paginationHtml','')
+                ->jscallback('load_ajax_tab')
+                ->response();
+        }
+        else if($tabid == 8 || $tabid == 9) {
+            //control groups
+            $SQL = "SELECT [code_value] from [UC_Campaign_Lookup] WHERE code_type = 'CGD' order by code_value ";
+            $aDataCGD = DB::select($SQL);
+            $aDataCGD = collect($aDataCGD)->map(function($x){ return (array) $x; })->toArray();
+            $cgoptions1 = '<option value="">---</option>';
+            $cgoptions2 = '<option value="">---</option>';
+            foreach ($aDataCGD as $value){
+                $cgoptions1 .= '<option value="'.$value['code_value'].'">'.$value['code_value'].'</option>';
+           }
+
+            $list_levels = DB::select("select * from  UL_RepCmp_Lookup_Level_Camp");
+            $html = View::make('campaign.tabs.create.new-v1', [
+                'tabid' => $tabid,
+                'cgoptions1' => $cgoptions1,
+                'list_levels' => $list_levels
+            ])->render();
+
+            return $ajax->success()
+                ->appendParam('html', $html)
+                ->jscallback('load_ajax_tab')
+                ->response();
+        }
+        else if($tabid == 10) {
+            $html = View::make('campaign.tabs.create.segment', ['tabid' => $tabid])->render();
+
+            return $ajax->success()
+                ->appendParam('html', $html)
+                ->jscallback('load_ajax_tab')
+                ->response();
+        }
+        else if($tabid == 11) {
+            $html = View::make('campaign.tabs.create.export', ['tabid' => $tabid])->render();
+
+            return $ajax->success()
+                ->appendParam('html', $html)
+                ->jscallback('load_ajax_tab')
+                ->response();
+        }
+        else if($tabid == 12) {
+            $html = View::make('campaign.tabs.create.metadata', ['tabid' => $tabid])->render();
+
+            return $ajax->success()
+                ->appendParam('html', $html)
+                ->jscallback('load_ajax_tab')
+                ->response();
+        }
+        else if($tabid == 13) {
+            $html = View::make('campaign.tabs.create.execute', ['tabid' => $tabid])->render();
+
+            return $ajax->success()
+                ->appendParam('html', $html)
+                ->jscallback('load_ajax_tab')
+                ->response();
+        }
+        else{
+            $sort = "Order By CampaignID DESC";
+
+
+            $tabidWS = str_replace('_',' ',$tabid);
+            $pagination = " WHERE ROWNUMBER > $position and ROWNUMBER <= " . ($position + $records_per_page);
+            $result = self::implement_query($tabidWS,$filters,$pagination,false,$sort);
+
+            $sort_column = "CampaignID";
+            $sort_dir = "DESC";
+            $tabName = 'evaluation summary';
+            $data = [
+                'records' => $result['records'],
+                'visible_columns' => $result['visible_columns'],
+                'uid' => $uid,
+                'tab' => $tabName,
+                'sort_column' => $sort_column,
+                'sort_dir' => $sort_dir,
+                'filters' => json_encode($filters)
+            ];
+            if($rType == 'pagination'){
+                $html = View::make('campaign.tabs.ESummary.table',$data)->render();
+            }else{
+                $html = View::make('campaign.tabs.ESummary.index',$data)->render();
+            }
+
+            $paginationhtml = View::make('campaign.tabs.ESummary.pagination-html',[
+                'total_records' => $result['total_records'],
+                'records' => $result['records'],
+                'position' => $position,
+                'records_per_page' => $records_per_page,
+                'page' => $page,
+                'tab' => $tabName
+            ])->render();
+            return $ajax->success()
+                ->appendParam('total_records',$result['total_records'])
+                ->appendParam('records',$result['records'])
+                ->appendParam('html',$html)
+                ->appendParam('sql',$result['sql'])
+                ->appendParam('paginationHtml',$paginationhtml)
+                ->jscallback('load_ajax_tab')
+                ->response();
+        }
+
     }
 
     /**

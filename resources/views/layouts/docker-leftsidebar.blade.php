@@ -106,32 +106,6 @@
                                     class="hide-menu">Lookup</span></a>
                     </li>
 
-                    <li class="{!! ($segment == "activity") ? 'active' : '' !!}">
-                        <a
-                                @if(in_array('Activity',$visiblities) || $User_Type == 'Full_Access')
-                                href="activity"
-                                @else
-                                href="javascript:void(0);"
-                                @endif
-                                class="waves-effect waves-dark {!! ($segment == "activity") ? 'active' : '' !!}"
-                                aria-expanded="false"><i
-                                    class="ti-layout-grid2"></i><span
-                                    class="hide-menu">Activity</span></a>
-                    </li>
-
-                    <li class="{!! ($segment == "phone") ? 'active' : '' !!}">
-                        <a
-                                @if(in_array('Phone',$visiblities) || $User_Type == 'Full_Access')
-                                href="phone"
-                                @else
-                                href="javascript:void(0);"
-                                @endif
-                                class="waves-effect waves-dark {!! ($segment == "phone") ? 'active' : '' !!}"
-                                aria-expanded="false"><i
-                                    class="ti-mobile"></i><span
-                                    class="hide-menu">Phone</span></a>
-                    </li>
-
                     <li class="{!! ($segment == "report") ? 'active' : '' !!}">
                         <a
                                 @if(in_array('Report',$visiblities) || $User_Type == 'Full_Access')
@@ -158,6 +132,19 @@
                                         class="hide-menu">Campaign</span></a>
                         </li>
 
+                    <li class="{!! ($segment == "phone") ? 'active' : '' !!}">
+                        <a
+                                @if(in_array('Phone',$visiblities) || $User_Type == 'Full_Access')
+                                href="phone"
+                                @else
+                                href="javascript:void(0);"
+                                @endif
+                                class="waves-effect waves-dark {!! ($segment == "phone") ? 'active' : '' !!}"
+                                aria-expanded="false"><i
+                                    class="ti-mobile"></i><span
+                                    class="hide-menu">Phone</span></a>
+                    </li>
+
                     <li class="{!! ($segment == "email") ? 'active' : '' !!}">
                         <a
                             @if(in_array('Email',$visiblities) || $User_Type == 'Full_Access')
@@ -170,6 +157,19 @@
                             <i class="ti-email"></i>
                             <span class="hide-menu">Email</span>
                         </a>
+                    </li>
+
+                    <li class="{!! ($segment == "activity") ? 'active' : '' !!}">
+                        <a
+                                @if(in_array('Activity',$visiblities) || $User_Type == 'Full_Access')
+                                href="activity"
+                                @else
+                                href="javascript:void(0);"
+                                @endif
+                                class="waves-effect waves-dark {!! ($segment == "activity") ? 'active' : '' !!}"
+                                aria-expanded="false"><i
+                                    class="ti-layout-grid2"></i><span
+                                    class="hide-menu">Activity</span></a>
                     </li>
 
                     <li class="{!! ($segment == "import") ? 'active' : '' !!}">

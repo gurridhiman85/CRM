@@ -64,6 +64,7 @@ function initJS($outer) {
             "displayLength": 5,
             'searching': false,
             "ordering": true,
+            "order": [[ 0, "desc" ]],
             "stateSave": true,
             "language": {
                  "emptyTable": $outer.find('#basic_table2').data('message') ? $outer.find('#basic_table2').data('message') : "No data available in table"
@@ -120,7 +121,6 @@ function initJS($outer) {
 
     if($outer.find('#basic_table_without_dynamic_pagination').length){
         var fetVisibleCols = function (visibleCols) {
-            console.log('visibleCols--',visibleCols);
             if($('#basic_table_without_dynamic_pagination').length){
                 $.each(visibleCols,function (i,v) {
                     $('#basic_table_without_dynamic_pagination').attr('data-columns-visible',JSON.stringify(v));

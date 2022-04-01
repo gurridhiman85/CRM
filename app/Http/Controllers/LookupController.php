@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Model\UAFieldMapping;
+use App\Model\UALookupFieldMapping;
 use Illuminate\Http\Request;
 use App\Library\Ajax;
 use App\Helpers\Helper;
@@ -85,35 +86,29 @@ class LookupController extends Controller
         ]);
     }
 
-    public static function implement_query($reqlevel,$filters = [],$pagination,$add_sort_end = true,$contactid =''){
-        $lLookup = Helper::getColumns('Lookup',$reqlevel);
-        $sort = $lLookup['sort'];
+    public static function implement_query($reqlevel,$filters = [],$pagination,$add_sort_end = true,$contactid ='',$sort = ''){
+        $lLevel = Helper::getColumns('Lookup',$reqlevel);
+        $sort = empty($sort) ? $lLevel['sort'] : $sort;
 
         //$sort = ($sort == "") ? "Order by sa.Date DESC " : "Order by $sort $dir";
 
+
         $levels = [
+            $reqlevel => [
+                'columns' => $lLevel['all_columns'],
+                'visible_columns' => $lLevel['visible_columns'],
+                'filter_columns' => $lLevel['filter_columns'],
+                'sql'   => 'select '.implode(',',$lLevel['all_columns']).' from (SELECT *,ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS ROWNUMBER FROM '.$lLevel['table_name'].' where DS_MKC_ContactID='.$contactid.') as t',
+                'filter' => 1
+            ],
             'First Screen' => [
-                'columns' => $lLookup['all_columns'],
-                'visible_columns' => $lLookup['visible_columns'],
-                'filter_columns' => $lLookup['filter_columns'],
-                'sql'   => 'SELECT * from (select *, row_number () over (partition by rown   '.$sort.') as ROWNUMBER FROM   (SELECT ROW_NUMBER() over (partition by DS_MKC_ContactID '.$sort.') as ROWN,'.implode(',',$lLookup['all_columns']).' from '.$lLookup['table_name'].' ?where? ) _myResults where ROWN = 1 ) as a ',
+                'columns' => $lLevel['all_columns'],
+                'visible_columns' => $lLevel['visible_columns'],
+                'filter_columns' => $lLevel['filter_columns'],
+                'sql'   => 'SELECT * from (select *, row_number () over (partition by rown   '.$sort.') as ROWNUMBER FROM   (SELECT ROW_NUMBER() over (partition by DS_MKC_ContactID '.$sort.') as ROWN,'.implode(',',$lLevel['all_columns']).' from '.$lLevel['table_name'].' ?where? ) _myResults where ROWN = 1 ) as a ',
                 'filter' => 1
             ],
-            'Activity Detail' => [
-                'columns' => $lLookup['all_columns'],
-                'visible_columns' => $lLookup['visible_columns'],
-                'filter_columns' => $lLookup['filter_columns'],
-                'sql'   => 'SELECT * FROM (SELECT ROW_NUMBER() over ('.$sort.') as ROWNUMBER, '.implode(',',$lLookup['all_columns']).' from Sales_View  sa INNER JOIN Contact_View ac ON
-		 ?where? sa.DS_MKC_ContactID = ac.DS_MKC_ContactID AND ac.DS_MKC_ContactID = '.$contactid.') _myResults',
-                'filter' => 1
-            ],
-            'Touch' => [
-                'columns' => $lLookup['all_columns'],
-                'visible_columns' => $lLookup['visible_columns'],
-                'filter_columns' => $lLookup['filter_columns'],
-                'sql' => 'SELECT * FROM (SELECT ROW_NUMBER() over ('.$sort.') as ROWNUMBER,'.implode(',',$lLookup['all_columns']).'  from  contact c INNER JOIN touch t ON t.DS_MKC_ContactID = c.DS_MKC_ContactID WHERE t.DS_MKC_ContactID = '.$contactid.') _myResults',
-                'filter' => 0
-            ]
+
         ];
 
         //c.DS_MKC_ContactID,cocntact.dflname, t.RowID,t.TouchCampaign,t.TouchStatus,t.TouchChannel,t.TouchDate,t.TouchNotes
@@ -125,17 +120,19 @@ class LookupController extends Controller
         foreach ($levels as $level=>$level_values){
             if($level == $reqlevel){
                 if($level_values['filter'] == 1){
+                    $sql = $level_values['sql'];
+                    //$nSql = $sql;
                     if($reqlevel == 'First Screen'){
 
                         $where = Helper::getFiltersCondition($filters,$reqlevel,$level_values['filter_columns']);
                         $sql = str_replace('?where?',$where['Where'],$level_values['sql']);
-                    }elseif ($reqlevel == 'Activity Detail'){
+                        $sSql = $add_sort_end ? $sql.$pagination.' '.$sort : $sql.$pagination;
+                    }else{
                         $where = self::Apply2ndScreenFiltersCondition($filters);
-                        $where  = !empty($where) ? $where.' AND ' : '';
+                        $where  = !empty($where) ? $where.' AND ' : ' ';
                         $sql = str_replace('?where?',$where,$level_values['sql']);
+                        $sSql = $add_sort_end ? $sql.$pagination.' '.$sort : $sql.$pagination;
                     }
-
-                    $sSql = $add_sort_end ? $sql.$pagination.' '.$sort : $sql.$pagination;
                     $nSql = $sql;
                 }else{
                     $sql = str_replace('?where?','',$level_values['sql']);
@@ -148,7 +145,7 @@ class LookupController extends Controller
 
                 $total_records = count(DB::select($nSql));
                 return [
-                    'sql'  => $sql,
+                    'sql'  => $sSql,
                     'records' => $records,
                     'total_records' => $total_records,
                     'columns' => $level_values['columns'],
@@ -170,8 +167,8 @@ class LookupController extends Controller
                 $mKeys[] = $mk['id'];
             }
         }
-        $sort_column = $request->input('sort_column') ? $request->input('sort_column') : '';
-        $sort_dir = $request->input('sort_dir') ? $request->input('sort_dir') : 'DESC';
+        $sort_column = $request->input('sort_column','');
+        $sort_dir = $request->input('sort_dir','DESC');
 
         if(!empty($sort_column)){
             $sort = "Order by ".$sort_column." ".$sort_dir." ";
@@ -184,9 +181,8 @@ class LookupController extends Controller
         $position = ($page-1) * $records_per_page;
 
         if($tabid == 20){
-
             $pagination = " WHERE ROWNUMBER > $position and ROWNUMBER <= " . ($position + $records_per_page);
-            $result = self::implement_query('First Screen',$filters,$pagination,true);
+            $result = self::implement_query('First Screen',$filters,$pagination,true,'',$sort);
             $tabName = 'First Screen';
             array_splice( $result['visible_columns'], 1, 0, [[
                 'Field_Name' => 'merge',
@@ -223,6 +219,7 @@ class LookupController extends Controller
             return $ajax->success()
                 ->appendParam('html',$html)
                 ->appendParam('sql',$result['sql'])
+                ->appendParam('records',$result['records'])
                 ->appendParam('paginationHtml',$paginationhtml)
                 ->jscallback('load_ajax_tab')
                 ->response();
@@ -332,11 +329,11 @@ class LookupController extends Controller
         ini_set('memory_limit', '1024M');
         $fileprefix = $request->input('prefix');
         $screen = $request->input('screen');
+        $downloadableColumns = json_decode($request->input('downloadableColumns',''));
 
         if($screen == 'first'){
 
             $filters = $request->input('filters',[]);
-            $downloadableColumns = json_decode($request->input('downloadableColumns',''));
             $sort = $request->input('sort') ? $request->input('sort') : '';
             $dir = $request->input('dir') ? $request->input('dir') : 'DESC';
 
@@ -470,20 +467,27 @@ left join (select * from  (select ROW_NUMBER() over (partition by DS_MKC_contact
         elseif ($screen == 'contact'){
 
             $contactid = $request->input('contactid');
-            $sSQL = "SELECT
+
+            /*$sSQL = "SELECT
 Extendedname,Country,DS_MKC_ContactID,DS_MKC_Household_Num,LetterName,JobTitle,ds_mkc_householdid,extendedname,Country,Address,Salutation,Salutation2,City,DharmaName,DharmaName2,State,FirstName
 ,Firstname2,Zip,MiddleName,Middlename2,Company,lastname,lastname2,suffix,suffix2,gender,Arrival,Transportation,AddressQuality,Nxi_Expand
 ,phone,phone_type,Phone2,Phone2_type,Email,Email2,
 Emailable,Opt_Mail,Mailable,ZSS_Segment,MemberSegment,EmailSegment,DonorSegment,EventSegment,LifecycleSegment,Notes
 ,Suppression,companyinclude,mail_status,contactable,Gender2,ds_mkc_source_feed,DFLName,DFLName2,FirstSesshinDate,
 Jukai_Date,Ordainment_Date,firstDate,lastDate,email_optout_reason,email_status,email2_status,opt_mail,EmailSegment,TouchCampaign,TouchStatus,TouchChannel,TouchDate,TouchNotes
-            FROM Contact_View where DS_MKC_ContactID = '$contactid'";
+            FROM Contact_View where DS_MKC_ContactID = '$contactid'";*/
+            $cContact = self::secondScreenDetails('Lookup','Contact');
+            $sSQL = "SELECT ".implode(',',$cContact['columns'])." FROM Contact_View where DS_MKC_ContactID = '$contactid'";
             $records = DB::select($sSQL);
-            //echo '<pre>'; print_r($records); die;
 
             $aData = collect($records)->map(function($x){ return (array) $x; })->toArray();
 
-            $view = View::make('lookup.contact-dn-tab-col-2',['record' => $aData[0],'section' => 'contact'])->render();
+            $view = View::make('lookup.contact-dn-tab-col-2',[
+                'records' => $aData[0],
+                'section' => 'contact',
+                'contact_layout' => $cContact['records'],
+                'rowspan' => $cContact['rowspan']
+            ]);
             //echo $view; die;
             $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
             $spreadhseet = $reader->loadFromString($view);
@@ -511,38 +515,21 @@ Jukai_Date,Ordainment_Date,firstDate,lastDate,email_optout_reason,email_status,e
         elseif ($screen == 'summary'){
             $contactid = $request->input('contactid');
 
-            $sSQL = "SELECT
-     Life2date_SpendAmt,Last_5Yrs_SpendAmt,	Last_6Mth_SpendAmt,	CurrentYr_SpendAmt,	Prior_Yr1_SpendAmt,	Prior_Yr2_SpendAmt,Prior_Yr3_SpendAmt,	Prior_Yr4_SpendAmt,
-Life2date_GiftsAmt,	Last_5Yrs_GiftsAmt,	Last_6Mth_GiftsAmt,	CurrentYr_GiftsAmt,	Prior_Yr1_GiftsAmt,	Prior_Yr2_GiftsAmt,Prior_Yr3_GiftsAmt,	Prior_Yr4_GiftsAmt,
-Life2date_MembrAmt,	Last_5Yrs_MembrAmt,	Last_6Mth_MembrAmt,	CurrentYr_MembrAmt,	Prior_Yr1_MembrAmt,	Prior_Yr2_MembrAmt,Prior_Yr3_MembrAmt,	Prior_Yr4_MembrAmt,
-Life2date_EventAmt, 	Last_5Yrs_EventAmt, Last_6Mth_EventAmt, 	CurrentYr_EventAmt, 	Prior_Yr1_EventAmt, 	Prior_Yr2_EventAmt, 	Prior_Yr3_EventAmt, 	Prior_Yr4_EventAmt,
-Life2date_RtailAmt,	Last_5Yrs_RtailAmt,	Last_6Mth_RtailAmt,	CurrentYr_RtailAmt,	Prior_Yr1_RtailAmt,	Prior_Yr2_RtailAmt,	Prior_Yr3_RtailAmt,	Prior_Yr4_RtailAmt,
-Life2date_RentlAmt,	Last_5Yrs_RentlAmt,	Last_6Mth_RentlAmt,	CurrentYr_RentlAmt,	Prior_Yr1_RentlAmt,	Prior_Yr2_RentlAmt,	Prior_Yr3_RentlAmt,	Prior_Yr4_RentlAmt,
-Life2date_MisclAmt,	Last_5Yrs_MisclAmt,	Last_6Mth_MisclAmt,	CurrentYr_MisclAmt,	Prior_Yr1_MisclAmt,	Prior_Yr2_MisclAmt,	Prior_Yr3_MisclAmt,	Prior_Yr4_MisclAmt,
 
-Life2date_NActivty,	Last_5Yrs_NActivty,	Last_6Mth_NActivty,	CurrentYr_NActivty,	Prior_Yr1_NActivty,	Prior_Yr2_NActivty,	Prior_Yr3_NActivty,	Prior_Yr4_NActivty,
+            $aSummary = self::secondScreenDetails('Lookup','Activity Summary');
 
-Life2date_NPaidEvt,	Last_5Yrs_NPaidEvt,	Last_6Mth_NPaidEvt,	CurrentYr_NPaidEvt,	Prior_Yr1_NPaidEvt,	Prior_Yr2_NPaidEvt,	Prior_Yr3_NPaidEvt,	Prior_Yr4_NPaidEvt,
+            //$columns =  array_merge($cContact['columns'], $aSummary['columns']);
 
-Life2date_NZSS_Ses,	Last_5Yrs_NZSS_Ses,	Last_6Mth_NZSS_Ses,	CurrentYr_NZSS_Ses,	Prior_Yr1_NZSS_Ses,	Prior_Yr2_NZSS_Ses,	Prior_Yr3_NZSS_Ses,	Prior_Yr4_NZSS_Ses,
-Life2date_NOpn_Ses,	Last_5Yrs_NOpn_Ses,	Last_6Mth_NOpn_Ses,	CurrentYr_NOpn_Ses,	Prior_Yr1_NOpn_Ses,	Prior_Yr2_NOpn_Ses,	Prior_Yr3_NOpn_Ses,	Prior_Yr4_NOpn_Ses,
-Life2date_NITZ_Wkd,	Last_5Yrs_NITZ_Wkd,	Last_6Mth_NITZ_Wkd,	CurrentYr_NITZ_Wkd,	Prior_Yr1_NITZ_Wkd,	Prior_Yr2_NITZ_Wkd,	Prior_Yr3_NITZ_Wkd,	Prior_Yr4_NITZ_Wkd,
-Life2date_NAll_Day,	Last_5Yrs_NAll_Day,	Last_6Mth_NAll_Day,	CurrentYr_NAll_Day,	Prior_Yr1_NAll_Day,	Prior_Yr2_NAll_Day,	Prior_Yr3_NAll_Day,	Prior_Yr4_NAll_Day,
-Life2date_NSitting,	Last_5Yrs_NSitting,	Last_6Mth_NSitting,	CurrentYr_NSitting,	Prior_Yr1_NSitting,	Prior_Yr2_NSitting,	Prior_Yr3_NSitting,	Prior_Yr4_NSitting,
-Life2date_NZSS_Pgm,	Last_5Yrs_NZSS_Pgm,	Last_6Mth_NZSS_Pgm,	CurrentYr_NZSS_Pgm,	Prior_Yr1_NZSS_Pgm,	Prior_Yr2_NZSS_Pgm,	Prior_Yr3_NZSS_Pgm,	Prior_Yr4_NZSS_Pgm,
-Life2date_NOpn_Pgm,	Last_5Yrs_NOpn_Pgm,	Last_6Mth_NOpn_Pgm,	CurrentYr_NOpn_Pgm,	Prior_Yr1_NOpn_Pgm,	Prior_Yr2_NOpn_Pgm,	Prior_Yr3_NOpn_Pgm,	Prior_Yr4_NOpn_Pgm,
-Life2date_NKessei_,	Last_5Yrs_NKessei_,	Last_6Mth_NKessei_,	CurrentYr_NKessei_,	Prior_Yr1_NKessei_,	Prior_Yr2_NKessei_,	Prior_Yr3_NKessei_,	Prior_Yr4_NKessei_,
-Life2date_NZM3Fold,	Last_5Yrs_NZM3Fold,	Last_6Mth_NZM3Fold,	CurrentYr_NZM3Fold,	Prior_Yr1_NZM3Fold,	Prior_Yr2_NZM3Fold,	Prior_Yr3_NZM3Fold,	Prior_Yr4_NZM3Fold,
-
-Life2date_NFreeEvt,	Last_5Yrs_NFreeEvt,	Last_6Mth_NFreeEvt,	CurrentYr_NFreeEvt,	Prior_Yr1_NFreeEvt,	Prior_Yr2_NFreeEvt,	Prior_Yr3_NFreeEvt,	Prior_Yr4_NFreeEvt,
-Life2date_NZoom_Ot,	Last_5Yrs_NZoom_Ot, Last_6Mth_NZoom_Ot,	CurrentYr_NZoom_Ot,	Prior_Yr1_NZoom_Ot,	Prior_Yr2_NZoom_Ot,	Prior_Yr3_NZoom_Ot,	Prior_Yr4_NZoom_Ot
-
-FROM Contact_View where DS_MKC_ContactID = '$contactid'";
+            $sSQL = "SELECT DS_MKC_ContactID ,".implode(',',$aSummary['columns'])." FROM Contact_View where DS_MKC_ContactID = '$contactid'";
 
             $records = DB::select($sSQL);
             $aData = collect($records)->map(function($x){ return (array) $x; })->toArray();
 
-            $view = View::make('lookup.contact-dn-tab-col-2',['record' => $aData[0],'section' => 'summary']);
+            $view = View::make('lookup.contact-dn-tab-col-2',[
+                'record' => $aData[0],
+                'section' => 'summary',
+                'activity_summary_layout' => $aSummary['records']
+            ]);
             $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
             $spreadhseet = $reader->loadFromString($view);
             $sheet = $spreadhseet->getActiveSheet();
@@ -568,10 +555,10 @@ FROM Contact_View where DS_MKC_ContactID = '$contactid'";
                 ->jscallback('ajax_download_file')
                 ->response();
         }
-        elseif ($screen == 'detail'){
+        elseif (!in_array($screen,['first','contact','summary'])){
             $contactid = $request->input('contactid');
             $filters = $request->input('filters',[]);
-
+/*
             $where = self::Apply2ndScreenFiltersCondition($filters);
             $where  = !empty($where) ? $where.' AND ' : '';
 
@@ -581,9 +568,48 @@ FROM Contact_View where DS_MKC_ContactID = '$contactid'";
             $sort = ($sort == "") ? "Order by sa.Date DESC " : "Order by $sort $dir";
 
             $sSQL = "SELECT * FROM (SELECT ROW_NUMBER() over ($sort) as ROWNUMBER,sa.Date, cast(sa.Amount as int) as Amount,sa.Productcat2_Des,sa.Productcat1_Des,sa.Product,sa.Class , sa.ClientMessage from Sales_View  sa INNER JOIN Contact_View ac ON
-     $where sa.DS_MKC_ContactID = ac.DS_MKC_ContactID AND ac.DS_MKC_ContactID = $contactid) _myResults";
+     $where sa.DS_MKC_ContactID = ac.DS_MKC_ContactID AND ac.DS_MKC_ContactID = $contactid) _myResults";*/
+
+            $result = self::implement_query($screen,$filters,'',false,$contactid);
+
+            /*echo '<pre>';
+            print_r($result);
+            echo '</pre>';
+            die;*/
+            $files = glob(public_path().'/downloads/*'); // get all file names
+            foreach($files as $file){ // iterate files
+                if(is_file($file))
+                    unlink($file); // delete file
+            }
+
+            $view = View::make('lookup.xlsx',[
+                'records' => $result['records'],
+                'downloadColumnsIndex' => $downloadableColumns,
+                'columns' => $result['columns'],
+                'visible_columns' => $result['visible_columns']
+            ])->render();
+
+            //echo $view; die;
+            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
+            $spreadhseet = $reader->loadFromString($view);
+            $sheet = $spreadhseet->getActiveSheet();
+            $spreadhseet->setActiveSheetIndex(0);
+            $sTitle = $screen;
+            $spreadhseet->getActiveSheet()->setTitle($sTitle);
+            $file_Name = str_ireplace(' ', '_',$screen);
+            $file_Name = $this->prefix.$file_Name.'_'. date('Y') . date('m') . date('d');
+
+            $writer = new Xlsx($spreadhseet);
+            $writer->save(public_path()."\\downloads\\".$file_Name.".xlsx");
+            $sBaseUrl = config('constant.BaseUrl');
+            return $ajax->success()
+                ->jscallback()
+                ->form_reset(false)
+                ->appendParam('result',$result)
+                ->redirectTo($sBaseUrl . "downloads/" . $file_Name. '.xlsx')
+                ->response();
         }
-        elseif ($screen == 'touch'){
+        /*elseif ($screen == 'Phone'){
             $contactid = $request->input('contactid');
             $filters = $request->input('filters',[]);
 
@@ -599,7 +625,7 @@ FROM Contact_View where DS_MKC_ContactID = '$contactid'";
 
             $sSQL = "SELECT * FROM (SELECT ROW_NUMBER() over ($sort) as ROWNUMBER,ac.DS_MKC_ContactID,ac.dflname,t.TouchCampaign,t.TouchStatus,t.TouchChannel,t.TouchDate,t.TouchNotes from Touch  t INNER JOIN Contact_View ac ON
      $where t.DS_MKC_ContactID = ac.DS_MKC_ContactID AND ac.DS_MKC_ContactID = $contactid) _myResults";
-        }
+        }*/
 
         ini_set('max_execution_time', 3500);
         ini_set('memory_limit', '1024M');
@@ -659,19 +685,27 @@ FROM Contact_View where DS_MKC_ContactID = '$contactid'";
 
         try{
             /******************** Contact screen - Start ***********************/
-            $sSQL = "SELECT
+            /*$sSQL = "SELECT
 Extendedname,Country,DS_MKC_ContactID,DS_MKC_Household_Num,LetterName,JobTitle,ds_mkc_householdid,extendedname,Country,Address,Salutation,Salutation2,City,DharmaName,DharmaName2,State,FirstName
 ,Firstname2,Zip,MiddleName,Middlename2,Company,lastname,lastname2,suffix,suffix2,gender,Arrival,Transportation,AddressQuality,Nxi_Expand
 ,phone,phone_type,Phone2,Phone2_type,Email,Email2,
 Emailable,Opt_Mail,Mailable,ZSS_Segment,MemberSegment,EmailSegment,DonorSegment,EventSegment,LifecycleSegment,Notes
 ,Suppression,companyinclude,mail_status,contactable,Gender2,ds_mkc_source_feed,DFLName,DFLName2,FirstSesshinDate,
 Jukai_Date,Ordainment_Date,firstDate,lastDate,email_optout_reason,email_status,email2_status,opt_mail,EmailSegment,TouchCampaign,TouchStatus,TouchChannel,TouchDate,TouchNotes
-            FROM Contact_View where DS_MKC_ContactID = '$contactid'";
-            $records = DB::select($sSQL);
+            FROM Contact_View where DS_MKC_ContactID = '$contactid'";*/
 
+            $cContact = self::secondScreenDetails('Lookup','Contact');
+            $sSQL = "SELECT ".implode(',',$cContact['columns'])." FROM Contact_View where DS_MKC_ContactID = '$contactid'";
+            $records = DB::select($sSQL);
             $aData = collect($records)->map(function($x){ return (array) $x; })->toArray();
 
-            $view = View::make('lookup.contact-dn-tab-col-2',['record' => $aData[0],'section' => 'contact'])->render();
+            $view = View::make('lookup.contact-dn-tab-col-2',[
+                'records' => $aData[0],
+                'section' => 'contact',
+                'contact_layout' => $cContact['records'],
+                'rowspan' => $cContact['rowspan']
+            ])->render();
+
             $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
             $spreadhseet = $reader->loadFromString($view);
             $sheet = $spreadhseet->getActiveSheet();
@@ -681,7 +715,13 @@ Jukai_Date,Ordainment_Date,firstDate,lastDate,email_optout_reason,email_status,e
             /******************** Contact screen - End ***********************/
 
             /******************** Activity Summary screen - Start ***********************/
-            $sSQL = "SELECT
+            $aSummary = self::secondScreenDetails('Lookup','Activity Summary');
+
+            //$columns =  array_merge($cContact['columns'], $aSummary['columns']);
+
+            $sSQL = "SELECT DS_MKC_ContactID ,".implode(',',$aSummary['columns'])." FROM Contact_View where DS_MKC_ContactID = '$contactid'";
+
+            /*$sSQL = "SELECT
      Life2date_SpendAmt,Last_5Yrs_SpendAmt,	Last_6Mth_SpendAmt,	CurrentYr_SpendAmt,	Prior_Yr1_SpendAmt,	Prior_Yr2_SpendAmt,Prior_Yr3_SpendAmt,	Prior_Yr4_SpendAmt,
 Life2date_GiftsAmt,	Last_5Yrs_GiftsAmt,	Last_6Mth_GiftsAmt,	CurrentYr_GiftsAmt,	Prior_Yr1_GiftsAmt,	Prior_Yr2_GiftsAmt,Prior_Yr3_GiftsAmt,	Prior_Yr4_GiftsAmt,
 Life2date_MembrAmt,	Last_5Yrs_MembrAmt,	Last_6Mth_MembrAmt,	CurrentYr_MembrAmt,	Prior_Yr1_MembrAmt,	Prior_Yr2_MembrAmt,Prior_Yr3_MembrAmt,	Prior_Yr4_MembrAmt,
@@ -707,7 +747,7 @@ Life2date_NZM3Fold,	Last_5Yrs_NZM3Fold,	Last_6Mth_NZM3Fold,	CurrentYr_NZM3Fold,	
 Life2date_NFreeEvt,	Last_5Yrs_NFreeEvt,	Last_6Mth_NFreeEvt,	CurrentYr_NFreeEvt,	Prior_Yr1_NFreeEvt,	Prior_Yr2_NFreeEvt,	Prior_Yr3_NFreeEvt,	Prior_Yr4_NFreeEvt,
 Life2date_NZoom_Ot,	Last_5Yrs_NZoom_Ot, Last_6Mth_NZoom_Ot,	CurrentYr_NZoom_Ot,	Prior_Yr1_NZoom_Ot,	Prior_Yr2_NZoom_Ot,	Prior_Yr3_NZoom_Ot,	Prior_Yr4_NZoom_Ot
 
-FROM Contact_View where DS_MKC_ContactID = '$contactid'";
+FROM Contact_View where DS_MKC_ContactID = '$contactid'";*/
            // echo $sSQL; die;
             $records = DB::select($sSQL);
             $aDataAS = collect($records)->map(function($x){ return (array) $x; })->toArray();
@@ -715,7 +755,12 @@ FROM Contact_View where DS_MKC_ContactID = '$contactid'";
             $spreadhseet->createSheet();
             $spreadhseet->setActiveSheetIndex(1);
             $spreadhseet->getActiveSheet()->setTitle('Activity Summary');
-            $view1 = View::make('lookup.contact-dn-tab-col-2',['record' => $aDataAS[0],'section' => 'summary']);
+            $view1 = View::make('lookup.contact-dn-tab-col-2',[
+                'record' => $aDataAS[0],
+                'section' => 'summary',
+                'activity_summary_layout' => $aSummary['records']
+            ]);
+
             $spreadhseet->setActiveSheetIndex(1);
             $reader->setSheetIndex(1);
             $spreadhseet = $reader->loadFromString($view1,$spreadhseet);
@@ -726,7 +771,7 @@ FROM Contact_View where DS_MKC_ContactID = '$contactid'";
 
             $filters = $request->input('filters',[]);
 
-            $where = self::Apply2ndScreenFiltersCondition($filters);
+            /*$where = self::Apply2ndScreenFiltersCondition($filters);
             $where  = !empty($where) ? $where.' AND ' : '';
 
             $sort = $request->input('sort') ? $request->input('sort') : 'sa.Date';
@@ -756,21 +801,57 @@ FROM Contact_View where DS_MKC_ContactID = '$contactid'";
 
 
                 $records = DB::select($nSQL);
-                $aDataAD = collect($records)->map(function($x){ return (array) $x; })->toArray();
+                $aDataAD = collect($records)->map(function($x){ return (array) $x; })->toArray();*/
+
+            $tabs = UAFieldMapping::distinct()
+                ->where('menu_level1', 'Lookup')
+                ->where('menu_level2','!=','First Screen')
+                ->orderBy('menu_level2')
+                ->pluck('menu_level2')
+                ->toArray();
+            $sheetIndex = 2;
+            foreach ($tabs as $tab){
+                $result = self::implement_query($tab,$filters,'',false,$contactid);
+                $view = View::make('lookup.xlsx',[
+                    'records' => $result['records'],
+                    'downloadColumnsIndex' => [],
+                    'columns' => $result['columns'],
+                    'visible_columns' => $result['visible_columns']
+                ])->render();
+                $spreadhseet->createSheet();
+                $spreadhseet->setActiveSheetIndex($sheetIndex);
+                $spreadhseet->getActiveSheet()->setTitle($tab);
+                $sheet = $spreadhseet->getActiveSheet();
+                //$view2 = View::make('lookup.contact-dn-tab-col-2',['records' => $result['records'],'section' => 'detail']);
+                $spreadhseet->setActiveSheetIndex($sheetIndex);
+                $reader->setSheetIndex($sheetIndex);
+                $spreadhseet = $reader->loadFromString($view,$spreadhseet);
+
+                $sheetIndex++;
+            }
+
+            /*$result = self::implement_query('Activity Detail',$filters,'',false,$contactid);
+
+            $view2 = View::make('lookup.xlsx',[
+                'records' => $result['records'],
+                'downloadColumnsIndex' => [],
+                'columns' => $result['columns'],
+                'visible_columns' => $result['visible_columns']
+            ])->render();
                 $spreadhseet->createSheet();
                 $spreadhseet->setActiveSheetIndex(2);
                 $spreadhseet->getActiveSheet()->setTitle('Activity Detail');
                 $sheet = $spreadhseet->getActiveSheet();
-                $view2 = View::make('lookup.contact-dn-tab-col-2',['records' => $aDataAD,'section' => 'detail']);
+                //$view2 = View::make('lookup.contact-dn-tab-col-2',['records' => $result['records'],'section' => 'detail']);
                 $spreadhseet->setActiveSheetIndex(2);
                 $reader->setSheetIndex(2);
-                $spreadhseet = $reader->loadFromString($view2,$spreadhseet);
-            }
+                $spreadhseet = $reader->loadFromString($view2,$spreadhseet);*/
+
 
             /******************** Activity Detail screen - End ***********************/
 
             /******************** Touch screen - Start ***********************/
-			$sort = $request->input('sort') ? $request->input('sort') : 't.rowID';
+			/*$sort = $request->input('sort') ? $request->input('sort') : 't.rowID';
 			$dir = $request->input('dir') ? $request->input('dir') : 'DESC';
 
             $sort = ($sort == "") ? "Order by t.rowID DESC " : "Order by $sort $dir";
@@ -787,17 +868,45 @@ FROM Contact_View where DS_MKC_ContactID = '$contactid'";
 
 
                 $records = DB::select($nSQL);
-                $aDataAD = collect($records)->map(function($x){ return (array) $x; })->toArray();
+                $aDataAD = collect($records)->map(function($x){ return (array) $x; })->toArray();*/
+
+            /*$result = self::implement_query('Phone',$filters,'',false,$contactid);
+
+            $view3 = View::make('lookup.xlsx',[
+                'records' => $result['records'],
+                'downloadColumnsIndex' => [],
+                'columns' => $result['columns'],
+                'visible_columns' => $result['visible_columns']
+            ])->render();
                 $spreadhseet->createSheet();
                 $spreadhseet->setActiveSheetIndex(3);
-                $spreadhseet->getActiveSheet()->setTitle('Touch');
+                $spreadhseet->getActiveSheet()->setTitle('Phone');
                 $sheet = $spreadhseet->getActiveSheet();
-                $view3 = View::make('lookup.contact-dn-tab-col-2',['records' => $aDataAD,'section' => 'touch']);
+                //$view3 = View::make('lookup.contact-dn-tab-col-2',['records' => $result['records'],'section' => 'touch']);
                 $spreadhseet->setActiveSheetIndex(3);
                 $reader->setSheetIndex(3);
-                $spreadhseet = $reader->loadFromString($view3,$spreadhseet);
-            }
+                $spreadhseet = $reader->loadFromString($view3,$spreadhseet);*/
+            //}
      		/******************** Touch screen - End ***********************/
+
+            /*$result = self::implement_query('Campaign',$filters,'',false,$contactid);
+
+            $view4 = View::make('lookup.xlsx',[
+                'records' => $result['records'],
+                'downloadColumnsIndex' => [],
+                'columns' => $result['columns'],
+                'visible_columns' => $result['visible_columns']
+            ])->render();
+            $spreadhseet->createSheet();
+            $spreadhseet->setActiveSheetIndex(3);
+            $spreadhseet->getActiveSheet()->setTitle('Campaign');
+            $sheet = $spreadhseet->getActiveSheet();
+            //$view3 = View::make('lookup.contact-dn-tab-col-2',['records' => $result['records'],'section' => 'touch']);
+            $spreadhseet->setActiveSheetIndex(3);
+            $reader->setSheetIndex(3);
+            $spreadhseet = $reader->loadFromString($view4,$spreadhseet);*/
+            //}
+            /******************** Touch screen - End ***********************/
 
             $spreadhseet->setActiveSheetIndex(0);
             $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadhseet, 'Xlsx');
@@ -835,6 +944,46 @@ FROM Contact_View where DS_MKC_ContactID = '$contactid'";
         }
     }
 
+    public static function secondScreenDetails($menu_level1 = '',$menu_level2 = ''){
+        $records = UALookupFieldMapping::where('Menu_Level1',$menu_level1)
+            ->where('Menu_Level2',$menu_level2)
+            ->orderBy('RowID','ASC')
+            ->get()
+            ->toArray();
+        $columns = [];
+        $rowspan = [];
+        $i = 0;
+        $pos = 'R1';
+        foreach ($records as $k=>$record){
+            if(!empty($record['Field_Name'])){
+                array_push($columns,$record['Field_Name']);
+                $i++;
+            }else{
+                if($k > 0){
+                    array_push($rowspan,[
+                        'Row' => $pos,
+                        'Value' => $i
+                    ]);
+                    $pos = isset($records[$k]['Row']) ? $records[$k]['Row'] : '0';
+                }
+
+                $i = 0;
+            }
+            if(($k+1) == count($records)){
+                array_push($rowspan,[
+                    'Row' => $pos,
+                    'Value' => $i
+                ]);
+            }
+        }
+
+        return [
+            'columns' => $columns,
+            'records' => $records,
+            'rowspan' => $rowspan
+        ];
+    }
+
     public function secondScreen($contactid, Request $request,Ajax $ajax){
 
         $tabs = UAFieldMapping::distinct()
@@ -844,7 +993,13 @@ FROM Contact_View where DS_MKC_ContactID = '$contactid'";
             ->pluck('menu_level2')
             ->toArray();
 
-        $records = DB::select("SELECT
+        $cContact = self::secondScreenDetails('Lookup','Contact');
+        $aSummary = self::secondScreenDetails('Lookup','Activity Summary');
+
+        $columns =  array_merge($cContact['columns'], $aSummary['columns']);
+
+
+        /*$records = DB::select("SELECT
 Extendedname,Country,DS_MKC_ContactID,DS_MKC_Household_Num,LetterName,JobTitle,ds_mkc_householdid,extendedname,Country,Address,Salutation,Salutation2,City,DharmaName,DharmaName2,State,FirstName
 ,Firstname2,Zip,MiddleName,Middlename2,Company,lastname,lastname2,suffix,suffix2,gender,Arrival,Transportation,AddressQuality,Nxi_Expand
 ,phone,phone_type,Phone2,Phone2_type,Email,Email2,Emailable,Opt_Mail,Mailable,ZSS_Segment,MemberSegment,EmailSegment,DonorSegment,EventSegment,LifecycleSegment,Notes
@@ -878,19 +1033,27 @@ Life2date_NZM3Fold,	Last_5Yrs_NZM3Fold,	Last_6Mth_NZM3Fold,	CurrentYr_NZM3Fold,	
 Life2date_NFreeEvt,	Last_5Yrs_NFreeEvt,	Last_6Mth_NFreeEvt,	CurrentYr_NFreeEvt,	Prior_Yr1_NFreeEvt,	Prior_Yr2_NFreeEvt,	Prior_Yr3_NFreeEvt,	Prior_Yr4_NFreeEvt,
 Life2date_NZoom_Ot,	Last_5Yrs_NZoom_Ot, Last_6Mth_NZoom_Ot,	CurrentYr_NZoom_Ot,	Prior_Yr1_NZoom_Ot,	Prior_Yr2_NZoom_Ot,	Prior_Yr3_NZoom_Ot,	Prior_Yr4_NZoom_Ot
 
-			  FROM Contact_View where  DS_MKC_ContactID = $contactid");
+			  FROM Contact_View where  DS_MKC_ContactID = $contactid"); */
+
+        $records = DB::select("SELECT ".implode(',',$columns)." FROM Contact_View where  DS_MKC_ContactID = $contactid");
         $records = collect($records)->map(function($x){ return (array) $x; })->toArray();
+
 
         $html = View::make('lookup.second-screen-col-2',[
             'add'=>false,
             'tabs' => $tabs,
-            'contactid' => $contactid
+            'contactid' => $contactid,
+            'contact_layout' => $cContact['records'],
+            'activity_summary_layout' => $aSummary['records']
         ])->render();
         return $ajax->success()
             ->appendParam('html',$html)
             ->appendParam('contactid',$contactid)
             ->appendParam('tabs',$tabs)
             ->appendParam('response',$records[0])
+            ->appendParam('contact_layout',$cContact['records'])
+            ->appendParam('contact_rowspan',$cContact['rowspan'])
+            ->appendParam('activity_summary_layout',$aSummary['records'])
             ->jscallback('ajax_second_screen')
             ->response();
     }
@@ -1105,8 +1268,12 @@ Life2date_NZoom_Ot,	Last_5Yrs_NZoom_Ot, Last_6Mth_NZoom_Ot,	CurrentYr_NZoom_Ot,	
         if(!empty($aData)){
             $newid = $aData[0]['newids'];
         }
+        $contact_layout = UALookupFieldMapping::where('Menu_Level1','Lookup')->where('Menu_Level2','Contact')->get()->toArray();
 
-        $html = View::make('lookup.second-screen',['add'=>true])->render();
+        $html = View::make('lookup.second-screen',[
+            'add'=>true,
+            'contact_layout' => $contact_layout
+        ])->render();
         return $ajax->success()
             ->appendParam('html',$html)
             ->appendParam('newid',$newid)
@@ -1839,12 +2006,20 @@ Life2date_NZoom_Ot,	Last_5Yrs_NZoom_Ot, Last_6Mth_NZoom_Ot,	CurrentYr_NZoom_Ot,	
     }
 
     public function pageSetting(Request $request,Ajax $ajax){
-        $cContactColums = Helper::getColumns('Lookup','Contact');
-        $sSummarycolums = Helper::getColumns('Lookup','Activity Summary');
+        $cContactColumns = UALookupFieldMapping::where('Menu_Level1','Lookup')
+            ->where('Menu_Level2','Contact')
+            ->get()
+            ->toArray();
 
+        $sSummarycolumns = UALookupFieldMapping::where('Menu_Level1','Lookup')
+            ->where('Menu_Level2','Activity Summary')
+            ->get()
+            ->toArray();
 
-
-        $content = View::make('lookup.page-settings',[])->render();
+        $content = View::make('lookup.page-settings',[
+            'cContactColumns' => $cContactColumns,
+            'sSummarycolumns' => $sSummarycolumns
+        ])->render();
 
         $sdata = [
             'content' => $content
@@ -1867,6 +2042,72 @@ Life2date_NZoom_Ot,	Last_5Yrs_NZoom_Ot, Last_6Mth_NZoom_Ot,	CurrentYr_NZoom_Ot,	
             ->appendParam('html', $html)
             ->jscallback('loadModalLayout')
             ->response();
+    }
+
+    public function savePageSettings(Request $request,Ajax $ajax){
+        if($request->input('tab') == 'Contact'){
+            UALookupFieldMapping::where('Menu_Level1','Lookup')->where('Menu_Level2','Contact')->delete();
+            $all_entries = json_decode($request->input('all_entries'),true);
+
+            foreach ($all_entries as $all_entry){
+                foreach ($all_entry as $entry){
+                    $UaLookupFieldMapping = new UALookupFieldMapping();
+                    $UaLookupFieldMapping->Menu_Level1 = $entry['Menu_Level1'];
+                    $UaLookupFieldMapping->Menu_Level2 = $entry['Menu_Level2'];
+                    $UaLookupFieldMapping->Row = $entry['Row'];
+                    $UaLookupFieldMapping->Column = $entry['Column'];
+                    $UaLookupFieldMapping->Position = $entry['Row'].$entry['Column'];
+                    $UaLookupFieldMapping->Label = $entry['Label'];
+                    $UaLookupFieldMapping->Field_Type = $entry['Field_Type'];
+                    $UaLookupFieldMapping->Field_Name = $entry['Field_Name'];
+                    $UaLookupFieldMapping->Class = $entry['Class'];
+                    $UaLookupFieldMapping->Options = $entry['Options'];
+                    $UaLookupFieldMapping->Custom = isset($entry['Custom']) ? ($entry['Custom'] == true ? 1 : 0) : 0;
+                    $UaLookupFieldMapping->SQL = $entry['SQL'];
+                    $UaLookupFieldMapping->save();
+                }
+            }
+
+        }elseif ($request->input('tab') == 'Activity Summary'){
+            UALookupFieldMapping::where('Menu_Level1','Lookup')->where('Menu_Level2','Activity Summary')->delete();
+            $all_entries = json_decode($request->input('all_entries'),true);
+
+            foreach ($all_entries as $all_entry){
+                foreach ($all_entry as $entry){
+                    $UaLookupFieldMapping = new UALookupFieldMapping();
+                    $UaLookupFieldMapping->Menu_Level1 = $entry['Menu_Level1'];
+                    $UaLookupFieldMapping->Menu_Level2 = $entry['Menu_Level2'];
+                    $UaLookupFieldMapping->Row = $entry['Row'];
+                    $UaLookupFieldMapping->Column = $entry['Column'];
+                    $UaLookupFieldMapping->Position = $entry['Row'].$entry['Column'];
+                    $UaLookupFieldMapping->Label = $entry['Label'];
+                    $UaLookupFieldMapping->Field_Type = $entry['Field_Type'];
+                    $UaLookupFieldMapping->Field_Name = $entry['Field_Name'];
+                    $UaLookupFieldMapping->Class = $entry['Class'];
+                    $UaLookupFieldMapping->Options = $entry['Options'];
+                    $UaLookupFieldMapping->Custom = $entry['Custom'] == true ? 1 : 0;
+                    $UaLookupFieldMapping->SQL = $entry['SQL'];
+                    $UaLookupFieldMapping->save();
+                }
+            }
+        }
+
+        return $ajax->success()
+            ->jscallback('ajax_save_page_settings')
+            ->message('Successfully Updated')
+            ->response();
+    }
+
+    public function executeSql(Request $request,Ajax $ajax){
+        $sql = $request->input('sql');
+        if(!empty($sql)){
+            $aData = DB::select($sql);
+            $aData = collect($aData)->map(function($x){ return (array) $x; })->toArray();
+            return $ajax->success()
+                ->jscallback('ajax_fill_options')
+                ->appendParam('aData',$aData)
+                ->response();
+        }
     }
 
     public function testReader(){

@@ -135,6 +135,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/lookup/showcreatecampaign', 'LookupController@showCreateCampaign');
     Route::get('/lookup/subtabs', 'LookupController@subTabs');
     Route::get('/lookup/pagesetting', 'LookupController@pageSetting');
+    Route::post('/lookup/savepagesettings', 'LookupController@savePageSettings');
+    Route::post('/lookup/executesql', 'LookupController@executeSql');
 
     //activitydetails
     Route::get('/activity', 'ActivityController@index');

@@ -53,12 +53,12 @@ $(document).ready(function () {
             $.each(R.response, function(idx, obj) {
 
                 idx = idx.toLowerCase();
-                console.log(idx,'------------');
+                //console.log(idx,'------------');
                 if($.trim(obj) != null  && $.trim(obj) != ''){
 
                     if(idx == 'ds_mkc_contactid'){
-                        $('.txt'+idx).html('');
-                        $('.txt'+idx).html(obj);
+                        $('.txt'+idx).val('');
+                        $('.txt'+idx).val(obj);
 
 
                     }else if(idx == 'ds_mkc_household_num'){
@@ -67,10 +67,10 @@ $(document).ready(function () {
 
                     }else if(idx == 'ds_mkc_householdid'){
                         //console.log(idx+'---('+obj+')');
-                        var link = '<a href="javascript:void(0);" onclick="jsfilterfiller($(this))" data-target-id="txtExtendedname">' + obj + '</a>';
+                        /*var link = '<a href="javascript:void(0);" onclick="jsfilterfiller($(this))" data-target-id="txtExtendedname">' + obj + '</a>';
                         $('.txt'+idx).html('');
-                        $('.txt'+idx).html(link);
-                        //$('.txt'+idx).html(obj);
+                        $('.txt'+idx).html(link);*/
+                        $('.txt'+idx).val(obj);
 
                     }else if(idx == 'phone_type' || idx == 'phone2_type' || idx == 'opt_email' || idx == 'opt_email_sec'){
                         //console.log('ENTER ===='+obj)
@@ -81,7 +81,7 @@ $(document).ready(function () {
                             $('.txt'+idx).val('');
 
                     }else{
-                        console.log(' enter -- ',obj);
+                        //console.log(' enter -- ',obj);
 
                         if($('.txt'+idx).length && $('.txt'+idx)[0].nodeName == 'TD'){
                             $('.txt'+idx).html('');
@@ -145,8 +145,8 @@ $(document).ready(function () {
             $('.dis').attr('disabled',true);
 
             /*************** Header Label Start****************************************/
-            $('#selectedCompId').val(R.response.DS_MKC_ContactID);
-            $('#DownloadAllBtn').attr('data-href', 'lookup/downloadallreports/' + R.response.DS_MKC_ContactID);
+            $('#selectedCompId').val(R.response.ds_mkc_contactid);
+            $('#DownloadAllBtn').attr('data-href', 'lookup/downloadallreports/' + R.response.ds_mkc_contactid);
 
             /*$('#ContactIDLabel').html("&nbsp;&nbsp;&nbsp;     ContactID:  " + R.response.DS_MKC_ContactID);
 
@@ -476,10 +476,10 @@ function showCreateCampaign() {
 }
 
 function setTab (tabname,tabid,contactid) {
-    $('.custom-tab').html();
+    $('.custom-tab').html('');
     $('.s-f').hide();
     $('.sub-pagination').show();
-    $('#DownloadBtn').attr('data-screen',tabid);
+    $('#DownloadBtn').attr('data-screen',tabname);
     var filters = getFilters($('#filter_form'));
 
     ACFn.sendAjax(

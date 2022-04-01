@@ -4370,6 +4370,11 @@ class Helper
         ];
     }
 
+    public static function findAS_Set($find,$set){
+        $key = array_search($find, array_column($set, 'Position'));
+        return $key !== false ? $set[$key] : false;
+    }
+
 
 }
 ?>

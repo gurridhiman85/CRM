@@ -45,12 +45,9 @@ if($record->TouchDate != null){
 }
 @endphp
 
-<tr>
-    <td class="text-center" id="DS_MKC_ContactID_{!! $record->DS_MKC_ContactID !!}">
-        <span class="{!! $class !!}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    </td>
-
+<tr id="row_{{ $record->DS_MKC_ContactID }}">
     <td class="text-center">
+        <div class="d-none">{{ $record->TouchStatus }}</div>
         <select
                 class='form-control-sm'
                 onchange="changeStatus($(this))"
@@ -68,6 +65,10 @@ if($record->TouchDate != null){
             <option class="badge badge-danger font-12" {!! $record->TouchStatus == 'Phone belongs to someone else' ? 'selected' : '' !!} value="Phone belongs to someone else">Phone belongs to someone else</option>
             <option class="badge badge-light font-12" {!! $record->TouchStatus == 'Suppressed' ? 'selected' : '' !!}  value="Suppressed">Suppressed</option>
         </select>
+
+    </td>
+    <td class="text-center" id="DS_MKC_ContactID_{!! $record->DS_MKC_ContactID !!}">
+        <span class="{!! $class !!}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
     </td>
 
     <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
@@ -128,24 +129,36 @@ if($record->TouchDate != null){
     </td>
 
     <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
-        {!! $record->Last_3Yrs_GiftsAmt !!}
+        {!! isset($record->Last_3Yrs_GiftsAmt) ? number_format($record->Last_3Yrs_GiftsAmt) : 0  !!}
     </td>
 
     <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
-        {!! $record->Life_BHse_GiftsAmt !!}
+        {!! isset($record->Life_BHse_GiftsAmt) ? number_format($record->Life_BHse_GiftsAmt) : 0 !!}
+    </td>
+
+    <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
+        {!! isset($record->CurrentYr_DonorAmt) ? number_format($record->CurrentYr_DonorAmt) : 0 !!}
+    </td>
+    <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
+        {!! isset($record->Last_2Yrs_DonorAmt) ? number_format($record->Last_2Yrs_DonorAmt) : 0 !!}
+    </td>
+    <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
+        {!! isset($record->Life2date_SpendAmt) ? number_format($record->Life2date_SpendAmt) : 0 !!}
+    </td>
+    <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
+        {!! isset($record->dayssincelastvisit) ? number_format($record->dayssincelastvisit) : 0 !!}
     </td>
 
     <td class="ajax-Link" data-href="lookup/secondscreen/{!! $record->DS_MKC_ContactID !!}">
         {!! $record->EmailSegment !!}
     </td>
-
     <td>
         <input
                 type="text"
                 class="form-control form-control-sm border-0"
                 onkeyup="fillComment($(this),event)"
-                data-ds_mkc_contactid="{!! $record->DS_MKC_ContactID !!}"
-                value="{!! $record->TouchNotes !!}"
+                data-ds_mkc_contactid="{{ $record->DS_MKC_ContactID }}"
+                value="{{ $record->TouchNotes }}"
         />
     </td>
 </tr>

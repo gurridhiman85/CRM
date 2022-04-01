@@ -128,21 +128,21 @@ class PhoneController extends Controller
             $salesClause = !empty($whereData['salesWhere']) ? $whereData['salesWhere'] : '';
 
             $sWhere1 = " WHERE ROWNUMBER > $position and ROWNUMBER <= " . ($position + $records_per_page);
-            $sort = ($sort == "" || $sort == "select") ? "Order by tag desc, update_date  DESC " : "Order by $sort $dir";
+            $sort = ($sort == "" || $sort == "select") ? "Order by TouchStatus  DESC " : "Order by $sort $dir";
 
             $sSql = "SELECT * from (select *, row_number () over (partition by rown Order by touchcampaign  DESC , ds_mkc_householdid ) as ROWNUMBER  from (SELECT ROW_NUMBER() over (partition by c.DS_MKC_ContactID $sort) as ROWN,c.DS_MKC_ContactID,c.DS_MKC_HouseholdID,Email,EmailSegment,email2,phone,dqcode_phone,Extendedname, Company,JobTitle,Address,City,State,Zip,dqcode_address,Salutation,DharmaName,Firstname,Middlename,Lastname,Suffix,Salutation2,DharmaName2,FirstName2,Middlename2,Lastname2,Suffix2,Life2date_SpendAmt,isnull(tag,0) as tag,update_date,ZSS_Segment,Last_3Yrs_GiftsAmt,Life_BHse_GiftsAmt,
-            TouchDate,TouchStatus,TouchNotes,TouchCampaign from (select dS_MKC_ContactID,DS_MKC_HouseholdID,mgr1,mgr2,Email,EmailSegment,email2,phone,dqcode_phone,Extendedname, Company,JobTitle, Address,City,State,Zip,dqcode_address,Salutation,DharmaName,Firstname,Middlename,Lastname,Suffix,Salutation2,DharmaName2,FirstName2,Middlename2,Lastname2,Suffix2,Life2date_SpendAmt,isnull(tag,0) as tag,update_date,ZSS_Segment,Last_3Yrs_GiftsAmt,Life_BHse_GiftsAmt from Contact_View ".$lookupClause.")  c inner join (select * from  (select ROW_NUMBER() over (partition by DS_MKC_contactid   Order By touchcampaign desc,TouchDate  DESC,rowID DESC) as ROWNUMBERt, * from touch t ".$phoneClause.") t1 where rownumbert=1) t  on c.ds_mkc_contactid=t.ds_mkc_contactid
+            TouchDate,TouchStatus,TouchNotes,TouchCampaign from (select dS_MKC_ContactID,DS_MKC_HouseholdID,mgr1,mgr2,Email,EmailSegment,email2,phone,dqcode_phone,Extendedname, Company,JobTitle, Address,City,State,Zip,dqcode_address,Salutation,DharmaName,Firstname,Middlename,Lastname,Suffix,Salutation2,DharmaName2,FirstName2,Middlename2,Lastname2,Suffix2,Life2date_SpendAmt,isnull(tag,0) as tag,update_date,ZSS_Segment,Last_3Yrs_GiftsAmt,Life_BHse_GiftsAmt from Contact_View ".$lookupClause.")  c inner join (select * from  (select ROW_NUMBER() over (partition by DS_MKC_contactid   Order By TouchDate  DESC,touchcampaign desc,rowID DESC) as ROWNUMBERt, * from touch t ".$phoneClause.") t1 where rownumbert=1) t  on c.ds_mkc_contactid=t.ds_mkc_contactid
 left join (select * from  (select ROW_NUMBER() over (partition by DS_MKC_contactid   Order By date  DESC) as ROWNUMBERs, * from sales_view ".$salesClause." ) s1 where rownumbers=1) s on c.ds_mkc_contactid=s.ds_mkc_contactid ".$urCon." ) a )b $sWhere1";
-            //$records = DB::select($sSql);
+            $records = DB::select($sSql);
 
-            /*$all_records = DB::select("SELECT count(*) as count from (select *, row_number () over (partition by rown Order by touchcampaign  DESC , ds_mkc_householdid ) as ROWNUMBER  from (SELECT ROW_NUMBER() over (partition by c.DS_MKC_ContactID $sort) as ROWN,c.DS_MKC_ContactID,c.DS_MKC_HouseholdID,Email,EmailSegment,email2,phone,dqcode_phone,Extendedname, Company,JobTitle,Address,City,State,Zip,dqcode_address,Salutation,DharmaName,Firstname,Middlename,Lastname,Suffix,Salutation2,DharmaName2,FirstName2,Middlename2,Lastname2,Suffix2,Life2date_SpendAmt,isnull(tag,0) as tag,update_date,ZSS_Segment,
+            $all_records = DB::select("SELECT count(*) as count from (select *, row_number () over (partition by rown Order by touchcampaign  DESC , ds_mkc_householdid ) as ROWNUMBER  from (SELECT ROW_NUMBER() over (partition by c.DS_MKC_ContactID $sort) as ROWN,c.DS_MKC_ContactID,c.DS_MKC_HouseholdID,Email,EmailSegment,email2,phone,dqcode_phone,Extendedname, Company,JobTitle,Address,City,State,Zip,dqcode_address,Salutation,DharmaName,Firstname,Middlename,Lastname,Suffix,Salutation2,DharmaName2,FirstName2,Middlename2,Lastname2,Suffix2,Life2date_SpendAmt,isnull(tag,0) as tag,update_date,ZSS_Segment,
             TouchDate,TouchStatus,TouchNotes,TouchCampaign from (select dS_MKC_ContactID,DS_MKC_HouseholdID,mgr1,mgr2,Email,EmailSegment,email2,phone,dqcode_phone,Extendedname, Company,JobTitle, Address,City,State,Zip,dqcode_address,Salutation,DharmaName,Firstname,Middlename,Lastname,Suffix,Salutation2,DharmaName2,FirstName2,Middlename2,Lastname2,Suffix2,Life2date_SpendAmt,isnull(tag,0) as tag,update_date,ZSS_Segment from Contact_View ".$lookupClause.")  c inner join (select * from  (select ROW_NUMBER() over (partition by DS_MKC_contactid   Order By touchcampaign desc,touchdate  DESC,rowID DESC) as ROWNUMBERt, * from touch t ".$phoneClause.") t1 where rownumbert=1) t  on c.ds_mkc_contactid=t.ds_mkc_contactid
 left join (select * from  (select ROW_NUMBER() over (partition by DS_MKC_contactid   Order By date  DESC) as ROWNUMBERs, * from sales_view ".$salesClause." ) s1 where rownumbers=1) s on c.ds_mkc_contactid=s.ds_mkc_contactid ".$urCon." ) a )b");
-            $total_records = collect($all_records)->map(function($x){ return (array) $x; })->toArray();*/
+            $total_records = collect($all_records)->map(function($x){ return (array) $x; })->toArray();
 
             if($rType == 'pagination'){
                 $html = View::make('lookup.phone.table',[
-                    //'records' => $records,
+                    'records' => $records,
                     'contactids' => $contactids,
                     'lookupClause' => $lookupClause,
                     'urCon' => $urCon,
@@ -154,7 +154,7 @@ left join (select * from  (select ROW_NUMBER() over (partition by DS_MKC_contact
                 ])->render();
             }else{
                 $html = View::make('lookup.phone.first-screen',[
-                    //'records' => $records,
+                    'records' => $records,
                     'contactids' => $contactids,
                     'lookupClause' => $lookupClause,
                     'urCon' => $urCon,
@@ -166,18 +166,20 @@ left join (select * from  (select ROW_NUMBER() over (partition by DS_MKC_contact
                 ])->render();
             }
 
-            /*$paginationhtml = View::make('lookup.phone.pagination-html',[
+            $paginationhtml = View::make('lookup.phone.pagination-html',[
                 'total_records' => $total_records[0]['count'],
                 'records' => $records,
                 'position' => $position,
                 'records_per_page' => $records_per_page,
                 'page' => $page
-            ])->render();*/
+            ])->render();
+
             return $ajax->success()
                 ->appendParam('html',$html)
-                //->appendParam('records',$records)
-                //->appendParam('total_records',$total_records[0]['count'])
-                ->appendParam('paginationHtml','')
+                ->appendParam('records',$records)
+                ->appendParam('paginationHtml',$paginationhtml)
+                ->appendParam('total_records',$total_records[0]['count'])
+                ->appendParam('sSql',$sSql)
                 ->jscallback('load_ajax_tab')
                 ->response();
         }
@@ -326,7 +328,7 @@ left join (select * from  (select ROW_NUMBER() over (partition by DS_MKC_contact
                     <option class="badge badge-danger font-12" '.$is_phone_not_in_service.' value="Phone not in service">Phone not in service</option>
                     <option class="badge badge-danger font-12" '.$is_phone_belongs_to_someone_else.' value="Phone belongs to someone else">Phone belongs to someone else</option>
                     <option class="badge badge-light font-12" '.$is_suppressed.' value="Suppressed">Suppressed</option>
-        </select>';
+        </select><div class="d-none">'.$data->TouchStatus.'</div>';
                 })
                 ->addColumn('TouchNotes',function ($data){
                     return '<input

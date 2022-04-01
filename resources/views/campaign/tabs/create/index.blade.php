@@ -174,7 +174,7 @@
         var dDate = '{!! date('Ymd_Hi') !!}';
         var up_flag = 'new';
         $(document).ready(function () {
-            $('[href="#tab_22"]').trigger('click');
+            $('[href="#tab_3"]').trigger('click');
             $('.cn-report-btn').on('click',function () {
                 $(this).hide();
                 $('.cl-report-btn').show();
@@ -183,7 +183,7 @@
                 $('.list-report').hide();
                 $('.c-btn').html('');
 
-                $('a[href="#tab_23"]').trigger('click');
+                $('a[href="#tab_4"]').trigger('click');
 
             });
 
@@ -198,7 +198,7 @@
                 $('#libcamp_name').val('');
                 $('#libcamp_id').val('');
 
-                $('a[href="#tab_22"]').trigger('click');
+                $('a[href="#tab_3"]').trigger('click');
 
             });
         })

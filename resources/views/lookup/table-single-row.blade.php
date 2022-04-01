@@ -6,8 +6,10 @@
         @foreach($visible_columns as $visible_column)
             @if(in_array($visible_column['Field_Visibility'],[1,2]))
                 <td
-                       data-href="lookup/secondscreen/{!! $record['DS_MKC_ContactID'] !!}"
-                        class="{!! $visible_column['Class_Name'] !!} ajax-Link"
+                        @if(!in_array($visible_column['Field_Name'],['tag','merge']))
+                            data-href="lookup/secondscreen/{!! $record['DS_MKC_ContactID'] !!}"
+                        @endif
+                        class="{!! $visible_column['Class_Name'] !!} @if(!in_array($visible_column['Field_Name'],['tag','merge'])) ajax-Link @endif"
                         @if($visible_column['Field_Visibility'] == 1)
                         data-visible="false"
                         @endif>

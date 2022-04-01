@@ -1,4 +1,4 @@
-<table id="basic_table_without_dynamic_pagination" class="table table-bordered table-hover color-table lkp-table" style="width: 100%;" data-message="No campaign available" > <!-- data-order="[[1,'desc']]" -->
+<table id="basic_table_without_dynamic_pagination" class="table table-bordered table-hover color-table lkp-table" style="width: 100%;" data-message="No campaign available" data-order="[[ 0, &quot;asc&quot; ]]" > <!-- data-order="[[1,'desc']]" -->
     <thead>
         <tr>
             @foreach($visible_columns as $visible_column)

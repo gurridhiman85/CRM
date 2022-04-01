@@ -156,9 +156,9 @@ $(document).ready(function () {
     if (typeof localStorage !== 'undefined') {
         localStorage.clear();
     }
-    $('#tab_26, #tab_27, #tab_28 , #tab_29').html('');
+    $('#tab_9, #tab_10, #tab_11 , #tab_12').html('');
 
-    $('[href="#tab_22"]').trigger('click');
+    //$('[href="#tab_2"]').trigger('click');
     setTimeout(function () {
         $('.seg-clr-btn,.meta-go-btn').hide();
         $('#save').hide();
@@ -175,7 +175,7 @@ $(document).ready(function () {
         $('.seg-clr-btn').hide();
         $('.meta-go-btn').hide();
         //timer.pause();
-        $('a[href="#tab_26"]').trigger('click');
+        $('a[href="#tab_9"]').trigger('click');
         $('#showSqlBtn').hide();
         //$('#save').hide().attr('disabled',false).attr('onclick','addsubSQL(false)');
         $('#savebottom').show().attr('disabled',false).attr('onclick','addsubSQL(false)');
@@ -201,7 +201,7 @@ $(document).ready(function () {
         $('#libcamp_id').val('');
         $('#libcId').val('');
         //timer.resume();
-        $('a[href="#tab_22"]').trigger('click');
+        $('a[href="#tab_2"]').trigger('click');
         $('#showSqlBtn').hide();
         $('#save').attr('disabled',false).attr('onclick','');
         $('#save').hide();
@@ -210,7 +210,7 @@ $(document).ready(function () {
         $('.seg-clr-btn').hide();
         $('.meta-go-btn').hide();
         parent.up_flag = 'new';
-        $('#tab_26, #tab_27, #tab_28 , #tab_29').html('');
+        $('#tab_9, #tab_10, #tab_11 , #tab_12').html('');
     });
 
     ACFn.ajax_download_file = function(F,R){
@@ -584,7 +584,7 @@ function loadList(resStr, up_flag) {
         $('#filterSummmery').show();
 
         if (up_flag == 'view') {
-            $('#tab_24').find('input[type="text"], select').attr('disabled', 'disabled');
+            $('#tab_5').find('input[type="text"], select').attr('disabled', 'disabled');
             //$("select").not("[id=customFieldList]").attr("disabled", true);
             $('#showSqlBtn').attr('disabled', false);
             $('#indicationFieldSummery').attr('disabled', false);
@@ -1134,7 +1134,7 @@ function session(runoption) {
     getDefaultStorage(postData);
 
     if(runoption == false){
-        $('[href="#tab_27"]').trigger('click');
+        $('[href="#tab_10"]').trigger('click');
     }else{
         var contactfilters = localStorage.getItem('contactfilters');
         var exclusionsfilters = localStorage.getItem('exclusionsfilters');
@@ -1171,7 +1171,7 @@ function session(runoption) {
                 //parent.$('#schedulePopup').modal('hide');
                 setTimeout(function () {
                     window.parent.$('.clr-btn').trigger('click');
-                    $('#tab_26, #tab_27, #tab_28 , #tab_29').html('');
+                    $('#tab_9, #tab_10, #tab_11 , #tab_12').html('');
                 },1500)
                 localStorage.removeItem('record');
                 //localStorage.removeItem('params');
@@ -1183,7 +1183,7 @@ function session(runoption) {
                 //parent.$('#schedulePopup').modal('hide');
                 setTimeout(function () {
                     window.parent.$('.clr-btn').trigger('click');
-                    $('#tab_26, #tab_27, #tab_28 , #tab_29').html('');
+                    $('#tab_9, #tab_10, #tab_11 , #tab_12').html('');
                 },1500)
             }
         })
@@ -1362,9 +1362,9 @@ function getDefaultStorage(postData){
 }
 
 function triggerCompletedTab() {
-    if(!$('a[href="#tab_23"]').hasClass('active') && !$('a[href="#tab_24"]').hasClass('active')){
-        $('a[href="#tab_22"]').trigger('click');
-        $('a[href="#tab_22"]').trigger('show.bs.tab');
+    if(!$('a[href="#tab_4"]').hasClass('active') && !$('a[href="#tab_5"]').hasClass('active')){
+        $('a[href="#tab_2"]').trigger('click');
+        $('a[href="#tab_2"]').trigger('show.bs.tab');
     }
 }
 
@@ -1379,7 +1379,7 @@ function showOldReport(row_id) {
     /*$('#libflag_name').val(libflag_name);
     $('#libcamp_name').val(libcamp_name);
     $('#libcamp_id').val(libcamp_id);*/
-    $('a[href="#tab_31"]').trigger('click');
+    $('a[href="#tab_3"]').trigger('click');
 }
 
 function librarySQL_sel(obj, col) {
@@ -1759,8 +1759,8 @@ function show_Create_library(obj) { // Change Campaign - 2014-03  begin
         $('#libcamp_name').val(libcamp_name);
         $('#libcamp_id').val(libcamp_id);
         $('#libcId').val(libcId);
-        //$('a[href="#tab_26"]').text('View');
-        $('a[href="#tab_26"]').trigger('click');
+        //$('a[href="#tab_9"]').text('View');
+        $('a[href="#tab_9"]').trigger('click');
         $('#save').hide().attr('onclick','');
         $('#savebottom').hide().attr('onclick','');
         $('.seg-clr-btn').hide();
@@ -1780,7 +1780,7 @@ function show_Create_library(obj) { // Change Campaign - 2014-03  begin
         $('#libcamp_name').val(libcamp_name);
         $('#libcamp_id').val(libcamp_id);
         $('#libcId').val(libcId);
-        $('a[href="#tab_26"]').trigger('click');
+        $('a[href="#tab_9"]').trigger('click');
         $('#save').hide().attr('onclick','addsubSQL(false);');
         $('#savebottom').show().attr('onclick','addsubSQL(false);');
         $('#saveoption').show().attr('onclick','addsubSQL(true);');

@@ -166,13 +166,13 @@
             var aria_sort = obj.attr('aria-sort');
 
             if(aria_sort == undefined){
-                action = 'desc'
+                action = 'ASC'
             }else if(aria_sort == 'descending'){
-                action = 'desc'
+                action = 'ASC'
             }else if(aria_sort == 'ascending'){
-                action = 'asc'
+                action = 'DESC'
             }else{
-                action = 'desc'
+                action = 'ASC'
             }
 
             var url = $('.tab-ajax').data('href');

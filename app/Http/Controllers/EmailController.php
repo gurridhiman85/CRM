@@ -43,136 +43,129 @@ class EmailController extends Controller
         return view('email.index',['camapigns' => $camapigns]);
     }
 
+    public static function implement_query($reqlevel,$filters = [],$pagination,$add_sort_end = true,$sort = ''){
+        $lLevel = Helper::getColumns('Email',$reqlevel);
+        $sort = empty($sort) ? $lLevel['sort'] : $sort;
+
+        $levels = [
+            $reqlevel => [
+                'columns' => $lLevel['all_columns'],
+                'visible_columns' => $lLevel['visible_columns'],
+                'filter_columns' => $lLevel['filter_columns'],
+                'sql'   => 'select '.implode(',',$lLevel['all_columns']).' from (SELECT *,ROW_NUMBER() OVER (ORDER BY CampaignId desc) AS ROWNUMBER FROM '.$lLevel['table_name'].' ?where?) as t',
+                'filter' => 1
+            ]
+        ];
+
+        foreach ($levels as $level=>$level_values){
+            if($level == $reqlevel){
+                if($level_values['filter'] == 1){
+                    $sql = $level_values['sql'];
+                    //$nSql = $sql;
+                    $where = Helper::getFiltersCondition($filters,$reqlevel,$level_values['filter_columns']);
+                    $sql = str_replace('?where?',$where['Where'],$level_values['sql']);
+                    $sSql = $add_sort_end ? $sql.$pagination.' '.$sort : $sql.$pagination;
+
+                    $nSql = $sql;
+                }else{
+                    $sql = str_replace('?where?','',$level_values['sql']);
+                    $sSql = $add_sort_end ? $sql.$pagination.' '.$sort : $sql.$pagination;
+                    $nSql = $sql;
+                }
+
+                $records = DB::select($sSql);
+                $records = collect($records)->map(function($x){ return (array) $x; })->toArray();
+
+                $total_records = count(DB::select($nSql));
+                return [
+                    'sql'  => $sSql,
+                    'records' => $records,
+                    'total_records' => $total_records,
+                    'columns' => $level_values['columns'],
+                    'visible_columns' => $level_values['visible_columns'],
+                ];
+            }
+        }
+    }
+
+
     public function getEmails(Request $request,Ajax $ajax){
         $tabid = $request->input('tabid');
         $sort = $request->input('sort') ? $request->input('sort') : '';
         $dir = $request->input('dir') ? $request->input('dir') : '';
         $page = $request->input('page',1);
         $records_per_page = config('constant.record_per_page');
-
+        $position = ($page-1) * $records_per_page;
         $rType = $request->input('rtype','');
         $filters = $request->input('filters',[]);
 
         $sort_column = 'CampaignId';
         $sort_dir = 'DESC';
 
-        if($tabid == 20){
-            /*$query = EmailConfiguration::query();
-            self::apply_filters($filters,$query);
-            $records = $query->skip($position)
-                ->take($records_per_page)
-                ->orderByDesc('CampaignId')
-                ->get([
-                    'CampaignId',
-                    'CampaignName',
-                    'Template',
-                    DB::raw('cast(Time1 as varchar(5)) as Time1'),
-                    DB::raw('cast([StartDate] as date) as StartDate'),
-                    DB::raw('cast([EndDate] as date) as EndDate'),
-                    'Subject1',
-                    'Subject2',
-                    'Subject3',
-                    'TestSubject',
-                    'CampaignID_Data',
-                    'TestSubjectPct',
-                    'SubjectWin',
-                ])
-                ->toArray();
-            $trQuery = EmailConfiguration::query();
-            self::apply_filters($filters,$trQuery);
-            $total_records = $trQuery->count();*/
+        $pagination = " WHERE ROWNUMBER > $position and ROWNUMBER <= " . ($position + $records_per_page);
+        $result = self::implement_query('Listing',$filters,$pagination,true,$sort);
 
+
+        if($tabid == 20){
             $tabName = 'Completed';
+
+            $data = [
+                'records' => $result['records'],
+                'visible_columns' => $result['visible_columns'],
+                'tab' => $tabName,
+                'filters' => json_encode($filters)
+            ];
+
             if($rType == 'pagination'){
-                $html = View::make('email.tabs.level1.table',[
-                    //'records' => $records,
-                    'tab' => $tabName,
-                    'sort_column' => $sort_column,
-                    'sort_dir' => $sort_dir,
-                ])->render();
+                $html = View::make('email.tabs.completed.table',$data)->render();
             }else{
-                $html = View::make('email.tabs.level1.index',[
-                   // 'records' => $records,
-                    'tab' => $tabName,
-                    'sort_column' => $sort_column,
-                    'sort_dir' => $sort_dir,
-                ])->render();
+                $html = View::make('email.tabs.completed.index',$data)->render();
             }
 
-            /*$paginationhtml = View::make('email.tabs.level1.pagination-html',[
-                'total_records' => $total_records,
-                'records' => $records,
+            $paginationhtml = View::make('email.tabs.completed.pagination-html',[
+                'total_records' => $result['total_records'],
+                'records' => $result['records'],
                 'position' => $position,
                 'records_per_page' => $records_per_page,
                 'page' => $page,
                 'tab' => $tabName
-            ])->render();*/
-
-            return $ajax->success()
-                //->appendParam('records',$records)
-                ->appendParam('html',$html)
-                ->appendParam('paginationHtml','')
-                ->jscallback('load_ajax_tab')
-                ->response();
+            ])->render();
         }
         else if (in_array($tabid, ['ECinsert','Proofs','deploy','TFD','ReDeploy','Re-ReDeploy','PR','CR'])){
             $camapigns = EmailConfiguration::orderByDesc('CampaignName')->pluck('CampaignName','CampaignId');
 
-
-            /*$query = EmailConfiguration::query();
-            self::apply_filters($filters,$query);
-            $records = $query->skip($position)
-                ->take($records_per_page)
-                ->orderByDesc('CampaignId')
-                ->get([
-                    'CampaignId',
-                    'CampaignName',
-                    'Template',
-                    DB::raw('cast(Time1 as varchar(5)) as Time1'),
-                    DB::raw('cast([StartDate] as date) as StartDate'),
-                    DB::raw('cast([EndDate] as date) as EndDate'),
-                    'Subject1',
-                    'Subject2',
-                    'Subject3',
-                    'TestSubject',
-                    'CampaignID_Data',
-                    'TestSubjectPct',
-                    'SubjectWin',
-                ])
-                ->toArray();
-
-            $trQuery = EmailConfiguration::query();
-            self::apply_filters($filters,$trQuery);
-            $total_records = $trQuery->count();*/
             $tabName = 'Completed';
-
 
             $html = View::make('email.tabs.new.index', [
                 'camapigns' => $camapigns,
                 'tabid' => $tabid,
-                //'records' => $records,
+                'records' => $result['records'],
                 'rType' => $rType,
                 'tabName' => $tabName,
                 'sort_column' => $sort_column,
                 'sort_dir' => $sort_dir,
+                'tab' => $tabName,
+                'visible_columns' => $result['visible_columns'],
+                'filters' => json_encode($filters)
             ])->render();
 
-            /*$paginationhtml = View::make('email.tabs.level1.pagination-html',[
-                'total_records' => $total_records,
-                'records' => $records,
+            $paginationhtml = View::make('email.tabs.completed.pagination-html',[
+                'total_records' => $result['total_records'],
+                'records' => $result['records'],
                 'position' => $position,
                 'records_per_page' => $records_per_page,
                 'page' => $page,
                 'tab' => $tabName
-            ])->render();*/
-
-            return $ajax->success()
-                ->appendParam('html',$html)
-                //->appendParam('records',$records)
-                ->appendParam('paginationHtml','')
-                ->jscallback('load_ajax_tab')
-                ->response();
+            ])->render();
         }
+
+        return $ajax->success()
+            ->appendParam('html',$html)
+            ->appendParam('records',$result['records'])
+            ->appendParam('paginationHtml',$paginationhtml)
+            ->appendParam('sql',$result['sql'])
+            ->jscallback('load_ajax_tab')
+            ->response();
     }
 
     public function getCompletedEmails(Request $request)

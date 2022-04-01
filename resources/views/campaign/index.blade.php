@@ -198,89 +198,101 @@
                     </div>
                     <div class="row mb-2" style="border-bottom: 1px solid #dee2e6;">
                         <div class="col-md-8">
-                            <ul class="nav nav-tabs customtab2 mt-2 border-bottom-0 font-14 tab-hash tab-ajax"role="tablist" data-href="campaign/get" data-method="post" data-default-tab="tab_22">
+                            <ul class="nav nav-tabs customtab2 mt-2 border-bottom-0 font-14 tab-hash tab-ajax" role="tablist" data-href="campaign/get" data-method="post" data-default-tab="tab_2">
 
                                 <li class="nav-item list-report" style="border-bottom: 1px solid #dee2e6;">
-                                    <a class="nav-link" data-toggle="tab" data-tabid="20" href="#tab_20" role="tab" aria-selected="false" onclick="filtertoggle(0,'');">
+                                    <a class="nav-link" data-toggle="tab" data-tabid="0" href="#tab_0" role="tab" aria-selected="false" onclick="filtertoggle(0,'');">
                                         <span class="hidden-sm-up"></span>
                                         <span class="hidden-xs-down">Running</span>
                                     </a>
                                 </li>
                                 <li class="nav-item list-report" style="border-bottom: 1px solid #dee2e6;">
-                                    <a class="nav-link" data-toggle="tab" data-tabid="21" href="#tab_21" role="tab" aria-selected="false" onclick="filtertoggle(0,'')">
+                                    <a class="nav-link" data-toggle="tab" data-tabid="1" href="#tab_1" role="tab" aria-selected="false" onclick="filtertoggle(0,'')">
                                         <span class="hidden-sm-up"></span>
                                         <span class="hidden-xs-down">Scheduled</span>
                                     </a>
                                 </li>
                                 <li class="nav-item list-report" style="border-bottom: 1px solid #dee2e6;">
-                                    <a class="nav-link" data-toggle="tab" data-tabid="22" href="#tab_22" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
+                                    <a class="nav-link" data-toggle="tab" data-tabid="2" href="#tab_2" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
                                         <span class="hidden-sm-up"></span>
                                         <span class="hidden-xs-down">Completed</span>
                                     </a>
                                 </li>
                                 <li class="nav-item older-version" style="border-bottom: 1px solid #dee2e6;display: none;">
-                                    <a class="nav-link" data-row_id="" data-toggle="tab" data-tabid="31" href="#tab_31" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
+                                    <a class="nav-link" data-row_id="" data-toggle="tab" data-tabid="3" href="#tab_3" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
                                         <span class="hidden-sm-up"></span>
                                         <span class="hidden-xs-down">Older Versions</span>
                                     </a>
                                 </li>
-                                <li class="nav-item list-report" style="border-bottom: 1px solid #dee2e6;">
-                                    <a class="nav-link" data-toggle="tab" data-tabid="23" href="#tab_23" role="tab" aria-selected="true" onclick="filtertoggle(1,'Esummary')">
+                                @foreach($lLevelFilters as $key => $lLevelFilter)
+                                    <?php
+                                     $keyWS = str_replace(' ','_',$key);
+                                    ?>
+                                    <li class="nav-item" style="border-bottom: 1px solid #dee2e6;">
+                                        <a class="nav-link" data-toggle="tab" data-tabid="{!! $keyWS !!}" href="#tab_{!! $keyWS !!}" role="tab" aria-selected="true" onclick="filtertoggle(1,'{!! $keyWS !!}'); setlevel('{!! $keyWS !!}',{{ json_encode($alllevels) }})">
+                                            <span class="hidden-sm-up"></span>
+                                            <span class="hidden-xs-down">{!! ucfirst($key) !!}</span>
+                                        </a>
+                                    </li>
+                                @endforeach
+
+                                {{--<li class="nav-item list-report" style="border-bottom: 1px solid #dee2e6;">
+                                    <a class="nav-link" data-toggle="tab" data-tabid="4" href="#tab_4" role="tab" aria-selected="true" onclick="filtertoggle(1,'Esummary')">
                                         <span class="hidden-sm-up"></span>
                                         <span class="hidden-xs-down">Evaluation Summary</span>
                                     </a>
                                 </li>
                                 <li class="nav-item list-report" style="border-bottom: 1px solid #dee2e6;">
-                                    <a class="nav-link" data-toggle="tab" data-tabid="24" href="#tab_24" role="tab" aria-selected="true" onclick="filtertoggle(1,'Edetail')">
+                                    <a class="nav-link" data-toggle="tab" data-tabid="5" href="#tab_5" role="tab" aria-selected="true" onclick="filtertoggle(1,'Edetail')">
                                         <span class="hidden-sm-up"></span>
                                         <span class="hidden-xs-down">Evaluation Details</span>
                                     </a>
                                 </li>
                                 <li class="nav-item list-report" style="border-bottom: 1px solid #dee2e6;">
-                                    <a class="nav-link" data-toggle="tab" data-tabid="32" href="#tab_32" role="tab" aria-selected="true" onclick="filtertoggle(1,'Metadata')">
+                                    <a class="nav-link" data-toggle="tab" data-tabid="6" href="#tab_6" role="tab" aria-selected="true" onclick="filtertoggle(1,'Metadata')">
                                         <span class="hidden-sm-up"></span>
                                         <span class="hidden-xs-down">Metadata</span>
                                     </a>
-                                </li>
+                                </li>--}}
                                 <li class="nav-item list-report" style="border-bottom: 1px solid #dee2e6;">
-                                    <a class="nav-link" data-toggle="tab" data-tabid="33" href="#tab_33" role="tab" aria-selected="true" onclick="filtertoggle(1,'SingleCamp')">
+                                    <a class="nav-link" data-toggle="tab" data-tabid="7" href="#tab_7" role="tab" aria-selected="true" onclick="filtertoggle(1,'SingleCamp')">
                                         <span class="hidden-sm-up"></span>
                                         <span class="hidden-xs-down">Single Campaign</span>
                                     </a>
                                 </li>
 
                                 <li class="nav-item view-report" style="display: none;border-bottom: 1px solid #dee2e6;">
-                                    <a class="nav-link" data-toggle="tab" data-tabid="25" href="#tab_25" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
+                                    <a class="nav-link" data-toggle="tab" data-tabid="8" href="#tab_8" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
                                         <span class="hidden-sm-up"></span>
                                         <span class="hidden-xs-down">View Campaign</span>
                                     </a>
                                 </li>
                                 <li class="nav-item create-new" style="display: none;border-bottom: 1px solid #dee2e6;">
-                                    <a class="nav-link" data-toggle="tab" data-shouldblank="no" data-tabid="26" href="#tab_26" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
+                                    <a class="nav-link" data-toggle="tab" data-shouldblank="no" data-tabid="9" href="#tab_9" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
                                         <span class="hidden-sm-up"></span>
                                         <span class="hidden-xs-down">Create</span>
                                     </a>
                                 </li>
                                 <li class="nav-item create-new" style="display: none;border-bottom: 1px solid #dee2e6;">
-                                    <a class="nav-link" data-toggle="tab" data-shouldblank="no" data-tabid="27" href="#tab_27" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
+                                    <a class="nav-link" data-toggle="tab" data-shouldblank="no" data-tabid="10" href="#tab_10" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
                                         <span class="hidden-sm-up"></span>
                                         <span class="hidden-xs-down">Segment</span>
                                     </a>
                                 </li>
                                 <li class="nav-item create-new" style="display: none;border-bottom: 1px solid #dee2e6;">
-                                    <a class="nav-link" data-toggle="tab" data-shouldblank="no" data-tabid="28" href="#tab_28" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
+                                    <a class="nav-link" data-toggle="tab" data-shouldblank="no" data-tabid="11" href="#tab_11" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
                                         <span class="hidden-sm-up"></span>
                                         <span class="hidden-xs-down">Export</span>
                                     </a>
                                 </li>
                                 <li class="nav-item create-new" style="display: none;border-bottom: 1px solid #dee2e6;">
-                                    <a class="nav-link" data-toggle="tab" data-shouldblank="no" data-tabid="29" href="#tab_29" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
+                                    <a class="nav-link" data-toggle="tab" data-shouldblank="no" data-tabid="12" href="#tab_12" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
                                         <span class="hidden-sm-up"></span>
                                         <span class="hidden-xs-down">Meta Data</span>
                                     </a>
                                 </li>
                                 <li class="nav-item create-new" style="display: none;border-bottom: 1px solid #dee2e6;">
-                                    <a class="nav-link" data-toggle="tab" data-shouldblank="yes" data-tabid="30" href="#tab_30" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
+                                    <a class="nav-link" data-toggle="tab" data-shouldblank="yes" data-tabid="13" href="#tab_13" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
                                         <span class="hidden-sm-up"></span>
                                         <span class="hidden-xs-down">Execute</span>
                                     </a>
@@ -288,7 +300,7 @@
 
                             </ul>
                         </div>
-                        <div class="col-md-4" onclick="if($('[data-tabid=26]').hasClass('active') || $('[data-tabid=26]').hasClass('active')) { $('#showSqlBtn').toggle() }">
+                        <div class="col-md-4" onclick="if($('[data-tabid=9]').hasClass('active') || $('[data-tabid=9]').hasClass('active')) { $('#showSqlBtn').toggle() }">
                             <div class="btn-toolbar pull-right" role="toolbar" aria-label="Toolbar with button groups">
                                 <div class="input-group">
                                     <div class="all-pagination" style="vertical-align: middle;margin: 10px;"></div>
@@ -324,20 +336,29 @@
 
                     <!-- Tab panes -->
                     <div class="tab-content br-n pn">
-                        <div class="tab-pane customtab" id="tab_20" role="tabpanel"></div>
-                        <div class="tab-pane customtab" id="tab_21" role="tabpanel"></div>
-                        <div class="tab-pane customtab active" id="tab_22" role="tabpanel"></div>
-                        <div class="tab-pane customtab" id="tab_23" role="tabpanel"></div>
-                        <div class="tab-pane customtab" id="tab_24" role="tabpanel"></div>
-                        <div class="tab-pane customtab" id="tab_25" role="tabpanel"></div>
-                        <div class="tab-pane" id="tab_26" role="tabpanel"></div>
-                        <div class="tab-pane" id="tab_27" role="tabpanel"></div>
-                        <div class="tab-pane" id="tab_28" role="tabpanel"></div>
-                        <div class="tab-pane" id="tab_29" role="tabpanel"></div>
-                        <div class="tab-pane" id="tab_30" role="tabpanel"></div>
-                        <div class="tab-pane" id="tab_31" role="tabpanel"></div>
-                        <div class="tab-pane" id="tab_32" role="tabpanel"></div>
-                        <div class="tab-pane" id="tab_33" role="tabpanel"></div>
+                        <div class="tab-pane customtab" id="tab_0" role="tabpanel"></div>
+                        <div class="tab-pane customtab" id="tab_1" role="tabpanel"></div>
+                        <div class="tab-pane customtab active" id="tab_2" role="tabpanel"></div>
+                        <div class="tab-pane" id="tab_3" role="tabpanel"></div>
+                        @foreach($lLevelFilters as $key => $lLevelFilter)
+                            <?php
+                            $keyWS = str_replace(' ','_',$key);
+                            ?>
+                            <div class="tab-pane customtab" id="tab_{!! $keyWS !!}" role="tabpanel"></div>
+                        @endforeach
+                        {{--<div class="tab-pane customtab" id="tab_4" role="tabpanel"></div>
+                        <div class="tab-pane customtab" id="tab_5" role="tabpanel"></div>
+                        <div class="tab-pane" id="tab_6" role="tabpanel"></div>--}}
+                        <div class="tab-pane" id="tab_7" role="tabpanel"></div>
+                        <div class="tab-pane customtab" id="tab_8" role="tabpanel"></div>
+                        <div class="tab-pane" id="tab_9" role="tabpanel"></div>
+                        <div class="tab-pane" id="tab_10" role="tabpanel"></div>
+                        <div class="tab-pane" id="tab_11" role="tabpanel"></div>
+                        <div class="tab-pane" id="tab_12" role="tabpanel"></div>
+                        <div class="tab-pane" id="tab_13" role="tabpanel"></div>
+
+
+
                     </div>
 
                     <div class="row">
@@ -365,70 +386,35 @@
                                     <div class="form-body">
                                         <div class="row">
                                             @php
-                                            $multiselect_filters_fields = [];
-                                            $i = 0;
+                                                $multiselect_filters_fields = [];
+                                                $levels = [];
+                                                $i = 0;
                                             @endphp
-                                            @foreach($sumFilters as $Field_Name => $sumFilter)
-                                                @php
-                                                    $Field_ID = $Field_Name.'-sum-filter';
-                                                    $Field_Name = 's-'.$Field_Name;
-                                                    $multiselect_filters_fields[] = $Field_ID;
-                                                @endphp
-                                                @if($i == 3)
+                                            @foreach($lLevelFilters as $level => $lLevelFilter)
+                                                <?php $levels[] = str_replace(' ','_',$level); ?>
+                                                @foreach($lLevelFilter as $Field_Name => $lLevelF)
+                                                    @php
+                                                        $Field_ID = $Field_Name.'-sum-filter';
+                                                        $Field_Name = $level.'-'.$Field_Name;
+                                                        $multiselect_filters_fields[] = $Field_ID;
+                                                    @endphp
+                                                    @if($i == 3)
+                                                        {{--</div>
+                                                        <div class="row">--}}
+                                                        @php $i = 0; @endphp
+                                                    @endif
+                                                    <div class="col-md-4 mt-1 {!! str_replace(' ','_',$level) !!}">
+                                                        <label class="control-label">{!! $lLevelF['Field_Display_Name'] !!}</label>
+                                                        <select name="{!! $Field_Name !!}" id="{!! $Field_ID !!}" class="form-control form-control-sm" multiple="multiple" data-placeholder="Select Values">
+                                                            @foreach($lLevelF as $LF)
+                                                                @if($LF == $lLevelF['Field_Display_Name']) @continue @endif
+                                                                @php $LF = !is_numeric($LF) ? trim($LF) : $LF; @endphp
+                                                                <option value="{!! trim($LF) !!}">{!! trim($LF) !!}</option>
+                                                            @endforeach
+                                                        </select>
                                                     </div>
-                                                    <div class="row">
-                                                    @php $i = 0; @endphp
-                                                @endif
-                                                <div class="col-md-4 mt-1 Esummary">
-                                                    <label class="control-label">{!! $sumFilter['Field_Display_Name'] !!}</label>
-                                                    <select name="{!! $Field_Name !!}" id="{!! $Field_ID !!}" class="form-control form-control-sm" multiple="multiple" data-placeholder="Select Values">
-                                                        @foreach($sumFilter as $SF)
-                                                            @if($SF == $sumFilter['Field_Display_Name']) @continue @endif
-                                                            @php $SF = !is_numeric($SF) ? trim($SF) : $SF; @endphp
-                                                            <option value="{!! trim($SF) !!}">{!! trim($SF) !!}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                @php $i++; @endphp
-                                            @endforeach
-                                        </div>
-                                        <div class="row">
-                                            @foreach($detailFilters as $Field_Name => $detailFilter)
-                                                @php
-                                                    $Field_ID = $Field_Name.'-detail-filter';
-                                                    $Field_Name = 'd-'.$Field_Name;
-                                                    $multiselect_filters_fields[] = $Field_ID;
-                                                @endphp
-                                                <div class="col-md-4 mt-1 Edetail">
-                                                    <label class="control-label">{!! $detailFilter['Field_Display_Name'] !!}</label>
-                                                    <select name="{!! $Field_Name !!}" id="{!! $Field_ID !!}" class="form-control form-control-sm" multiple="multiple" data-placeholder="Select Values">
-                                                        @foreach($detailFilter as $DF)
-                                                            @if($DF == $detailFilter['Field_Display_Name']) @continue @endif
-                                                            @php $DF = !is_numeric($DF) ? trim($DF) : $DF; @endphp
-                                                            <option value="{!! $DF !!}">{!! $DF !!}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            @endforeach
-                                        </div>
-
-                                        <div class="row">
-                                            @foreach($metadataFilters as $Field_Name => $metadataFilter)
-                                                @php
-                                                    $Field_ID = $Field_Name.'-metadata-filter';
-                                                    $Field_Name = 'm-'.$Field_Name;
-                                                    $multiselect_filters_fields[] = $Field_ID;
-                                                @endphp
-                                                <div class="col-md-4 mt-1 Metadata">
-                                                    <label class="control-label">{!! $metadataFilter['Field_Display_Name'] !!}</label>
-                                                    <select name="{!! $Field_Name !!}" id="{!! $Field_ID !!}" class="form-control form-control-sm" multiple="multiple" data-placeholder="Select Values">
-                                                        @foreach($metadataFilter as $MDF)
-                                                            @if($MDF == $metadataFilter['Field_Display_Name']) @continue @endif
-                                                            @php $MDF = !is_numeric($MDF) ? trim($MDF) : $MDF; @endphp
-                                                            <option value="{!! $MDF !!}">{!! $MDF !!}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
+                                                    @php $i++; @endphp
+                                                @endforeach
                                             @endforeach
                                         </div>
                                     </div>
@@ -508,7 +494,28 @@
                     },1000);
                 }
             });
-        })
+
+            var params = parseHashUrl();
+            if(params.tab){
+                var tab = params.tab.split('_');
+                setlevel(tab[1],{!! json_encode($levels) !!});
+            }/*else{
+                setlevel('Level2',{!! json_encode($levels) !!});
+            }*/
+        });
+
+        function setlevel(level,alllevels) {
+            //$('#DownloadBtn').attr('data-tab',level);
+
+            //clearFilters();
+            $.each(alllevels,function (index,value) {
+                if($.trim(level) == value){
+                    $('.' + value).removeAttr('style');
+                }else{
+                    $('.' + value).hide();
+                }
+            })
+        }
 
         function filtertoggle(flag = 0,section = '') {
             if(flag === 1){
@@ -536,6 +543,8 @@
                     $('[title="Create New"]').hide();
                 }
             }else{
+                $('[title="Campaign"]').show();
+                $('[title="Create New"]').show();
                 $('[title=Filters]').hide()
                 $('#DownloadBtn').hide()
             }
