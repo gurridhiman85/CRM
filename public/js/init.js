@@ -59,7 +59,7 @@ function initJS($outer) {
         $('.c-btn').hide();
          var dtable = $outer.find('#basic_table2').DataTable({
             "width" : "100%",
-            dom: 'Bfrtip',
+            dom: 'Bfrtp',
             "paging": false,
             "displayLength": 5,
             'searching': false,
@@ -140,6 +140,21 @@ function initJS($outer) {
                 text: '<i class="fas fa-table ds-c"></i>',
                 collectionLayout: 'fixed two-column'
             }],
+            drawCallback: function(){
+                $('.paginate_button', this.api().table().container()).on('click', function(){
+                    $('#basic_table_without_dynamic_pagination > thead > tr > th').each(function(){
+                        var matched = $(this).hasClass('matched');
+                        var columnclass = $(this).attr('data-class');
+                        if(columnclass){
+                            if(matched)
+                                $('.' + columnclass).addClass('matched').removeClass('unmatched');
+                            else
+                                $('.' + columnclass).addClass('unmatched').removeClass('matched');
+                        }
+                    })
+
+                });
+            }
         });
 
         fetVisibleCols(dtable.columns(':visible'));
@@ -320,14 +335,14 @@ function initJS($outer) {
         $outer.find('#s_0').chosen().change(function (evt, params) {
             var action = params.selected ? 'selected' : 'deselected';
             var fieldname = params.selected ? params.selected : params.deselected;
-            add_field(fieldname,action)
+            add_field(fieldname,action,$outer)
         });
     }
     if ($outer.find('#s_1').length) {
         $outer.find('#s_1').chosen().change(function (evt, params) {
             var action = params.selected ? 'selected' : 'deselected';
             var fieldname = params.selected ? params.selected : params.deselected;
-            add_field(fieldname,action)
+            add_field(fieldname,action,$outer)
         });
     }
 
@@ -335,7 +350,7 @@ function initJS($outer) {
         $outer.find('#s_2').chosen().change(function (evt, params) {
             var action = params.selected ? 'selected' : 'deselected';
             var fieldname = params.selected ? params.selected : params.deselected;
-            add_field(fieldname,action)
+            add_field(fieldname,action,$outer)
         });
     }
 
@@ -343,7 +358,7 @@ function initJS($outer) {
         $outer.find('#s_3').chosen().change(function (evt, params) {
             var action = params.selected ? 'selected' : 'deselected';
             var fieldname = params.selected ? params.selected : params.deselected;
-            add_field(fieldname,action)
+            add_field(fieldname,action,$outer)
         });
     }
 
@@ -351,7 +366,7 @@ function initJS($outer) {
         $outer.find('#s_4').chosen().change(function (evt, params) {
             var action = params.selected ? 'selected' : 'deselected';
             var fieldname = params.selected ? params.selected : params.deselected;
-            add_field(fieldname,action)
+            add_field(fieldname,action,$outer)
         });
     }
 
@@ -359,7 +374,7 @@ function initJS($outer) {
         $outer.find('#s_5').chosen().change(function (evt, params) { console.log(params)
             var action = params.selected ? 'selected' : 'deselected';
             var fieldname = params.selected ? params.selected : params.deselected;
-            add_field(fieldname,action)
+            add_field(fieldname,action,$outer)
         });
     }
 
@@ -367,7 +382,7 @@ function initJS($outer) {
         $outer.find('#s_6').chosen().change(function (evt, params) {
             var action = params.selected ? 'selected' : 'deselected';
             var fieldname = params.selected ? params.selected : params.deselected;
-            add_field(fieldname,action)
+            add_field(fieldname,action,$outer)
         });
     }
 
@@ -375,7 +390,7 @@ function initJS($outer) {
         $outer.find('#s_7').chosen().change(function (evt, params) {
             var action = params.selected ? 'selected' : 'deselected';
             var fieldname = params.selected ? params.selected : params.deselected;
-            add_field(fieldname,action)
+            add_field(fieldname,action,$outer)
         });
     }
 
@@ -383,7 +398,7 @@ function initJS($outer) {
         $outer.find('#s_8').chosen().change(function (evt, params) {
             var action = params.selected ? 'selected' : 'deselected';
             var fieldname = params.selected ? params.selected : params.deselected;
-            add_field(fieldname,action)
+            add_field(fieldname,action,$outer)
         });
     }
 
@@ -391,7 +406,7 @@ function initJS($outer) {
         $outer.find('#s_9').chosen().change(function (evt, params) {
             var action = params.selected ? 'selected' : 'deselected';
             var fieldname = params.selected ? params.selected : params.deselected;
-            add_field(fieldname,action)
+            add_field(fieldname,action,$outer)
         });
     }
 
@@ -399,7 +414,7 @@ function initJS($outer) {
         $outer.find('#s_10').chosen().change(function (evt, params) {
             var action = params.selected ? 'selected' : 'deselected';
             var fieldname = params.selected ? params.selected : params.deselected;
-            add_field(fieldname,action)
+            add_field(fieldname,action,$outer)
         });
     }
 
@@ -407,7 +422,7 @@ function initJS($outer) {
         $outer.find('#s_11').chosen().change(function (evt, params) {
             var action = params.selected ? 'selected' : 'deselected';
             var fieldname = params.selected ? params.selected : params.deselected;
-            add_field(fieldname,action)
+            add_field(fieldname,action,$outer)
         });
     }
 
@@ -415,7 +430,7 @@ function initJS($outer) {
         $outer.find('#s_12').chosen().change(function (evt, params) {
             var action = params.selected ? 'selected' : 'deselected';
             var fieldname = params.selected ? params.selected : params.deselected;
-            add_field(fieldname,action)
+            add_field(fieldname,action,$outer)
         });
     }
 
@@ -423,7 +438,7 @@ function initJS($outer) {
         $outer.find('#s_13').chosen().change(function (evt, params) {
             var action = params.selected ? 'selected' : 'deselected';
             var fieldname = params.selected ? params.selected : params.deselected;
-            add_field(fieldname,action)
+            add_field(fieldname,action,$outer)
         });
     }
 
@@ -431,7 +446,7 @@ function initJS($outer) {
         $outer.find('#s_14').chosen().change(function (evt, params) {
             var action = params.selected ? 'selected' : 'deselected';
             var fieldname = params.selected ? params.selected : params.deselected;
-            add_field(fieldname,action)
+            add_field(fieldname,action,$outer)
         });
     }
 
@@ -765,19 +780,19 @@ function initJS($outer) {
     }
 
     if ($outer.find("input[type=text]").length > 0) {
-        $outer.find("input[type=text]").attr('autocomplete','off');
+        $outer.find("input[type=text]").attr('autocomplete','new-password');
     }
 
     if ($outer.find("input[type=password]").length > 0) {
-        $outer.find("input[type=password]").attr('autocomplete','off');
+        $outer.find("input[type=password]").attr('autocomplete','new-password');
     }
 
     if ($outer.find("input[type=email]").length > 0) {
-        $outer.find("input[type=email]").attr('autocomplete','off');
+        $outer.find("input[type=email]").attr('autocomplete','new-password');
     }
 
     if ($outer.find("form").length > 0) {
-        $outer.find("form").attr('autocomplete','off');
+        $outer.find("form").attr('autocomplete','new-password');
 
     }
 
@@ -1469,6 +1484,37 @@ function applyFilters() {
 
 }
 
+function custom_sorting(obj,tabUl) {
+    var field_name = obj.data('field_name');
+    var action = obj.attr('class');
+    var aria_sort = obj.attr('aria-sort');
+
+    if(aria_sort == undefined){
+        action = 'ASC'
+    }else if(aria_sort == 'descending'){
+        action = 'ASC'
+    }else if(aria_sort == 'ascending'){
+        action = 'DESC'
+    }else{
+        action = 'ASC'
+    }
+
+    var url = $('.tab-ajax').data('href');
+    var method = $('.tab-ajax').data('method');
+    var tabid = $('.tab-ajax li a.active').data('tabid');
+
+    var target = $('.tab-ajax li a.active');
+    var filters = getFilters($('#filter_form'));
+    $(target.attr('href')).css("opacity", "0.3");
+    ACFn.sendAjax(url, method, {
+        tabid: tabid,
+        filters: filters,
+        show_entries: 15,
+        sort_column: field_name,
+        sort_dir: action,
+        mergeKeys : JSON.parse(localStorage.getItem('MergeKeys')),
+    }, target);
+}
 
 
 function yajraDatatables(elem,params = {}, url, type, postdata, dataType, columns, columnDefs, order = [[ 0, "desc" ]]){

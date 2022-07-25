@@ -54,33 +54,43 @@ class TaxonomyController extends Controller
         ]);
     }
 
-    public static function implement_query($reqlevel,$filters = []){
-
-        $lLevel = Helper::getColumns('Taxonomy',$reqlevel);
+    public static function implement_query($menu_level1,$reqlevel,$filters = [],$pagination,$add_sort_end = true,$sort = ''){
+        $lLevel = Helper::getColumns($menu_level1,$reqlevel);
+        $sort = empty($sort) ? $lLevel['sort'] : $sort;
 
         $levels = [
             $reqlevel => [
                 'columns' => $lLevel['all_columns'],
                 'visible_columns' => $lLevel['visible_columns'],
-                'sql'   => 'select '.implode(',',$lLevel['all_columns']).' from '.$lLevel['table_name'],
+                'filter_columns' => $lLevel['filter_columns'],
+                'sql'   => 'select '.implode(',',$lLevel['all_columns']).' from (SELECT *,ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS ROWNUMBER FROM '.$lLevel['table_name'].' ?where?) as t  ',
                 'filter' => 1
-            ],
+            ]
+
         ];
 
         foreach ($levels as $level=>$level_values){
             if($level == $reqlevel){
                 if($level_values['filter'] == 1){
-                    $where = Helper::getFiltersCondition($filters,$reqlevel,$level_values['visible_columns']);
-                    $sql = $level_values['sql']." ".$where['Where'];
+                    $where = Helper::getFiltersCondition($filters,$reqlevel,$level_values['filter_columns']);
+                    $sql = str_replace('?where?',$where['Where'],$level_values['sql']);
+                    $sSql = $add_sort_end ? $sql.$pagination.' '.$sort : $sql.$pagination;
+
+                    $nSql = $sql;
                 }else{
-                    $sql = $level_values['sql'];
+                    $sql = str_replace('?where?','',$level_values['sql']);
+                    $sSql = $add_sort_end ? $sql.$pagination.' '.$sort : $sql.$pagination;
+                    $nSql = $sql;
                 }
 
-                $records = DB::select($sql);
+                $records = DB::select($sSql);
                 $records = collect($records)->map(function($x){ return (array) $x; })->toArray();
+
+                $total_records = count(DB::select($nSql));
                 return [
-                    'sql'  => $sql,
+                    'sql'  => $sSql,
                     'records' => $records,
+                    'total_records' => $total_records,
                     'columns' => $level_values['columns'],
                     'visible_columns' => $level_values['visible_columns'],
                 ];
@@ -91,9 +101,14 @@ class TaxonomyController extends Controller
     public function getTaxonomy(Request $request,Ajax $ajax){
         $tabid = $request->input('tabid');
         $filters = $request->input('filters',[]);
+        $page = $request->input('page',1);
+        $records_per_page = 15;
+        $position = ($page-1) * $records_per_page;
+        $rType = $request->input('rtype','');
+        $pagination = " WHERE ROWNUMBER > $position and ROWNUMBER <= " . ($position + $records_per_page);
 
         $tabName = 'Completed';
-        $results = self::implement_query($tabid,$filters);
+        $results = self::implement_query('Taxonomy',$tabid,$filters,$pagination,false,'');
         $data = [
             'records' => $results['records'],
             'visible_columns' => $results['visible_columns'],
@@ -101,12 +116,27 @@ class TaxonomyController extends Controller
             'filters' => json_encode($filters)
         ];
 
-        $html = View::make('taxonomy.tabs.level.index',$data)->render();
+        if($rType == 'pagination'){
+            $html = View::make('taxonomy.tabs.level.table',$data)->render();
+        }else {
+            $html = View::make('taxonomy.tabs.level.index', $data)->render();
+        }
+
+        $paginationhtml = View::make('taxonomy.tabs.level.pagination-html',[
+            'total_records' => $results['total_records'],
+            'records' => $results['records'],
+            'position' => $position,
+            'records_per_page' => $records_per_page,
+            'page' => $page
+        ])->render();
 
         return $ajax->success()
+            ->appendParam('sql',$results['sql'])
+            ->appendParam('records',$results['records'])
+            ->appendParam('total_records',$results['total_records'])
             ->appendParam('records',$results['records'])
             ->appendParam('html',$html)
-            ->appendParam('paginationHtml','')
+            ->appendParam('paginationHtml',$paginationhtml)
             ->jscallback('load_ajax_tab')
             ->response();
     }

@@ -285,10 +285,10 @@ class ArSchedule extends Command
             }
 
             $tblName = "tmp_" . rand(0,100) . "_" .time() . "_" . date("Ymd", time());
-            $pos = stripos($sSQLTemp, "Order By");
+            $pos = stripos($sSQL, "Order By");
 
             if ($pos != false) {
-                $ordrByArr = explode('Order By', $sSQLTemp);
+                $ordrByArr = explode('Order By', $sSQL);
                 $ordrBy = " Order By " . $ordrByArr[1];
                 $sSQLTemp = substr($sSQLTemp, 0, $pos - 1);
             } else {

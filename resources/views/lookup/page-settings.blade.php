@@ -1055,7 +1055,7 @@ font-weight: 500;padding: 3px 4px !important;">
                     <div class="divTable">
                         <div class="divTableBody">
                             <div class="divTableRow">
-                                <div class="divTableCell" style="width: 9.3% !important;padding: 3px 0px !important;">
+                                <div class="divTableCell" style="width: 14.6% !important;padding: 3px 0px !important;">
                                     <input type="text" name="R[20][C1]" class="form-control form-control-sm font-12 border-0 pl-0 pr-0" placeholder="R20:C1" value="{{ $R20C1Set['Label'] }}">
                                 </div>
                                 <div class="divTableCell">
@@ -1077,7 +1077,7 @@ font-weight: 500;padding: 3px 4px !important;">
                     <div class="divTable">
                         <div class="divTableBody">
                             <div class="divTableRow">
-                                <div class="divTableCell" style="width: 9.3% !important;padding: 3px 0px !important;">
+                                <div class="divTableCell" style="width: 14.6% !important;padding: 3px 0px !important;">
                                     <input type="text" name="R[21][C1]" class="form-control form-control-sm font-12 border-0 pl-0 pr-0" placeholder="R21:C1" value="{{ $R21C1Set['Label'] }}">
                                 </div>
                                 <div class="divTableCell">

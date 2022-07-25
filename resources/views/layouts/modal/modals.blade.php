@@ -189,11 +189,20 @@
                                         <div class="col-md-12 p-0">
                                             <div class="form-group">
                                                 <label class="control-label">Attachment</label>
+                                                @php
+                                                if(!isset($attachment_types)){
+                                                    $attachment_types = [
+                                                        'onlyreport' => 'Report Only',
+                                                        'onlylist' => 'List Only',
+                                                        'both' => 'Both',
+                                                        'none' => 'None',
+                                                    ];
+                                                }
+                                                @endphp
                                                 <select id="Email_Attachment" name="Email_Attachment" class="form-control form-control-sm">
-                                                    <option value="onlyreport">Report Only</option>
-                                                    <option value="onlylist">List Only</option>
-                                                    <option value="both">Both</option>
-                                                    <option value="none">None</option>
+                                                    @foreach($attachment_types as $value=> $attachment_type)
+                                                        <option value="{{ $value }}">{{ $attachment_type }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                         </div>

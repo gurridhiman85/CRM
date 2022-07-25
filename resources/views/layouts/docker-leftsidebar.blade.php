@@ -119,6 +119,34 @@
                                     class="hide-menu">Report</span></a>
                     </li>
 
+                    <li class="{!! ($segment == "profile") ? 'active' : '' !!}">
+                        <a
+                                @if(in_array('Profile',$visiblities) || $User_Type == 'Full_Access')
+                                href="profile"
+                                @else
+                                href="javascript:void(0);"
+                                @endif
+                                class="waves-effect waves-dark {!! ($segment == "profile") ? 'active' : '' !!}"
+                                aria-expanded="false">
+                            <i class="ti-user"></i>
+                            <span class="hide-menu">Profile</span>
+                        </a>
+                    </li>
+
+                    <li class="{!! ($segment == "model") ? 'active' : '' !!}">
+                        <a
+                                @if(in_array('Model',$visiblities) || $User_Type == 'Full_Access')
+                                href="model"
+                                @else
+                                href="javascript:void(0);"
+                                @endif
+                                class="waves-effect waves-dark {!! ($segment == "model") ? 'active' : '' !!}"
+                                aria-expanded="false">
+                            <i class="ti-stats-up"></i>
+                            <span class="hide-menu">Model</span>
+                        </a>
+                    </li>
+
                     <li class="{!! ($segment == "campaign") ? 'active' : '' !!}">
                             <a
                                     @if(in_array('Campaign',$visiblities) || $User_Type == 'Full_Access')
@@ -273,16 +301,50 @@
                             <span class="hide-menu">Taxonomy</span>
                         </a>
                     </li>
+
+                    <li class="{!! ($segment == "taxonomy-xref") ? 'active' : '' !!}">
+                        <a
+                                @if(in_array('Taxonomy',$visiblities) || $User_Type == 'Full_Access')
+                                href="taxonomy-xref"
+                                @else
+                                href="javascript:void(0);"
+                                @endif
+                                class="waves-effect waves-dark {!! ($segment == "taxonomy-xref") ? 'active' : '' !!}"
+                                aria-expanded="false">
+                            <i class="ti-smallcap"></i>
+                            <span class="hide-menu">Taxonomy Xref</span>
+                        </a>
+                    </li>
+
+
                 @endif
 
                 @if($key > -1)
                     <li class="" style="margin-left: auto;">
+                        <select name="filter1" class="form-control form-control-sm ajax-Select" id="dashboardfilter1" style="width: 150px;margin-top: 12px;">
+                            <option value="All">All</option>
+                        </select>
+                        <select name="filter2" class="form-control form-control-sm ajax-Select" id="dashboardfilter2" style="width: 150px;margin-top: 12px;">
+                            <option value="All">All</option>
+                        </select>
+                        <!--
                         <a
                                 href="javascript:void(0);"
+                                title="Filters"
                                 onclick="$('#dashboardfiltersbox').modal({backdrop: true,show: true}); $('#dashboardfiltersbox').find('.modal-dialog').draggable({handle: '.modal-header'});"
                                 class="waves-effect waves-dark text-center pl-1 pr-1"
                                 aria-expanded="false">
                             <i class="fas fa-filter" style="color: #b7dee8;"></i>
+                        </a>-->
+                    </li>
+                    <li class="">
+                        <a
+                                href="javascript:void(0);"
+                                title="Notes"
+                                onclick="$('#dashboardNotesbox').modal({backdrop: true,show: true}); $('#dashboardNotesbox').find('.modal-dialog').draggable({handle: '.modal-header'});"
+                                class="waves-effect waves-dark text-center pl-1 pr-1 font-12"
+                                aria-expanded="false">
+                            <i class="fas fa-info-circle" style="color: #b7dee8;"></i>
                         </a>
                     </li>
                     <!--

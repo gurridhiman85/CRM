@@ -70,9 +70,7 @@
     </style>
     <link href="css/example.css?ver={{time()}}" rel="stylesheet" type="text/css">
 </head>
-<body
-        class="horizontal-nav boxed fixed-layout skin-blue "
->
+<body class="horizontal-nav boxed fixed-layout skin-blue">
 <div class="preloader">
     <div class="loader">
         <div class="loader__figure"></div>
@@ -108,8 +106,8 @@
     @show
 
 </div>
-@section('footer_js')
-    @include('assetlib.js')
+@section('footer_jss')
+    @include('assetlib.jss')
 @show
 <script>
 

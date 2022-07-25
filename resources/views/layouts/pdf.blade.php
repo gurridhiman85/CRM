@@ -103,6 +103,16 @@
             word-wrap: break-word;
         }
 
+        .color-table.sr-table tr.totalCL {
+            background-color: #f9f9f9;
+            color: #010101;
+            border: 0.5px solid #e9ecef;
+            /*padding: 5px 8px;
+            font-size: 12px;
+            font-weight: 400;
+            word-wrap: break-word;*/
+        }
+
         .table thead th {
             vertical-align: middle;
             word-wrap: break-word;

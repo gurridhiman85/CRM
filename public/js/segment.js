@@ -362,7 +362,7 @@ function segsession() {
     localStorage.setItem('params',JSON.stringify(params))
     var promoExpo_openFlag = 'Y';
     if (promoexportchk == 'N') {
-        $('[href="#tab_28"]').trigger('click');
+        $('[href="#tab_11"]').trigger('click');
     }
 }
 

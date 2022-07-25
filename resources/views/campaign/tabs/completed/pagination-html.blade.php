@@ -10,7 +10,7 @@
     function pagination_v2(obj, type) {
 
         var track_page = $(obj).attr('data-idx');
-        var url = 'campaign/get?show_entries=20&tabid=22&rtype=pagination&page=' + track_page;
+        var url = 'campaign/get?show_entries=20&rtype=pagination&page=' + track_page;
         $(".resall").removeClass('current');
         $(obj).addClass('current');
         //$('#first_screen').css("opacity", "0.6");
@@ -26,7 +26,13 @@
         });
 
         var filtersArr = getFilters($('#filter_form'));
-        $.get(url, {'page': track_page, type: type,filters : filtersArr}, function (data) {
+        var tabid = $('.customtab2 li a.active').attr('data-tabid');
+        var tabname = tabid.replace('_',' ');
+        $.post(url, {'page': track_page,
+            type: type,
+            tabname : tabname,
+            tabid : tabid,
+            filters : filtersArr}, function (data) {
             NProgress.done();
             loading = false; //set loading flag off once the content is loaded
             if (data.html.trim().length == 0) {

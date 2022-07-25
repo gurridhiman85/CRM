@@ -391,7 +391,7 @@ class UserController extends Controller
                 ->jscallback()
                 ->response();
         }
-        if($request->User_Email == 'dashboard2021' && $request->Password == 'dev'){
+        if($request->User_Email == 'ZSSDashboard2022' && $request->Password == 'kanzeon'){
             Session::put('dummyuserlogin',true);
             $backUrl = Session::get('backUrl');
             return $ajax->success()

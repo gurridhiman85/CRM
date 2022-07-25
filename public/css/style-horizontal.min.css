@@ -1472,6 +1472,10 @@ button, hr, input {
     content: "\f1c9"
 }
 
+.fa-file-csv:before {
+    content: "\f6dd";
+}
+
 .fa-file-excel:before {
     content: "\f1c3"
 }
@@ -41798,6 +41802,12 @@ ul .selected-filter a.removeFilter i{
 
 div.ColVis {
     float: left;
+}
+
+tr.totalCL {
+    background-color: #f9f9f9;
+    color: #010101;
+    border: 0.5px solid #e9ecef;
 }
 
 

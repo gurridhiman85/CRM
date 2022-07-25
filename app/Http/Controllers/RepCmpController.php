@@ -44,25 +44,45 @@ class RepCmpController extends Controller
             $aData = collect($aData)->map(function($x){ return (array) $x; })->toArray();
 
             $hHtml = "";
+            $collapsehHtml = "";
             foreach ($aData as $tKey => $tTypeInfo) {
                 $aData = DB::select("SELECT DISTINCT [Field_Display] from [UL_RepCmp_Lookup_Fields] WHERE List_Level = '" . $listLevel . "' AND Type = '" . $tTypeInfo['Type'] . "' AND Display_For_Select = 1");
                 $aData = collect($aData)->map(function($x){ return (array) $x; })->toArray();
                 if (!empty($aData)) {
-                    $hHtml .= '<div class="col-md-2">
+                    if($tKey < 6){
+                        $hHtml .= '<div class="col-md-2">
                         <div class="form-group">
                             <select name="'.$tTypeInfo['Type'].'" class="form-control form-control-sm chosen-select" id="s_'.$tKey.'" multiple="multiple" data-placeholder="Select '.$tTypeInfo['Type'].'">';
 
-                    foreach ($aData as $key => $fFieldInfo) {
-                        if (in_array($fFieldInfo['Field_Display'], $checked_fields)) {
-                            $checked = "selected='selected'";
-                        } else {
-                            $checked = "";
+                        foreach ($aData as $key => $fFieldInfo) {
+                            if (in_array($fFieldInfo['Field_Display'], $checked_fields)) {
+                                $checked = "selected='selected'";
+                            } else {
+                                $checked = "";
+                            }
+                            $hHtml .= '<option '.$checked.' value="'.$fFieldInfo['Field_Display'].'">'.$fFieldInfo['Field_Display'].'</option>';
                         }
-                        $hHtml .= '<option '.$checked.' value="'.$fFieldInfo['Field_Display'].'">'.$fFieldInfo['Field_Display'].'</option>';
-                    }
-                    $hHtml .= "</select>
+                        $hHtml .= "</select>
                         </div>
                     </div>";
+                    }else{
+                        $collapsehHtml .= '<div class="col-md-2">
+                        <div class="form-group">
+                            <select name="'.$tTypeInfo['Type'].'" class="form-control form-control-sm chosen-select" id="s_'.$tKey.'" multiple="multiple" data-placeholder="Select '.$tTypeInfo['Type'].'">';
+
+                        foreach ($aData as $key => $fFieldInfo) {
+                            if (in_array($fFieldInfo['Field_Display'], $checked_fields)) {
+                                $checked = "selected='selected'";
+                            } else {
+                                $checked = "";
+                            }
+                            $collapsehHtml .= '<option '.$checked.' value="'.$fFieldInfo['Field_Display'].'">'.$fFieldInfo['Field_Display'].'</option>';
+                        }
+                        $collapsehHtml .= "</select>
+                        </div>
+                    </div>";
+                    }
+
                 }
             }
 
@@ -84,6 +104,7 @@ class RepCmpController extends Controller
 
             return $ajax->success()
                 ->appendParam('fieldsHtml',$hHtml)
+                ->appendParam('fieldscollapsehHtml',$collapsehHtml)
                 ->appendParam('lkpOptions',$lkpOptions)
                 ->appendParam('numOptions',$numOptions)
                 ->response();
@@ -537,9 +558,9 @@ class RepCmpController extends Controller
         $repdes = $request->input('repdes');
         if (trim($sSQL) != "") {
             if (strpos($sSQL, "*") !== false) {
-                $nSQL = str_replace("*", "TOP 1000 * ", $sSQL);
+                $nSQL = str_replace("*", "TOP 10000 * ", $sSQL);
             } else {
-                $nSQL = substr($sSQL, 0, 6) . " top 1000 " . substr($sSQL, 7, strlen($sSQL));
+                $nSQL = substr($sSQL, 0, 6) . " top 10000 " . substr($sSQL, 7, strlen($sSQL));
             }
 
             if(stripos($nSQL, "blank") !== false){
@@ -788,10 +809,10 @@ class RepCmpController extends Controller
         try{
             if (trim($sSQL) != "") {
                 if (strpos($sSQL, "*") === true) {
-                    $nSQL = str_replace("*", "TOP 100 * ", $sSQL);
+                    $nSQL = str_replace("*", "TOP 10000 * ", $sSQL);
                     //$fFSQL = str_replace("*", "TOP 1 * ", $sSQL);
                 } else {
-                    $nSQL = substr($sSQL, 0, 6) . " top 100 " . substr($sSQL, 7, strlen($sSQL));
+                    $nSQL = substr($sSQL, 0, 6) . " top 10000 " . substr($sSQL, 7, strlen($sSQL));
                     //$fFSQL = substr($sSQL, 0, 6) . " top 1 " . substr($sSQL, 7, strlen($sSQL));
                 }
                 $files = glob(public_path().'/downloads/*'); // get all file names
@@ -955,14 +976,22 @@ class RepCmpController extends Controller
         //$result = $result[0];
         if($type == 'C'){
             $result = App\Model\CampaignTemplate::with('rpschedule.ccschstatusmap')->where('row_id',$eRowid)->where('t_type',$type)->first()->toArray();
-        }else{
+            $listShortName = $result['list_short_name'];
+            $file_Name = isset($result['rpschedule']['ccschstatusmap'][0]) ? $result['rpschedule']['ccschstatusmap'][0]['file_name'] : $listShortName;
+        }else if($type == 'A'){
             $result = App\Model\ReportTemplate::with('rpschedule.rpschstatusmap')->where('row_id',$eRowid)->where('t_type',$type)->first()->toArray();
+            $listShortName = $result['list_short_name'];
+            $file_Name = isset($result['rpschedule']['rpschstatusmap'][0]) ? $result['rpschedule']['rpschstatusmap'][0]['file_name'] : $listShortName;
+        }else if($type == 'P'){
+            $result = App\Model\ProfileTemplate::with('rpschedule.prschstatusmap')->where('row_id',$eRowid)->where('t_type',$type)->first()->toArray();
+            $listShortName = $result['list_short_name'];
+            $file_Name = isset($result['rpschedule']['prschstatusmap'][0]) ? $result['rpschedule']['prschstatusmap'][0]['file_name'] : $listShortName;
         }
         //dd($record);
 
         $t_name = $result['t_name'];
-        $listShortName = $result['list_short_name'];
-        $file_Name = isset($result['rpschedule']['rpschstatusmap'][0]) ? $result['rpschedule']['rpschstatusmap'][0]['file_name'] : $listShortName;
+
+
         $t_id = $result['t_id'];
         $eFolder = $result['promoexpo_folder'];
         $ToUsers = $request->input('txtTo',[]);
@@ -998,9 +1027,14 @@ class RepCmpController extends Controller
                         $objDemo->listShortName = $listShortName;
                         $objDemo->file_Name = $file_Name;
                         $objDemo->clientname = $this->clientname;
-                        $type == 'A' ? Mail::to($user->User_Email)->send(new SendReportEmail($objDemo)) : Mail::to($user->User_Email)->send(SendCampaignEmail($objDemo));
+                        if($type == 'A')
+                            Mail::to($user->User_Email)->send(new SendReportEmail($objDemo));
+                        elseif ($type == 'C')
+                            Mail::to($user->User_Email)->send(new App\Mail\SendCampaignEmail($objDemo));
+                        elseif ($type == 'P')
+                            Mail::to($user->User_Email)->send(new App\Mail\SendProfileEmail($objDemo));
 
-                        DB::insert("INSERT INTO UL_RepCmp_Email (User_id,camp_tmpl_id,remail_to,remail_cc,remail_bcc,remail_sub,remail_comments,t_type,Email_Status) VALUES ($uid,$t_id,'$ToUser','$Cc','$Bcc','$Sub','$limitedtextarea1','$type','Sent')");
+                        DB::insert("INSERT INTO UL_RepCmp_Email (User_id,camp_tmpl_id,remail_to,remail_cc,remail_bcc,remail_sub,remail_comments,t_type,Email_Status, Email_Attachment) VALUES ($uid,$t_id,'$user->User_Email','$Cc','$Bcc','$Sub','$limitedtextarea1','$type','Sent','$Email_Attachment')");
                     }
 
                 }
@@ -1026,7 +1060,7 @@ class RepCmpController extends Controller
             }else{
                 return $ajax->fail()
                     ->jscallback()
-                    ->message($exception->getMessage())
+                    ->message('Error- '.$exception->getMessage())
                     ->response();
             }
         }
@@ -1115,6 +1149,14 @@ class RepCmpController extends Controller
         $users = $request->input('users');
         $limitedtextarea4 = $request->input('limitedtextarea4');
         $cm = $t_type == 'A' ? 'Report' : 'Campaign';
+        if($t_type == 'A')
+            $cm = 'Report';
+        elseif($t_type == 'C')
+            $cm = 'Campaign';
+        elseif($t_type == 'P')
+            $cm = 'Profile';
+        elseif($t_type == 'M')
+            $cm = 'Model';
 
         if(Helper::shareReport($eCampid,$t_type,$user_id,$users,$limitedtextarea4,$this->clientname,1,1)){
             return $ajax->success()
@@ -1142,6 +1184,14 @@ class RepCmpController extends Controller
                 $mainTb = 'UR_Report_Templates';
                 $prefixXlsx = $this->prefix.'RPL_';
                 $prefixSR = $this->prefix.'RPS_';
+            }elseif ($ttype == 'P'){
+                $mainTb = 'UP_Profile_Templates';
+                $prefixXlsx = $this->prefix.'PRE_';
+                $prefixSR = $this->prefix.'RPS_';
+            }elseif ($ttype == 'M'){
+                $mainTb = 'UM_ModelScore_Templates';
+                $prefixXlsx = $this->prefix.'MAL_';
+                $prefixSR = $this->prefix.'MAM_';
             }
 
             $SchtempSQL = DB::select("Select [t_id],
@@ -1179,6 +1229,12 @@ class RepCmpController extends Controller
                 foreach ($aDatas as $aData){
                     array_push($sch_status_id,$aData['sch_status_id']);
                 }
+            }
+
+            if ($ttype == 'M'){
+                // Delete extra tables data
+                DB::statement("DELETE from [UM_ModelScore_Metadata] Where [ModelScoreID] = '" . $camp_id . "'");
+                DB::statement("DELETE from [UM_ModelScore_Data] Where [ModelScoreID] = '" . $camp_id . "'");
             }
 
             //Delete Metadata table rows

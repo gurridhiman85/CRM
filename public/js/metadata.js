@@ -95,7 +95,7 @@ function sessionMeta() {
     document.frmExec.sSQL.value = params.sSQL;
     document.frmExec.target = "iframeSchedule";
     document.frmExec.submit();*/
-    $('[href="#tab_30"]').trigger('click');
+    $('[href="#tab_13"]').trigger('click');
 }
 
 

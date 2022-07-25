@@ -100,9 +100,12 @@ Route::get('/taxonomy/get', 'TaxonomyController@getTaxonomy');
 Route::get('/taxonomy/quickupdate', 'TaxonomyController@quickUpdate');
 Route::get('/taxonomy/download', 'TaxonomyController@download');
 
+Route::get('/taxonomy-xref', 'TaxonomyXrefController@index');
+Route::get('/taxonomy-xref/get', 'TaxonomyXrefController@getTaxonomy');
+Route::get('/taxonomy-xref/quickupdate', 'TaxonomyXrefController@quickUpdate');
+Route::get('/taxonomy-xref/download', 'TaxonomyXrefController@download');
+
 Route::group(['middleware' => ['auth']], function () {
-
-
 
     //Users
     Route::post('changepassword', 'UserController@changePassword');
@@ -153,6 +156,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/phone/downloadphonereport', 'PhoneController@downloadPhoneReport');
     Route::get('/phone/add', 'PhoneController@addToPhone');
     Route::post('/phone/add', 'PhoneController@insertToPhone');
+    Route::get('/phone/singlecamp', 'PhoneController@getSingleCamp');
 
     //Import Bulk CC
     Route::get('/importbulkcc', 'ImportbulkccController@index');
@@ -223,6 +227,28 @@ Route::group(['middleware' => ['auth']], function () {
 	//Report Execute tab
     Route::post('/report/getexecutedata', 'ReportController@getExecuteData');
 
+
+    // Profile
+    Route::get('/profile', 'ProfileController@index');
+    Route::get('/profile/get', 'ProfileController@getReport');
+
+    Route::post('/profile/getrunningtabdata', 'ProfileController@getRunningTabData')->name('report_running.data');
+    Route::post('/profile/getscheduledtabdata', 'ProfileController@getScheduledTabData')->name('report_scheduled.data');
+    Route::post('/profile/getcompletetabdata', 'ProfileController@getCompleteTabData')->name('report_completed.data');
+
+    Route::post('/profile/schedule', 'ProfileController@rpSchedule');
+    Route::get('/profile/getlist', 'ProfileController@getList');
+    Route::get('/profile/seq', 'ProfileController@getSeq');
+    Route::post('/profile/ar_sch_data', 'ProfileController@arSchData');
+    Route::get('/profile/recd', 'ProfileController@getSingleProfile');
+    Route::post('/profile/reschedule', 'ProfileController@reSchedule');
+    Route::post('/profile/callouterschedule', 'ProfileController@callOuterSchedule');
+    Route::post('/profile/addtophone', 'ProfileController@addToPhone');
+    Route::post('/profile/generatesummaryreport', 'ProfileController@generateSummaryReport');
+    Route::post('/profile/generateXLSX', 'ProfileController@generateXLSX');
+    Route::post('/profile/generatePDF', 'ProfileController@generatePDF');
+    Route::post('/profile/updateprofile', 'ProfileController@updateProfile');
+    Route::post('/profile/getexecutedata', 'ProfileController@getExecuteData');
 	//Help
 	Route::get('/helps', 'HelpController@index');
 	Route::get('/helps/getsection/{id}', 'HelpController@getSection');
@@ -272,6 +298,58 @@ Route::group(['middleware' => ['auth']], function () {
 
     //Execute
     Route::post('/campaign/getexecutedata', 'CampaignController@getExecuteData');
+    /*************** Campaign - End************/
+
+    /*************** model - Start************/
+    Route::get('/model', 'ModelController@index');
+    Route::post('/model/get', 'ModelController@getModel');
+
+    Route::post('/model/getrunningtabdata', 'ModelController@getRunningTabData')->name('model_running.data');
+    Route::post('/model/getscheduledtabdata', 'ModelController@getScheduledTabData')->name('model_scheduled.data');
+    Route::post('/model/getcompletetabdata', 'ModelController@getCompleteTabData')->name('model_completed.data');
+    Route::post('/model/getesummarytabdata', 'ModelController@getESummaryTabData')->name('model_esummary.data');
+    Route::post('/model/getedetailstabdata', 'ModelController@getEDetailsTabData')->name('model_edetails.data');
+
+    Route::post('/model/edownload', 'ModelController@EvaluationDownload');
+    Route::get('/model/metadataquickupdate', 'ModelController@MetaDataQuickUpdate');
+    Route::get('/model/single', 'ModelController@getSingle');
+    Route::post('/model/schedule', 'ModelController@rpSchedule');
+    Route::get('/model/getlist', 'ModelController@getList');
+    Route::get('/model/seq', 'ModelController@getSeq');
+    Route::post('/model/mo_sch_data', 'ModelController@moSchData');
+    Route::get('/model/recd', 'ModelController@getSingleCampaign');
+    Route::post('/model/reschedule', 'ModelController@reSchedule');
+    Route::post('/model/callouterschedule', 'ModelController@callOuterSchedule');
+    Route::post('/model/showmeta', 'ModelController@showMeta');
+    Route::get('/model/phone', 'ModelController@showPhone');
+    Route::post('/model/phone', 'ModelController@submitPhone');
+    Route::post('/model/generatereport', 'modelController@generateReport');
+    Route::post('/model/generatePDF', 'modelController@generatePDF');
+    Route::post('/model/generateXLSX', 'modelController@generateXLSX');
+    Route::get('/model/preview/{modelid?}', 'modelController@modelPreview');
+    Route::get('/model/scorepreview', 'modelController@modelScorePreview');
+
+    //generatequickmeta
+    Route::post('/model/generatequickmeta', 'modelSegmentController@generateQuickMeta');
+
+    //Segment Tab
+    Route::post('/model/getaddsubval', 'modelSegmentController@getAddsubVal');
+    Route::post('/model/getcol', 'modelSegmentController@getCol');
+    Route::post('/model/cg', 'modelSegmentController@CG');
+    Route::post('/model/lsdetails', 'modelSegmentController@LSDetails');
+    Route::post('/model/byfieldcheck', 'modelSegmentController@byFieldCheck');
+
+    //Export
+    Route::post('/model/expgetcol', 'modelExportController@getCol');
+    Route::post('/model/expgetpromodata', 'modelExportController@getPromoData');
+    Route::post('/model/expfileexists', 'modelExportController@fileExists');
+
+    //MetaData
+    Route::post('/model/getmetadata', 'modelMetaDataController@getMetadata');
+    Route::post('/model/metasavelkp', 'modelMetaDataController@metaSaveLkp');
+
+    //Execute
+    Route::post('/model/getexecutedata', 'ModelController@getExecuteData');
     /*************** Campaign - End************/
 
     /*************** Email - Start************/

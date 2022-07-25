@@ -182,7 +182,7 @@ function sessionExp() {
     params.CGOpt = CGOpt;
     params.eData = eData;
     localStorage.setItem('params',JSON.stringify(params));
-    $('[href="#tab_29"]').trigger('click');
+    $('[href="#tab_12"]').trigger('click');
 
 }
 

@@ -30,6 +30,13 @@ $(document).ready(function () {
         $('.lookup-content').removeClass('col-lg-10')
             .addClass('col-lg-12');
 
+        /*************** Phone **************/
+        $('.filters').hide();
+        $('.tabs').addClass('col-lg-7').removeClass('col-lg-5');
+        $('.content').addClass('col-lg-12').removeClass('col-lg-10');
+        $('.customtab').html('');
+        /*************** Phone *************/
+
         $('.text-themecolor').text('Lookup');
         $('.after-filter').hide();
         $("#updateContactBtn").text('Save Contact');
@@ -201,8 +208,8 @@ $(document).ready(function () {
         $('.sd').hide();
         $("#updateContactBtn").text('Add Contact');
 
-        $('.txtds_mkc_householdid').html(R.newid);
-        $('.txtds_mkc_contactid').text(R.newid);
+        $('.txtds_mkc_householdid').val(R.newid);
+        $('.txtds_mkc_contactid').val(R.newid);
 
         $('.txtds_mkc_household_num').html('&nbsp;');
 
@@ -387,6 +394,13 @@ function goBack() {
     $('.lookup-content').removeClass('col-lg-12')
         .addClass('col-lg-10');
 
+    /*************** Phone **************/
+    $('.filters').show();
+    $('.tabs').addClass('col-lg-5').removeClass('col-lg-7');
+    $('.content').addClass('col-lg-10').removeClass('col-lg-12');
+    //$('.customtab').html('');
+    /*************** Phone *************/
+
     $('.text-themecolor').text('Lookup');
     //MergeKeys = [];
     $('.firstscreen').show();
@@ -468,7 +482,7 @@ function downloadCMLink(obj){
 
 function showCreateCampaign() {
     var filters = getFilters($('#filter_form'));
-    var downloadableColumns = $('#yajra-table').attr('data-columns-visible') ? $('#yajra-table').attr('data-columns-visible') : '';
+    var downloadableColumns = $('#basic_table2').attr('data-columns-visible') ? $('#basic_table2').attr('data-columns-visible') : '';
     ACFn.sendAjax('lookup/showcreatecampaign','GET',{
         filters : filters,
         downloadableColumns : downloadableColumns

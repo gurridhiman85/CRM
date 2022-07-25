@@ -102,15 +102,12 @@ class CampaignController extends Controller
         $lLevel = Helper::getColumns('Campaign',$reqlevel);
         $sort = empty($sort) ? $lLevel['sort'] : $sort;
 
-        //$sort = ($sort == "") ? "Order by sa.Date DESC " : "Order by $sort $dir";
-
-
         $levels = [
             $reqlevel => [
                 'columns' => $lLevel['all_columns'],
                 'visible_columns' => $lLevel['visible_columns'],
                 'filter_columns' => $lLevel['filter_columns'],
-                'sql'   => 'select '.implode(',',$lLevel['all_columns']).' from (SELECT *,ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS ROWNUMBER FROM '.$lLevel['table_name'].') as t',
+                'sql'   => 'select '.implode(',',$lLevel['all_columns']).' from (SELECT *,ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS ROWNUMBER FROM '.$lLevel['table_name'].' ?where?) as t ',
                 'filter' => 1
             ]
 
@@ -188,7 +185,7 @@ class CampaignController extends Controller
         }*/
         if($tabid == '0'){  // Running
 
-            /*$query = App\Model\CampaignTemplate::query()->with(['rpmeta','rpschedule.ccschstatusmap']);
+            $query = App\Model\CampaignTemplate::query()->with(['rpmeta','rpschedule.ccschstatusmap']);
             if($User_Type != 'Full_Access') {
                 $query->where(function ($qry) use($uid){
                     $qry->whereHas('rpshare',function ($subqry) use($uid){
@@ -202,6 +199,7 @@ class CampaignController extends Controller
             $query->whereHas('rpschedule.ccschstatusmap',function ($qry){
                 $qry->where('status','Running');
             });
+            Helper::ApplyFiltersConditionForCC($filters,$query);
             $records = $query->skip($position)
                 ->take($records_per_page)
                 ->orderBy('row_id', 'DESC')
@@ -222,7 +220,8 @@ class CampaignController extends Controller
             $trQuery->whereHas('rpschedule.ccschstatusmap',function ($qry){
                 $qry->where('status','Running');
             });
-            $total_records = $trQuery->count();*/
+            Helper::ApplyFiltersConditionForCC($filters,$trQuery);
+            $total_records = $trQuery->count();
 
             /*$resolver['Description'] = 'substring(meta_data,  P3.Pos + 1,  P4.Pos -  P3.Pos - 1)';
 
@@ -284,7 +283,7 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
             $tabName = 'running';
             if($rType == 'pagination'){
                 $html = View::make('campaign.tabs.running.table',[
-                    //'records' => $records,
+                    'records' => $records,
                     'uid' => $uid,
                     'tab' => $tabName,
                     'sort_column' => $sort_column,
@@ -292,7 +291,7 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
                 ])->render();
             }else{
                 $html = View::make('campaign.tabs.running.index',[
-                    //'records' => $records,
+                    'records' => $records,
                     'uid' => $uid,
                     'tab' => $tabName,
                     'sort_column' => $sort_column,
@@ -300,26 +299,26 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
                 ])->render();
             }
 
-            /*$paginationhtml = View::make('campaign.tabs.running.pagination-html',[
+            $paginationhtml = View::make('campaign.tabs.running.pagination-html',[
                 'total_records' => $total_records,
                 'records' => $records,
                 'position' => $position,
                 'records_per_page' => $records_per_page,
                 'page' => $page,
                 'tab' => $tabName
-            ])->render();*/
+            ])->render();
 
             return $ajax->success()
-                //->appendParam('records',$records)
+                ->appendParam('records',$records)
                 ->appendParam('html',$html)
-                ->appendParam('paginationHtml','')
+                ->appendParam('paginationHtml',$paginationhtml)
                 ->jscallback('load_ajax_tab')
                 ->response();
 
         }
         else if($tabid == 1){ // Scheduled
 
-            /*$query = App\Model\CampaignTemplate::query()->with('rpmeta','rpschedule.ccschstatusmap');
+            $query = App\Model\CampaignTemplate::query()->with('rpmeta','rpschedule.ccschstatusmap');
             if($User_Type != 'Full_Access') {
                 $query->where(function ($qry) use($uid){
                     $qry->whereHas('rpshare',function ($subqry) use($uid){
@@ -333,6 +332,7 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
             $query->whereHas('rpschedule.ccschstatusmap',function ($qry){
                 $qry->where('status','Scheduled');
             });
+            Helper::ApplyFiltersConditionForCC($filters,$query);
             $records = $query->skip($position)->take($records_per_page)->orderBy('row_id', 'DESC')->get()->toArray();
 
             $trQuery = App\Model\CampaignTemplate::query();
@@ -349,7 +349,8 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
             $trQuery->whereHas('rpschedule.ccschstatusmap',function ($qry){
                 $qry->where('status','Scheduled');
             });
-            $total_records = $trQuery->count();*/
+            Helper::ApplyFiltersConditionForCC($filters,$trQuery);
+            $total_records = $trQuery->count();
 
 
             /*$records = DB::select("SELECT
@@ -391,7 +392,7 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
             $tabName = 'scheduled';
             if($rType == 'pagination'){
                 $html = View::make('campaign.tabs.scheduled.table',[
-                    //'records' => $records,
+                    'records' => $records,
                     'uid' => $uid,
                     'tab' => $tabName,
                     'sort_column' => $sort_column,
@@ -399,7 +400,7 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
                 ])->render();
             }else{
                 $html = View::make('campaign.tabs.scheduled.index',[
-                    //'records' => $records,
+                    'records' => $records,
                     'uid' => $uid,
                     'tab' => $tabName,
                     'sort_column' => $sort_column,
@@ -407,19 +408,19 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
                 ])->render();
             }
 
-            /*$paginationhtml = View::make('campaign.tabs.scheduled.pagination-html',[
+            $paginationhtml = View::make('campaign.tabs.scheduled.pagination-html',[
                 'total_records' => $total_records,
                 'records' => $records,
                 'position' => $position,
                 'records_per_page' => $records_per_page,
                 'page' => $page,
                 'tab' => $tabName
-            ])->render();*/
+            ])->render();
 
             return $ajax->success()
-                //->appendParam('records',$records)
+                ->appendParam('records',$records)
                 ->appendParam('html',$html)
-                ->appendParam('paginationHtml','')
+                ->appendParam('paginationHtml',$paginationhtml)
                 ->jscallback('load_ajax_tab')
                 ->response();
 
@@ -428,7 +429,7 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
             $sWhere1 = " WHERE ROWNUMBER > $position and ROWNUMBER <= " . ($position + $records_per_page);
             $sort = ($sort == "") ? "Order By CampaignId DESC" : $sort == 'CampaignId' ? "Order By CampaignId DESC" : "Order By $sort $dir";
 
-            /*$query = App\Model\CampaignTemplate::query()->with(['rpschedule.ccschstatusmap']);
+            $query = App\Model\CampaignTemplate::query()->with(['rpschedule.ccschstatusmap']);
             if($User_Type != 'Full_Access') {
                 $query->where(function ($qry) use($uid){
                     $qry->whereHas('rpshare',function ($subqry) use($uid){
@@ -443,6 +444,7 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
             $query->whereHas('rpschedule.ccschstatusmap',function ($qry){
                 $qry->where('status','Completed');
             });
+            Helper::ApplyFiltersConditionForCC($filters,$query);
             $records = $query->skip($position)->take($records_per_page)->orderBy('row_id', 'DESC')->get();
 
             $trQuery = App\Model\CampaignTemplate::query();
@@ -459,7 +461,8 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
             $trQuery->whereHas('rpschedule.ccschstatusmap',function ($qry){
                 $qry->where('status','Completed');
             });
-            $total_records = $trQuery->count();*/
+            Helper::ApplyFiltersConditionForCC($filters,$trQuery);
+            $total_records = $trQuery->count();
 
             /*$sSQL = "SELECT * FROM (SELECT ROW_NUMBER() over (Order By row_id DESC) as ROWNUMBER,* FROM (SELECT                              za.t_id as ID,za.list_level as [Level], za.list_short_name as Name,za.t_name,za.sql,za.selected_fields,za.meta_data,
                           substring(za.meta_data,  P3.Pos + 1,  P4.Pos -  P3.Pos - 1) as Description,
@@ -516,7 +519,7 @@ where (sc.camp_id = za.t_id AND za.t_type = 'C') $uWhere";
             $tabName = 'level1';
             if($rType == 'pagination'){
                 $html = View::make('campaign.tabs.completed.table',[
-                    //'records' => $records,
+                    'records' => $records,
                     'uid' => $uid,
                     'prefix' => $this->prefix,
                     'tab' => $tabName,
@@ -525,7 +528,7 @@ where (sc.camp_id = za.t_id AND za.t_type = 'C') $uWhere";
                 ])->render();
             }else{
                 $html = View::make('campaign.tabs.completed.index',[
-                    //'records' => $records,
+                    'records' => $records,
                     'uid' => $uid,
                     'prefix' => $this->prefix,
                     'tab' => $tabName,
@@ -534,19 +537,19 @@ where (sc.camp_id = za.t_id AND za.t_type = 'C') $uWhere";
                 ])->render();
             }
 
-            /*$paginationhtml = View::make('campaign.tabs.level1.pagination-html',[
+            $paginationhtml = View::make('campaign.tabs.completed.pagination-html',[
                 'total_records' => $total_records,
                 'records' => $records,
                 'position' => $position,
                 'records_per_page' => $records_per_page,
                 'page' => $page,
                 'tab' => $tabName
-            ])->render();*/
+            ])->render();
             return $ajax->success()
-                //->appendParam('total_records',$total_records)
-                //->appendParam('records',$records)
+                ->appendParam('total_records',$total_records)
+                ->appendParam('records',$records)
                 ->appendParam('html',$html)
-                ->appendParam('paginationHtml','')
+                ->appendParam('paginationHtml',$paginationhtml)
                 ->jscallback('load_ajax_tab')
                 ->response();
         }
@@ -2527,7 +2530,11 @@ where (sc.camp_id = za.t_id AND za.t_type = 'C') $uWhere";
                 ->jscallback('ajax_download_file')
                 ->response();
         }
-        $results = self::implement_query($level,$filters);
+
+        $sort = "Order By CampaignID DESC";
+        $tabidWS = str_replace('_',' ',$level);
+        $results = self::implement_query($tabidWS,$filters,'',false,$sort);
+
         $view = View::make('campaign.xlsx',[
             'reqlevel' => $level,
             'records' => $results['records'],
@@ -2588,10 +2595,14 @@ where (sc.camp_id = za.t_id AND za.t_type = 'C') $uWhere";
 
         $eEvalSumHtml = $eEvalDetailHtml= '';
         if($eEvalSumRecords){
-            $eEvalSumHtml = Helper::print_datatable($eEvalSumRecords);
+            $eEvalSumHtml = '<div class="title-center font-14 mb-1" style="color: #75aed0;
+    font-weight: 500;
+    font-size: 13px;">Campaign Performance</div>'.Helper::print_datatable($eEvalSumRecords);
         }
         if($eEvalDetailRecords){
-            $eEvalDetailHtml = Helper::print_datatable($eEvalDetailRecords);
+            $eEvalDetailHtml = '<div class="title-center font-14 mb-1" style="color: #75aed0;
+    font-weight: 500;
+    font-size: 13px;">Campaign Segment Performance</div>'.Helper::print_datatable($eEvalDetailRecords);
         }
         return $ajax->success()
             ->appendParam('eEvalSumHtml',$eEvalSumHtml)
@@ -2647,8 +2658,21 @@ where (sc.camp_id = za.t_id AND za.t_type = 'C') $uWhere";
         if(!empty($campaign)){
             $campaign = explode('::',$campaign);
             //echo "EXEC sp_CRM_Campaign_to_Phone ".$campaign[0].", '".$campaign[1]."'"; die;
-            DB::statement("EXEC [dbo].[sp_CRM_Campaign_to_Phone] ".$campaign[0].", '$campaign[1]'");
-            $rRecords = DB::select("select  Touchcampaign, Touchstatus,Touchdate, count(*) as Count from touch where touchcampaign= '$campaign[1]' group by touchcampaign, touchstatus, touchdate");
+            //DB::statement("EXEC [dbo].[sp_CRM_Campaign_to_Phone_P1] ".$campaign[0].", '$campaign[1]'");
+            $db = $this->db->getPdo();
+            //$stmt = $db->prepare("EXEC [dbo].[EXEC [dbo].[sp_CRM_Campaign_to_Phone_P1] ".$campaign[0].", '$campaign[1]'");
+            $stmt = $db->prepare("EXEC [dbo].[sp_CRM_Campaign_to_Phone_P1] ".$campaign[0]);
+            $stmt->execute();
+
+          /*  echo "select  Touchcampaign, Touchstatus,Touchdate, count(*) as Count from touch where campaignid= '$campaign[0]' group by touchcampaign, touchstatus, touchdate<br>" ;
+            $rRecords = DB::select("select  Touchcampaign, Touchstatus,Touchdate, count(*) as Count from touch where campaignid= '$campaign[0]' group by touchcampaign, touchstatus, touchdate");
+
+            echo '<pre>';
+            print_r($rRecords1);
+            echo '#######################<br>';
+            print_r($rRecords);
+            die;*/
+            $rRecords = DB::select("EXEC [dbo].[sp_CRM_Campaign_to_Phone_P2] $campaign[0]");
             $rRecords = collect($rRecords)->map(function($x){ return (array) $x; })->toArray();
             $html = Helper::print_datatable($rRecords);
             return $ajax->success()

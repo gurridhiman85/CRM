@@ -1,26 +1,27 @@
 <?php
 
+$repo = 'DB_CRMLV_v16D_AB';
 return [
+    'BaseUrl' => 'https://crmsquare.com/'.$repo.'/',
+    'schDir' => $repo,
+    'filePath' => 'D:\sftpuser\Miscsftp1\\'.$repo.'\\',
+    'phpPath' => 'C:\\Program Files (X86)\\PHP\\v7.2\\php.exe',
     'title' => 'CRM',
     'loader_label' => 'CRM',
+    'top_left_logo1' => 'img/logo.gif',
+    'top_left_logo2' => 'img/logo1.jpg',
+    'top_nav_title' => 'The Zen Studies Society, Inc.',
+    'help_pdf' => 'help/CRM Square User Guide v5.4.pdf',
+    'top_right_logo' => 'img/crmlogo.png',
     'footer_label' => 'Copyright &copy;  2007 -  '.date("Y").' Data Square. All Rights Reserved.',
     'creator' => 'Data Square',
-    'top_nav_title' => 'The Zen Studies Society, Inc.',
     'client_name' => 'ZSS',
     'record_per_page' => 15,
-
-    'BaseUrl' => 'https://crmsquare.com/DB_CRMLV_v16D_AB/',
-
     'hostUrl' => 'https://crmsquare.com/',
 	'schtasks_dir' => 'schtasks_v16D_AB',
 	'schtasks_dir_path' => 'D:\sftpuser\Miscsftp1\schtasks_v16D_AB\\',
     'curlcert' => 'C:\Program Files (x86)\IIS Express\PHP\v7.2\cacert.pem',
-
-    'filePath' => 'D:\sftpuser\Miscsftp1\DB_CRMLV_v16D_AB\\',
-    'phpPath' => 'C:\\Program Files (X86)\\PHP\\v7.2\\php.exe',
-    'schDir' => 'DB_CRMLV_v16D_AB',
     'prefix' => 'Dev_',
-    'phone_report_row_id' => 215,
 
     'CommonHeader' => 'From: CRM Square Administrator<admin@crmsquare.com>' . "\r\n",
     'CommonBcc' => 'Bcc: devyani@datasquare.com' . "\n",

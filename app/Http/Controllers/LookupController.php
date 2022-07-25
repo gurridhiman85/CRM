@@ -330,10 +330,8 @@ class LookupController extends Controller
         $fileprefix = $request->input('prefix');
         $screen = $request->input('screen');
         $downloadableColumns = json_decode($request->input('downloadableColumns',''));
-
+        $filters = $request->input('filters',[]);
         if($screen == 'first'){
-
-            $filters = $request->input('filters',[]);
             $sort = $request->input('sort') ? $request->input('sort') : '';
             $dir = $request->input('dir') ? $request->input('dir') : 'DESC';
 
@@ -374,95 +372,41 @@ class LookupController extends Controller
                     ->redirectTo($sBaseUrl . "downloads/" . $file_Name. '.xlsx')
                     ->response();
             }
-            elseif ($fileprefix == 'phone'){
-                $sort = ($sort == "" || $sort == "select") ? "Order by TouchCampaign desc,TouchDate  DESC, TouchStatus  DESC " : "Order by $sort $dir";
-                $lookupClause = !empty($where['lookupWhere']) ? ' WHERE '.$where['lookupWhere'] : '';
-                $phoneClause = !empty($where['phoneWhere']) ? $where['phoneWhere'] : '';
-                $salesClause = !empty($where['salesWhere']) ? $where['salesWhere'] : '';
-                $urCon = !empty($where['urCon']) ? ' WHERE ' . $where['urCon']. ' AND isnull(TouchCampaign,\'\') <> \'\'' : ' WHERE isnull(TouchCampaign,\'\') <> \'\'';
+        }
+        elseif ($fileprefix == 'phone'){
 
-                $sSQL = "SELECT * from (select *, row_number () over (partition by rown Order by TouchCampaign desc,TouchDate  DESC, TouchStatus  DESC , ds_mkc_householdid ) as ROWNUMBER  from (SELECT ROW_NUMBER() over (partition by c.DS_MKC_ContactID $sort) as ROWN,
+            $sort = "Order by TouchStatus DESC ";
+            $pagination = "";
 
-TouchStatus,TouchCampaign,c.DS_MKC_ContactID,c.DS_MKC_HouseholdID,Extendedname as [Extended Name],Phone,Email,Email2,Address,City,State,Zip,Company,update_date as [Updated],ZSS_Segment,Last_3Yrs_GiftsAmt as [3-yr Gifts],Life_BHse_GiftsAmt as [BH Gifts],CurrentYr_DonorAmt as [This Yr Gifts $],Last_2Yrs_DonorAmt as [Last 2Yrs Gifts $],Life2date_donoramt as [Life Gifts $],dayssincelastvisit as [Last Visit-Days],EmailSegment as [Email Segment],TouchNotes as [Comments],TouchDate from (select dS_MKC_ContactID,DS_MKC_HouseholdID,mgr1,mgr2,Extendedname,phone,Email,email2,Address,City,State,Zip,Company,update_date,ZSS_Segment,Last_3Yrs_GiftsAmt,Life_BHse_GiftsAmt,CurrentYr_DonorAmt,Last_2Yrs_DonorAmt,Life2date_donoramt,EmailSegment from Contact_View ".$lookupClause.")  c inner join (select * from  (select ROW_NUMBER() over (partition by DS_MKC_contactid   Order By TouchCampaign desc,TouchDate  DESC, TouchStatus  DESC,rowID DESC) as ROWNUMBERt, * from touch t ".$phoneClause.") t1 where rownumbert=1) t  on c.ds_mkc_contactid=t.ds_mkc_contactid
-left join (select * from  (select ROW_NUMBER() over (partition by DS_MKC_contactid   Order By date  DESC) as ROWNUMBERs, * from sales_view ".$salesClause." ) s1 where rownumbers=1) s on c.ds_mkc_contactid=s.ds_mkc_contactid ".$urCon." ) a ) b";
+            $tabidWS = str_replace('_h_','-',$screen);
+            $tabidWS = str_replace('_',' ',$tabidWS);
+            $results = PhoneController::implement_query($tabidWS,$filters,$pagination,$sort);
 
-            }
+            $view = View::make('lookup.phone.xlsx',[
+                'records' => $results['records'],
+                'downloadColumnsIndex' => $downloadableColumns,
+                'columns' => $results['columns'],
+                'visible_columns' => $results['visible_columns']
+            ])->render();
+            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
+            $spreadhseet = $reader->loadFromString($view);
+            $sheet = $spreadhseet->getActiveSheet();
+            $spreadhseet->setActiveSheetIndex(0);
+            $sTitle = 'Phone';
+            $spreadhseet->getActiveSheet()->setTitle($sTitle);
 
-            ini_set('max_execution_time', 3500);
-            ini_set('memory_limit', '1024M');
-            ob_clean();
-            //try{
-                if (trim($sSQL) != "") {
-                    if (strpos($sSQL, "*") === true) {
-                        $nSQL = str_replace("*", "TOP 10000 * ", $sSQL);
-                    } else {
-                        $nSQL = substr($sSQL, 0, 6) . " top 10000 " . substr($sSQL, 7, strlen($sSQL));
-                    }
-                    $files = glob(public_path().'/downloads/*'); // get all file names
-                    foreach($files as $file){ // iterate files
-                        if(is_file($file))
-                            unlink($file); // delete file
-                    }
+            $file_Name = $this->prefix.'Phone_'.$tabidWS.'_'. date('Y') . date('m') . date('d');
 
-                    $records = DB::select($nSQL);
-                    $aData = collect($records)->map(function($x){ return (array) $x; })->toArray();
+            $writer = new Xlsx($spreadhseet);
+            $writer->save(public_path()."\\downloads\\".$file_Name.".xlsx");
+            $sBaseUrl = config('constant.BaseUrl');
+            return $ajax->success()
+                ->jscallback()
+                ->form_reset(false)
+                ->redirectTo($sBaseUrl . "downloads/" . $file_Name. '.xlsx')
+                ->response();
 
-                    $headerCells = $this->headerCells;
-                    $spreadsheet = new Spreadsheet();
-                    $sheet = $spreadsheet->getActiveSheet();
 
-                    $notAllowed = ['ROWN','ROWNUMBER','a'];
-                    foreach ($aData as $colArr){
-                        $i = 0;
-                        foreach ($colArr as $cName => $value) {
-                            if(!in_array($cName,$notAllowed)){
-                                $sheet->setCellValue($headerCells[$i].'1', $cName);
-                                $i++;
-                            }
-                        }
-                        break;
-                    }
-
-                    $j = 2;
-                    foreach ($aData as $ValArr){
-                        $i = 0;
-                        foreach ($ValArr as $cName => $value) {
-                            if(!in_array($cName,$notAllowed)) {
-                                $sheet->setCellValue($headerCells[$i] . $j, $value);
-                                $i++;
-                            }
-                        }
-                        $j++;
-                    }
-
-                    /* For Values */
-                    $uUfName = strtoupper(substr(Auth::user()->User_FName, 0, 1));
-                    $uUlName = strtoupper(substr(Auth::user()->User_LName, 0, 1));
-                    if(!empty($fileprefix)){
-                        $uUName = $fileprefix;
-                    }else{
-                        $uUName = $uUfName . $uUlName;
-                    }
-                    $prefix = config('constant.prefix');
-                    $file_Name = $prefix. date('Y') . date('m') . date('d');
-                    $writer = new Xlsx($spreadsheet);
-                    $writer->save(public_path()."\\downloads\\".$file_Name.".xlsx");
-
-                    //DB::statement("insert into OPENROWSET('Microsoft.ACE.OLEDB.12.0', 'Excel 12.0;Database=" . $this->filePath . 'public\\downloads\\' . $file_Name . ".xlsx;','SELECT * FROM [Worksheet$]') $sSQL");
-
-                    $sBaseUrl = config('constant.BaseUrl');
-                    return $ajax->success()
-                        ->appendParam('download_url',$sBaseUrl . "downloads/" . $file_Name . '.xlsx')
-                        ->appendParam('sql',$sSQL)
-                        ->jscallback('ajax_download_file')
-                        ->response();
-                }
-            /*}catch (\Exception $exception){
-                return $ajax->fail()
-                    ->appendParam('error_message',$exception->getMessage())
-                    ->message('Downloading failed')
-                    ->response();
-            }*/
         }
         elseif ($screen == 'contact'){
 
@@ -555,7 +499,7 @@ Jukai_Date,Ordainment_Date,firstDate,lastDate,email_optout_reason,email_status,e
                 ->jscallback('ajax_download_file')
                 ->response();
         }
-        elseif (!in_array($screen,['first','contact','summary'])){
+        elseif (!in_array($screen,['first','contact','summary','phone'])){
             $contactid = $request->input('contactid');
             $filters = $request->input('filters',[]);
 /*

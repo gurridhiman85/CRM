@@ -1,4 +1,4 @@
-var timer = new IntervalTimer(function () {}, 15000);
+var timer = new IntervalTimer(function () {}, 5000);
 timer.pause();
 
 $(document).ready(function () {
@@ -285,9 +285,8 @@ $(document).ready(function () {
 });
 
 function colChange(obj,key){
-
-    var efCls = obj.parents('th').data('class');
-    var efCKey = obj.parents('th').data('col-key');
+    var efCls = obj.parents('th').attr('data-class');
+    var efCKey = obj.parents('th').attr('data-col-key');
     if(obj.val() != ""){
         $('.' + efCls).removeClass('unmatched').addClass('matched');
         obj.parents('th').removeClass('unmatched').addClass('matched');

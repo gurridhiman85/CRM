@@ -53,6 +53,9 @@
     <td class="text-center">
         {!! $next_runtime !!}
     </td>
+    <td class="text-center">
+        {!! !empty($record['rpschedule']['rp_end_date']) ? $record['rpschedule']['rp_end_date'] : ''; !!}
+    </td>
     <td class="text-center">{!! isset($rpstatus[0]['ftp_flag']) && !empty(trim($rpstatus[0]['ftp_flag'])) ? $rpstatus[0]['ftp_flag'] : 'N' !!}</td>
     <td class="text-center">{!! $record['is_public'] !!}</td>
 

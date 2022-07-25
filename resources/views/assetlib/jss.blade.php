@@ -1,6 +1,4 @@
 <?php
-
-
 $js_files = [
     'popper' => [
         'path' => '/assets/node_modules/popper/popper.min.js',
@@ -226,6 +224,14 @@ $js_files = [
         'path' => '/js/campaign.js',
         'required' => 0
     ],
+    'model' => [
+        'path' => '/js/model.js',
+        'required' => 0
+    ],
+    'profile' => [
+        'path' => '/js/profile.js',
+        'required' => 0
+    ],
     'segment' => [
         'path' => '/js/segment.js',
         'required' => 0
@@ -300,6 +306,5 @@ $js_files = [
         ]
     ],*/
 ];
-
 
 \App\Library\AssetLib::echoJsFiles($js_files);

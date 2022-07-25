@@ -6,8 +6,8 @@
                     <div class="row">
                         <div class="col-md-4 pl-0">
                             <div class="form-group row">
-                                <label class="control-label text-left col-md-2 pt-1">Campaign</label>
-                                <div class="col-md-6">
+                                {{--<label class="control-label text-left col-md-2 pt-1">Campaign</label>--}}
+                                <div class="col-md-6 pl-0">
                                     <select class="form-control form-control-sm" id="singlecampaignid" name="singlecampaignid" onChange="singleCampaign($(this))">
                                         <option value="">Select Campaign</option>
                                         @foreach($campaigns as $campaign)

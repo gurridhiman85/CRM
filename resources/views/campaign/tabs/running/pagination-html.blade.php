@@ -25,7 +25,10 @@
         });
 
         var filtersArr = getFilters($('#filter_form'));
-        $.get(url, {'page': track_page, type: type,filters : filtersArr}, function (data) {
+        var tabid = $('.customtab2 li a.active').attr('data-tabid');
+        var tabname = tabid.replace('_',' ');
+        $.post(url, {'page': track_page,tabname : tabname,
+            tabid : tabid, type: type,filters : filtersArr}, function (data) {
             NProgress.done();
             loading = false; //set loading flag off once the content is loaded
             if (data.html.trim().length == 0) {

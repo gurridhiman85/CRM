@@ -146,7 +146,8 @@
                             'background-clip: padding-box;' +
                             'border: 1px solid #e9ecef;' +
                             'font-size: .76563rem;' +
-                            'min-height: 30px;'
+                            'min-height: 30px;' /*+
+                            'color: #cdcdcd;'*/
                         );
                     },1000);
                 }

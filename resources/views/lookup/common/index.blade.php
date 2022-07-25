@@ -85,6 +85,8 @@
 						</div>
 					@elseif($option == 'phone')
 						<div class="btn-group">
+							<button type="button" title="Phone Campaign" data-href="phone/campaign" class="btn btn-light no-border font-16 ajax-Link" aria-expanded="false" style="float: right;box-shadow: none;"><i class="fas fa-dollar-sign ds-c"></i></button>
+
 							<button type="button" title="Report download" class="btn btn-light no-border dropdown-toggle font-12" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="float: right;box-shadow: none;"><i class="ti-bar-chart font-weight-bold font-16 ds-c"></i></button>
 							<div class="dropdown-menu">
 								<a class="dropdown-item" href="javascript:void(0)" onclick="implementReportWithPhone('report','{!! $report_row_id !!}');"><i class="fas fa-file-pdf" style="color: #e92639;"></i> PDF Report</a>

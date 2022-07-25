@@ -1,6 +1,6 @@
 <div class="dataTables_info " id="taskList_info" role="status" aria-live="polite">
     <div class="ticket-pagination">
-        {!! \App\Helpers\Helper::pagination_v2($total_records,$records_per_page,$page,'SADetail_screen',$position,count($records)) !!}
+        {!! \App\Helpers\Helper::pagination_v3($total_records,$records_per_page,$page,'SADetail_screen',$position,count($records)) !!}
     </div>
 </div>
 <script>

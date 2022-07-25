@@ -95,7 +95,7 @@ class ReportController extends Controller
         }*/
         if($tabid == 20){  // Running
 
-            /*$query = App\Model\ReportTemplate::query()->with(['rpmeta','rpschedule.rpschstatusmap']);
+            $query = App\Model\ReportTemplate::query()->with(['rpmeta','rpschedule.rpschstatusmap']);
             if($User_Type != 'Full_Access') {
                 $query->where(function ($qry) use($uid){
                     $qry->whereHas('rpshare',function ($subqry) use($uid){
@@ -132,7 +132,7 @@ class ReportController extends Controller
                 $qry->where('status','Running');
             });
             Helper::ApplyFiltersConditionForRP($filters,$trQuery);
-            $total_records = $trQuery->count();*/
+            $total_records = $trQuery->count();
 
             /*$resolver['Description'] = 'substring(meta_data,  P3.Pos + 1,  P4.Pos -  P3.Pos - 1)';
 
@@ -194,7 +194,7 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
             $tabName = 'running';
             if($rType == 'pagination'){
                 $html = View::make('report.tabs.running.table',[
-                    //'records' => $records,
+                    'records' => $records,
                     'uid' => $uid,
                     'tab' => $tabName,
                     'sort_column' => $sort_column,
@@ -202,7 +202,7 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
                 ])->render();
             }else{
                 $html = View::make('report.tabs.running.index',[
-                    //'records' => $records,
+                    'records' => $records,
                     'uid' => $uid,
                     'tab' => $tabName,
                     'sort_column' => $sort_column,
@@ -210,26 +210,26 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
                 ])->render();
             }
 
-            /*$paginationhtml = View::make('report.tabs.running.pagination-html',[
+            $paginationhtml = View::make('report.tabs.running.pagination-html',[
                 'total_records' => $total_records,
                 'records' => $records,
                 'position' => $position,
                 'records_per_page' => $records_per_page,
                 'page' => $page,
                 'tab' => $tabName
-            ])->render();*/
+            ])->render();
 
             return $ajax->success()
-               // ->appendParam('records',$records)
+                ->appendParam('records',$records)
                 ->appendParam('html',$html)
-                ->appendParam('paginationHtml','')
+                ->appendParam('paginationHtml',$paginationhtml)
                 ->jscallback('load_ajax_tab')
                 ->response();
 
         }
         else if($tabid == 21){ // Scheduled
 
-            /*$query = App\Model\ReportTemplate::query()->with('rpmeta','rpschedule.rpschstatusmap');
+            $query = App\Model\ReportTemplate::query()->with('rpmeta','rpschedule.rpschstatusmap');
             if($User_Type != 'Full_Access') {
                 $query->where(function ($qry) use($uid){
                     $qry->whereHas('rpshare',function ($subqry) use($uid){
@@ -261,7 +261,7 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
                 $qry->where('status','Scheduled');
             });
             Helper::ApplyFiltersConditionForRP($filters,$trQuery);
-            $total_records = $trQuery->count();*/
+            $total_records = $trQuery->count();
 
            /* $records = DB::select("SELECT
 za.t_id as ID,za.list_level as [Level],
@@ -302,7 +302,7 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
             $tabName = 'scheduled';
             if($rType == 'pagination'){
                 $html = View::make('report.tabs.scheduled.table',[
-                    //'records' => $records,
+                    'records' => $records,
                     'uid' => $uid,
                     'tab' => $tabName,
                     'sort_column' => $sort_column,
@@ -310,7 +310,7 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
                 ])->render();
             }else{
                 $html = View::make('report.tabs.scheduled.index',[
-                    //'records' => $records,
+                    'records' => $records,
                     'uid' => $uid,
                     'tab' => $tabName,
                     'sort_column' => $sort_column,
@@ -318,26 +318,26 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
                 ])->render();
             }
 
-            /*$paginationhtml = View::make('report.tabs.scheduled.pagination-html',[
+            $paginationhtml = View::make('report.tabs.scheduled.pagination-html',[
                 'total_records' => $total_records,
                 'records' => $records,
                 'position' => $position,
                 'records_per_page' => $records_per_page,
                 'page' => $page,
                 'tab' => $tabName
-            ])->render();*/
+            ])->render();
 
             return $ajax->success()
-               // ->appendParam('records',$records)
+                ->appendParam('records',$records)
                 ->appendParam('html',$html)
-                ->appendParam('paginationHtml','')
+                ->appendParam('paginationHtml',$paginationhtml)
                 ->jscallback('load_ajax_tab')
                 ->response();
 
         }
         else if($tabid == 22){ // Completed
 
-           /* $query = App\Model\ReportTemplate::query()->with(['rpschedule.rpschstatusmap']);
+            $query = App\Model\ReportTemplate::query()->with(['rpschedule.rpschstatusmap']);
             if($User_Type != 'Full_Access') {
                 $query->where(function ($qry) use($uid){
                     $qry->whereHas('rpshare',function ($subqry) use($uid){
@@ -370,8 +370,7 @@ cross apply (select (charindex('^', za.meta_data, P11.Pos+1))) as P12(Pos)
                 $qry->where('status','Completed');
             });
             Helper::ApplyFiltersConditionForRP($filters,$trQuery);
-            $total_records = $trQuery->count();*/
-
+            $total_records = $trQuery->count();
             /*$sSQL = "select * from (select ROW_NUMBER() over (Order By row_id DESC) as ROWNUMBER,* from (SELECT za.t_id as ID,za.list_level as [Level],
 za.list_short_name as Name,za.t_name,za.sql,za.selected_fields,za.meta_data,
 substring(za.meta_data,  P3.Pos + 1,  P4.Pos -  P3.Pos - 1) as Description
@@ -421,7 +420,7 @@ where (sc.camp_id = za.t_id AND za.t_type = 'A') $uWhere";
             $tabName = 'level1';
             if($rType == 'pagination'){
                 $html = View::make('report.tabs.completed.table',[
-                   // 'records' => $records,
+                    'records' => $records,
                     'uid' => $uid,
                     'prefix' => $this->prefix,
                     'tab' => $tabName,
@@ -431,7 +430,7 @@ where (sc.camp_id = za.t_id AND za.t_type = 'A') $uWhere";
                 ])->render();
             }else{
                 $html = View::make('report.tabs.completed.index',[
-                    //'records' => $records,
+                    'records' => $records,
                     'uid' => $uid,
                     'prefix' => $this->prefix,
                     'tab' => $tabName,
@@ -441,19 +440,19 @@ where (sc.camp_id = za.t_id AND za.t_type = 'A') $uWhere";
                 ])->render();
             }
 
-            /*$paginationhtml = View::make('report.tabs.level1.pagination-html',[
+            $paginationhtml = View::make('report.tabs.completed.pagination-html',[
                 'total_records' => $total_records,
                 'records' => $records,
                 'position' => $position,
                 'records_per_page' => $records_per_page,
                 'page' => $page,
                 'tab' => $tabName
-            ])->render();*/
+            ])->render();
             return $ajax->success()
-                //->appendParam('total_records',$total_records)
-                //->appendParam('records',$records)
+                ->appendParam('total_records',$total_records)
+                ->appendParam('records',$records)
                 ->appendParam('html',$html)
-                ->appendParam('paginationHtml','')
+                ->appendParam('paginationHtml',$paginationhtml)
                 ->jscallback('load_ajax_tab')
                 ->response();
         }
@@ -801,6 +800,7 @@ where (sc.camp_id = za.t_id AND za.t_type = 'A') $uWhere";
         Helper::ApplyFiltersConditionForRP($filters,$query);
 
         $records = $query->orderByDesc('tag')->orderByDesc('row_id')->get();
+        //print_r($records); die;
         return Datatables::of($records)
             ->addColumn('Tag',function ($data){
                 $is_tag = $data->tag == 1 ? 'checked' : '';

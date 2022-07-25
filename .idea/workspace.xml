@@ -2,39 +2,184 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e8b59f35-a7e7-4f75-880d-0936740d2ea4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/Model/UALookupFieldMapping.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/email/tabs/completed/table-single-row_v2.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/email/tabs/completed/table_v2.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/lookup/contact-dn-tab-col-2_backup.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/lookup/contact-tab_bckup.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/lookup/fields/contact-fields.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/lookup/fields/field-type.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Console/Commands/MoSchedule.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Console/Commands/PrSchedule.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/ModelController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/ModelExportController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/ModelMetaDataController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/ModelSegmentController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/ProfileController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/TaxonomyXrefController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Mail/SendProfileEmail.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Mail/ShareModelEmail.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Model/ModelBuildMetadata.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Model/ModelChart.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Model/ModelChartDetails.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Model/ModelScoreMetadata.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Model/ModelScoreTemplate.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Model/ModelScoredData.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Model/ModelScoredMetaData.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Model/ProfileTemplate.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/dashboard_charts_before_dynamic.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/googlecharts.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/model.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/model_export.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/model_segment.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/profile.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/layouts/model-eval-pdf.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/layouts/model-pdf.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/layouts/profile-pdf.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/lookup/phone/Singlecamp/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/lookup/phone/table-single-row_v3.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/lookup/phone/table_v3.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/lookup/phone/xlsx.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/phone-campaign.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/EDetails/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/EDetails/pagination-html.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/EDetails/table-single-row.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/EDetails/table.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/ESummary/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/ESummary/pagination-html.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/ESummary/table-single-row.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/ESummary/table.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/Metadata/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/Metadata/pagination-html.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/Metadata/table-single-row.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/Metadata/table-single-row_old.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/Metadata/table.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/Singlecamp/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/completed/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/completed/pagination-html.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/completed/table-single-row-old.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/completed/table-single-row.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/completed/table.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/create/execute.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/create/export.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/create/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/create/metadata.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/create/new-v1.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/create/outer-schedule.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/create/segment.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/older_versions/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/older_versions/pagination-html.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/older_versions/table-single-row.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/older_versions/table.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/running/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/running/pagination-html.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/running/table-single-row.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/running/table.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/scheduled/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/scheduled/pagination-html.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/scheduled/table-single-row-old.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/scheduled/table-single-row.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/tabs/scheduled/table.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/xlsx-v2.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/model/xlsx.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/completed/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/completed/pagination-html.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/completed/table-single-row.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/completed/table.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/create/execute.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/create/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/create/new-v1.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/create/outer-schedule.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/older_versions/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/older_versions/pagination-html.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/older_versions/table-single-row.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/older_versions/table.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/running/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/running/pagination-html.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/running/table-single-row.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/running/table.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/scheduled/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/scheduled/pagination-html.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/scheduled/table-single-row.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/tabs/scheduled/table.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy-xref/columns/anomly.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy-xref/columns/product.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy-xref/columns/productcat1.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy-xref/columns/productcat1_des.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy-xref/columns/productcat2.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy-xref/columns/productcat2_des.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy-xref/columns/productdescription.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy-xref/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy-xref/tabs/level/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy-xref/tabs/level/pagination-html.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy-xref/tabs/level/table-single-row.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy-xref/tabs/level/table.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/taxonomy-xref/xlsx.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Console/Commands/ArSchedule.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Console/Commands/ArSchedule.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Console/Commands/CcSchedule.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Console/Commands/CcSchedule.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Helpers/Helper.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Helpers/Helper.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/CampaignController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/CampaignController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/EmailController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/EmailController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/DashboardController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/DashboardController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/LookupController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/LookupController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PhoneController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PhoneController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/RepCmpController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/RepCmpController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ReportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ReportController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TaxonomyController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TaxonomyController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Mail/SendReportEmail.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Mail/SendReportEmail.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Model/RepCmpSchedule.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/RepCmpSchedule.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/constant.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/constant.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/css/fonts/fontawesome-webfont.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/fonts/fontawesome-webfont.ttf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/css/style-horizontal.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/style-horizontal.min.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/campaign.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/campaign.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/dashboard_charts.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/dashboard_charts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/export.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/export.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/importcontact.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/importcontact.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/init.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/init.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/lookup.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/lookup.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/metadata.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/metadata.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/report.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/report.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/segment.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/segment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/activity/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/activity/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/activity/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/activity/pagination-html.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/assetlib/js.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/assetlib/jss.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/campaign/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/pagination-html.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/create/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/create/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/email/tabs/completed/table-single-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/email/tabs/completed/table-single-row.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/email/tabs/completed/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/email/tabs/completed/table.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/Singlecamp/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/Singlecamp/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/completed/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/completed/pagination-html.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/completed/table-single-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/completed/table-single-row.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/completed/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/completed/table.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/create/execute.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/create/execute.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/create/new-v1.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/create/new-v1.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/running/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/running/pagination-html.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/running/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/running/table.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/scheduled/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/scheduled/pagination-html.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/scheduled/table-single-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/scheduled/table-single-row.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/campaign/tabs/scheduled/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/campaign/tabs/scheduled/table.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/dashboard/chart.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/dashboard/chart.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/dashboard/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/dashboard/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/layouts/docker-horizontal.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/docker-horizontal.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/layouts/docker-leftsidebar.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/docker-leftsidebar.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/lookup/contact-dn-tab-col-2.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/contact-dn-tab-col-2.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/layouts/docker-topnav.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/docker-topnav.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/layouts/guest.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/guest.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/layouts/modal/modals.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/modal/modals.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/layouts/pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/pdf.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/lookup/Sales-Detail/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/Sales-Detail/pagination-html.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/lookup/common/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/common/index.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/lookup/contact-tab.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/contact-tab.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/lookup/import/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/import/table.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/lookup/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/index.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/lookup/page-settings.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/page-settings.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/lookup/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/pagination-html.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/lookup/phone/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/phone/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/lookup/phone/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/phone/pagination-html.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/lookup/phone/table-single-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/phone/table-single-row.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/lookup/phone/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/phone/table.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/lookup/second-screen-col-2.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/second-screen-col-2.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/lookup/table-single-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/table-single-row.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/lookup/xlsx.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/lookup/xlsx.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/report/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/completed/table-single-row.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/completed/table-single-row.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/completed/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/completed/table.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/create/new-v1.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/create/new-v1.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/running/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/running/table.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/report/tabs/scheduled/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/report/tabs/scheduled/table.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/taxonomy/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/taxonomy/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level/pagination-html.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level/pagination-html.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level/table.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/taxonomy/tabs/level/table.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
@@ -49,6 +194,8 @@
   </component>
   <component name="DaemonCodeAnalyzer">
     <disable_hints>
+      <file url="file://$PROJECT_DIR$/resources/views/campaign/tabs/completed/table.blade.php" />
+      <file url="file://$PROJECT_DIR$/resources/views/profile/index.blade.php" />
       <file url="file://$PROJECT_DIR$/resources/views/report/index.blade.php" />
     </disable_hints>
   </component>
@@ -69,114 +216,63 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/views/campaign/index.blade.php">
+        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/RepCmpController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="286">
-              <caret line="231" column="259" selection-start-line="231" selection-start-column="249" selection-end-line="231" selection-end-column="259" />
+            <state relative-caret-position="147">
+              <caret line="980" column="31" lean-forward="true" selection-start-line="980" selection-start-column="31" selection-end-line="980" selection-end-column="31" />
               <folding>
-                <element signature="e#254#2263#0#HTML" />
-                <element signature="e#2398#3744#0#Blade" />
-                <element signature="e#3868#4259#0#Blade" />
+                <element signature="n#style#0;n#small#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#i#0;n#button#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#i#0;n#button#1;n#div#0;n#div#0;n#div#1;n#!!top" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/views/lookup/second-screen-col-2.blade.php">
+        <entry file="file://$PROJECT_DIR$/app/Model/ProfileTemplate.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="418">
-              <caret line="81" column="78" lean-forward="true" selection-start-line="81" selection-start-column="78" selection-end-line="81" selection-end-column="107" />
+            <state relative-caret-position="441">
+              <caret line="35" column="36" selection-start-line="35" selection-start-column="36" selection-end-line="35" selection-end-column="36" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/CampaignController.php">
+        <entry file="file://$PROJECT_DIR$/app/Model/RepCmpSchedule.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="428">
-              <caret line="96" column="33" selection-start-line="96" selection-start-column="33" selection-end-line="96" selection-end-column="33" />
-              <folding>
-                <element signature="e#3455#5548#0#PHP" />
-                <element signature="e#6605#40753#0#PHP" />
-                <element signature="e#12996#37461#0#PHP" />
-                <element signature="e#18207#37461#0#PHP" />
-                <element signature="e#25766#37486#0#PHP" />
-                <element signature="e#29442#37730#0#PHP" />
-                <element signature="e#28568#37461#0#PHP" />
-                <element signature="e#30188#37461#0#PHP" />
-                <element signature="e#31289#37461#0#PHP" />
-                <element signature="e#31788#37461#0#PHP" />
-                <element signature="e#32869#37461#0#PHP" />
-                <element signature="e#33164#37461#0#PHP" />
-                <element signature="e#33458#37461#0#PHP" />
-                <element signature="e#33754#37461#0#PHP" />
-                <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-              </folding>
+            <state relative-caret-position="378">
+              <caret line="55" column="34" selection-start-line="55" selection-start-column="20" selection-end-line="55" selection-end-column="34" />
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/views/profile/tabs/create/outer-schedule.blade.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="207">
+              <caret line="1566" column="71" selection-start-line="1566" selection-start-column="67" selection-end-line="1566" selection-end-column="71" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/views/profile/tabs/create/new-v1.blade.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-14676" />
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/PhoneController.php">
+        <entry file="file://$PROJECT_DIR$/public/js/profile.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="446">
-              <caret line="181" column="31" lean-forward="true" selection-start-line="181" selection-start-column="31" selection-end-line="181" selection-end-column="31" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/LookupController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="384">
-              <caret line="107" column="44" selection-start-line="107" selection-start-column="44" selection-end-line="107" selection-end-column="44" />
+            <state relative-caret-position="144">
+              <caret line="1344" column="29" selection-start-line="1344" selection-start-column="29" selection-end-line="1344" selection-end-column="29" />
               <folding>
-                <element signature="e#40#69#0#PHP" expanded="true" />
                 <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/views/taxonomy/index.blade.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="507">
-              <caret line="350" column="13" lean-forward="true" selection-start-line="344" selection-start-column="12" selection-end-line="350" selection-end-column="13" />
-              <folding>
-                <element signature="e#15232#16525#0#HTML" />
-                <element signature="e#16575#19336#0#HTML" />
-                <element signature="e#19374#19890#0#HTML" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/TaxonomyController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="337">
-              <caret line="53" column="11" lean-forward="true" selection-start-line="39" selection-start-column="8" selection-end-line="53" selection-end-column="11" />
-              <folding>
-                <element signature="e#1372#2665#0#PHP" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/js/campaign.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-297">
-              <caret line="171" column="22" selection-start-line="171" selection-start-column="19" selection-end-line="171" selection-end-column="22" />
-              <folding>
-                <element signature="e#28#1785#0" />
-                <element signature="e#2576#3373#0" />
-                <element signature="e#3492#3687#0" />
+                <element signature="n#style#0;n#h4#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="e#184#190#0" expanded="true" />
                 <element signature="e#190#196#0" expanded="true" />
@@ -308,9 +404,53 @@
                 <element signature="n#style#0;n#input#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#input#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#input#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#h4#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/views/profile/index.blade.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="374">
+              <caret line="247" column="33" selection-start-line="247" selection-start-column="33" selection-end-line="247" selection-end-column="33" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/views/layouts/modal/modals.blade.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="525">
+              <caret line="203" column="104" selection-start-line="203" selection-start-column="104" selection-end-line="203" selection-end-column="104" />
+              <folding>
+                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#div#0;n#!!top" />
+                <element signature="n#div#1;n#!!top" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Mail/SendProfileEmail.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-67">
+              <caret line="49" column="51" selection-start-line="49" selection-start-column="44" selection-end-line="49" selection-end-column="51" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Mail/SendReportEmail.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="572">
+              <caret line="60" column="71" selection-start-line="60" selection-start-column="55" selection-end-line="60" selection-end-column="71" />
             </state>
           </provider>
         </entry>
@@ -327,65 +467,73 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Email - Primary</find>
-      <find>R17:C2</find>
-      <find>return</find>
-      <find>Updated</find>
-      <find>gender</find>
-      <find>comments</find>
-      <find>R19C1Set</find>
-      <find>R18C1Set</find>
-      <find>R20_C1_fieldbox</find>
-      <find>setTab</find>
-      <find>ajax_second_screen</find>
-      <find>custom_sorting</find>
-      <find>.t8</find>
-      <find>l1</find>
-      <find>PdfToDoc</find>
-      <find>basic_table_without_dynamic_pagination</find>
-      <find>tabid</find>
-      <find>tab_22</find>
-      <find>tab_Completed</find>
-      <find>tab_23</find>
-      <find>tab_24</find>
-      <find>tab_</find>
-      <find>tab_25</find>
-      <find>tab_27</find>
-      <find>tab_30</find>
-      <find>tab_26</find>
-      <find>tab_31</find>
-      <find>Create</find>
-      <find>New</find>
-      <find>filtertoggle</find>
+      <find>session</find>
+      <find>immd</find>
+      <find>final</find>
+      <find>report/</find>
+      <find>renderSchedule</find>
+      <find>border</find>
+      <find>downloadESDLink</find>
+      <find>model</find>
+      <find>singlecampevald</find>
+      <find>modelPreview</find>
+      <find>'taxonomy.</find>
+      <find>taxonomy</find>
+      <find>MAL</find>
+      <find>MAL_</find>
+      <find>MAM_</find>
+      <find>PRE</find>
+      <find>PRE_</find>
+      <find>colChange</find>
+      <find>newid</find>
+      <find>data-</find>
+      <find>IntervalTimer</find>
+      <find>checkFile</find>
+      <find>Send Report via Email</find>
+      <find>emailExeBox</find>
+      <find>both</find>
+      <find>ReSch_campaign</find>
+      <find>sendviaemail</find>
+      <find>emailBox</find>
+      <find>'email</find>
+      <find>sendViaEmail</find>
     </findStrings>
     <replaceStrings>
-      <replace>h7</replace>
-      <replace>pt-4 pb-4</replace>
-      <replace>shareExeBox</replace>
-      <replace>$ccschstatusmap</replace>
-      <replace>$filters</replace>
-      <replace>td</replace>
-      <replace>btn btn-light new-sec-btn</replace>
-      <replace>close-email-btn</replace>
-      <replace>custom-control-label</replace>
-      <replace>$input_firstname</replace>
-      <replace>light_purple1</replace>
-      <replace>Product</replace>
-      <replace>Productcat2_Des</replace>
-      <replace>Productcat1_Des</replace>
-      <replace>light_orange</replace>
-      <replace>Productcat1</replace>
-      <replace>Productcat2</replace>
-      <replace>'] !!}</replace>
-      <replace>$contact_layout</replace>
-      <replace>tab_2</replace>
-      <replace>tab_4</replace>
-      <replace>tab_5</replace>
-      <replace>tab_9</replace>
-      <replace>tab_10</replace>
-      <replace>tab_12</replace>
-      <replace>tab_3</replace>
+      <replace>#212529</replace>
+      <replace>display: true</replace>
+      <replace>$chartLabels</replace>
+      <replace>#listShortName</replace>
+      <replace>'P'</replace>
+      <replace>listShortName</replace>
+      <replace>UP_Profile_Templates</replace>
+      <replace>prSchedule</replace>
+      <replace>model.</replace>
+      <replace>model</replace>
+      <replace>UM_Model</replace>
+      <replace>ModelTemplate</replace>
+      <replace>scored_file_name</replace>
+      <replace>moSchedule</replace>
+      <replace>Scored_File_Name</replace>
+      <replace>MAM_</replace>
+      <replace>profile/</replace>
+      <replace>UM_ModelScore_Templates</replace>
+      <replace>UM_ModelScore_Sequence</replace>
+      <replace>'M'</replace>
+      <replace>$chart_data</replace>
+      <replace>model/</replace>
+      <replace>RI</replace>
+      <replace>mo_sch</replace>
+      <replace>RA</replace>
+      <replace>'taxonomy-xref.</replace>
+      <replace>MOL_</replace>
+      <replace>MOR_</replace>
+      <replace>PRF_</replace>
+      <replace>shareBox</replace>
     </replaceStrings>
+    <dirStrings>
+      <dir>D:\DataSquare Details\DB_CRMLV_v16D_AB\resources\views\analytics</dir>
+      <dir>D:\DataSquare Details\DB_CRMLV_v16D_AB\</dir>
+    </dirStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -393,65 +541,65 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/public/js/activity.js" />
-        <option value="$PROJECT_DIR$/resources/views/email/tabs/completed/pagination-html.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/pagination-html.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/phone/pagination-html.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/report/tabs/completed/pagination-html.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/report/tabs/older_versions/pagination-html.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/report/tabs/running/pagination-html.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/report/tabs/scheduled/pagination-html.blade.php" />
-        <option value="$PROJECT_DIR$/public/elite/js/custom.js" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/Sales-Detail/table.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/Sales-Detail/table-single-row.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/Sales-Detail/pagination-html.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/phone/index.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/model/tabs/completed/pagination-html.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/model/tabs/running/pagination-html.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/model/tabs/scheduled/pagination-html.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/layouts/profile-pdf.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/model/xlsx-v2.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/dashboard/index.blade.php" />
+        <option value="$PROJECT_DIR$/app/Model/ModelChart.php" />
+        <option value="$PROJECT_DIR$/app/Model/ModelChartDetails.php" />
+        <option value="$PROJECT_DIR$/public/js/dashboard_charts.js" />
+        <option value="$PROJECT_DIR$/resources/views/model/index.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/model/tabs/create/new-v1.blade.php" />
+        <option value="$PROJECT_DIR$/app/Mail/ShareModelEmail.php" />
+        <option value="$PROJECT_DIR$/resources/views/model/tabs/create/execute.blade.php" />
         <option value="$PROJECT_DIR$/resources/views/layouts/docker-topnav.blade.php" />
+        <option value="$PROJECT_DIR$/config/constant.php" />
+        <option value="$PROJECT_DIR$/resources/views/profile/tabs/completed/pagination-html.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/profile/tabs/running/pagination-html.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/profile/tabs/scheduled/pagination-html.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/model/tabs/create/outer-schedule.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/profile/tabs/create/execute.blade.php" />
+        <option value="$PROJECT_DIR$/public/js/model.js" />
+        <option value="$PROJECT_DIR$/resources/views/profile/tabs/completed/table.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/layouts/model-pdf.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/model/tabs/Singlecamp/index.blade.php" />
+        <option value="$PROJECT_DIR$/public/js/googlecharts.js" />
+        <option value="$PROJECT_DIR$/resources/views/taxonomy-xref/tabs/level/index.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/taxonomy-xref/tabs/level/table.blade.php" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/TaxonomyXrefController.php" />
         <option value="$PROJECT_DIR$/routes/web.php" />
-        <option value="$PROJECT_DIR$/app/Model/UALookupFieldMapping.php" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/fields/select.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/activity-summary.blade.php" />
-        <option value="$PROJECT_DIR$/app/Helpers/Helper.php" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/fields/field-type.blade.php" />
-        <option value="$PROJECT_DIR$/public/js/lookup.js" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/xlsx.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/table.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/table-single-row.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/fields/contact-fields.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/second-screen.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/index.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/contact-dn-tab-col-2.blade.php" />
-        <option value="C:/xampp/htdocs/test/index.php" />
-        <option value="D:/xamppnew/htdocs/test/index.php" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/page-settings.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/contact-tab.blade.php" />
-        <option value="$PROJECT_DIR$/public/css/style-horizontal.min.css" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/second-screen-col-2.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/ActivityController.php" />
-        <option value="$PROJECT_DIR$/resources/views/taxonomy/tabs/level/table.blade.php" />
-        <option value="$PROJECT_DIR$/public/js/init.js" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/phone/table.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/lookup/phone/table-single-row.blade.php" />
-        <option value="$PROJECT_DIR$/public/js/phone.js" />
         <option value="$PROJECT_DIR$/resources/views/layouts/docker-leftsidebar.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/email/tabs/completed/table.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/EmailController.php" />
-        <option value="$PROJECT_DIR$/resources/views/campaign/tabs/create/index.blade.php" />
-        <option value="$PROJECT_DIR$/public/js/campaign.js" />
-        <option value="$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/table.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/pagination-html.blade.php" />
+        <option value="$PROJECT_DIR$/app/Console/Commands/MoSchedule.php" />
+        <option value="$PROJECT_DIR$/resources/views/model/tabs/completed/table-single-row.blade.php" />
+        <option value="$PROJECT_DIR$/app/Console/Commands/ArSchedule.php" />
+        <option value="$PROJECT_DIR$/resources/views/profile/tabs/completed/table-single-row.blade.php" />
+        <option value="$PROJECT_DIR$/app/Helpers/Helper.php" />
+        <option value="$PROJECT_DIR$/resources/views/layouts/model-eval-pdf.blade.php" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/ModelController.php" />
+        <option value="$PROJECT_DIR$/public/js/lookup.js" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/LookupController.php" />
-        <option value="$PROJECT_DIR$/resources/views/campaign/index.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/CampaignController.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/PhoneController.php" />
+        <option value="$PROJECT_DIR$/resources/views/lookup/import/table.blade.php" />
+        <option value="$PROJECT_DIR$/public/js/init.js" />
+        <option value="$PROJECT_DIR$/public/js/importcontact.js" />
+        <option value="$PROJECT_DIR$/app/Console/Commands/PrSchedule.php" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/ProfileController.php" />
+        <option value="$PROJECT_DIR$/resources/views/profile/tabs/create/outer-schedule.blade.php" />
+        <option value="$PROJECT_DIR$/app/Mail/SendReportEmail.php" />
+        <option value="$PROJECT_DIR$/resources/views/layouts/modal/modals.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/profile/index.blade.php" />
+        <option value="$PROJECT_DIR$/app/Mail/SendProfileEmail.php" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/RepCmpController.php" />
+        <option value="$PROJECT_DIR$/public/js/profile.js" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="85" />
-    <option name="y" value="25" />
-    <option name="width" value="1750" />
-    <option name="height" value="980" />
+    <option name="x" value="-10" />
+    <option name="y" value="-10" />
+    <option name="width" value="1940" />
+    <option name="height" value="1040" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -474,7 +622,14 @@
               <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
               <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
               <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="Helpers" type="462c0819:PsiDirectoryNode" />
+              <item name="Console" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="Console" type="462c0819:PsiDirectoryNode" />
+              <item name="Commands" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
@@ -492,11 +647,23 @@
             <path>
               <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
               <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="Mail" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
               <item name="public" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
               <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
+              <item name="public" type="462c0819:PsiDirectoryNode" />
+              <item name="js" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -510,14 +677,14 @@
               <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
               <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="campaign" type="462c0819:PsiDirectoryNode" />
+              <item name="profile" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
               <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
               <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="campaign" type="462c0819:PsiDirectoryNode" />
+              <item name="profile" type="462c0819:PsiDirectoryNode" />
               <item name="tabs" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -525,23 +692,9 @@
               <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
               <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="campaign" type="462c0819:PsiDirectoryNode" />
+              <item name="profile" type="462c0819:PsiDirectoryNode" />
               <item name="tabs" type="462c0819:PsiDirectoryNode" />
-              <item name="ESummary" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="lookup" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DB_CRMLV_v16D_AB" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="taxonomy" type="462c0819:PsiDirectoryNode" />
+              <item name="completed" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="DB_CRMLV_v16D_AB" type="b2602c69:ProjectViewProjectNode" />
@@ -561,18 +714,18 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
-    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/app/Http/Controllers/CampaignController.php" />
+    <property name="two.files.diff.last.used.file" value="$USER_HOME$/Downloads/AIR001_new.DbLib" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\app\Mail" />
+      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\resources\views" />
+      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\app\Http\Controllers" />
+      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\resources\views\layouts" />
+      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\app\Model" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\resources\js" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\resources\views\email\tabs\completed" />
-      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\resources\views\lookup" />
-      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\app\Model" />
-      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\app\Helpers" />
-      <recent name="D:\DataSquare Details\DB_CRMLV_v16D_AB\app\Http\Controllers" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -802,6 +955,83 @@
       <workItem from="1648616966155" duration="9676000" />
       <workItem from="1648699282538" duration="10360000" />
       <workItem from="1648722603532" duration="13240000" />
+      <workItem from="1648785473313" duration="11490000" />
+      <workItem from="1649044976845" duration="7273000" />
+      <workItem from="1649134947038" duration="15353000" />
+      <workItem from="1649175522668" duration="790000" />
+      <workItem from="1649222791650" duration="9998000" />
+      <workItem from="1649315678775" duration="8365000" />
+      <workItem from="1649413948755" duration="6579000" />
+      <workItem from="1649651530372" duration="13435000" />
+      <workItem from="1649692077517" duration="1741000" />
+      <workItem from="1649736163999" duration="6719000" />
+      <workItem from="1649826290506" duration="8597000" />
+      <workItem from="1649868310328" duration="1546000" />
+      <workItem from="1650280881907" duration="4041000" />
+      <workItem from="1650348509618" duration="19987000" />
+      <workItem from="1650520581171" duration="18225000" />
+      <workItem from="1650622797922" duration="7891000" />
+      <workItem from="1650859372022" duration="16881000" />
+      <workItem from="1650902261055" duration="1245000" />
+      <workItem from="1650943626550" duration="10615000" />
+      <workItem from="1651053895628" duration="33589000" />
+      <workItem from="1651668121684" duration="1192000" />
+      <workItem from="1651725325753" duration="6627000" />
+      <workItem from="1651744648442" duration="10183000" />
+      <workItem from="1651814057247" duration="19520000" />
+      <workItem from="1651850480690" duration="9000" />
+      <workItem from="1652072171935" duration="10903000" />
+      <workItem from="1652160577095" duration="26550000" />
+      <workItem from="1652349086718" duration="11045000" />
+      <workItem from="1652675081805" duration="8225000" />
+      <workItem from="1652761825044" duration="19548000" />
+      <workItem from="1652870592394" duration="3770000" />
+      <workItem from="1652889140035" duration="18000" />
+      <workItem from="1652931448004" duration="20356000" />
+      <workItem from="1653024802560" duration="8350000" />
+      <workItem from="1653282014723" duration="12348000" />
+      <workItem from="1653368932284" duration="8488000" />
+      <workItem from="1653456963037" duration="7531000" />
+      <workItem from="1653560738889" duration="11265000" />
+      <workItem from="1653990877026" duration="7825000" />
+      <workItem from="1654052851143" duration="11019000" />
+      <workItem from="1654164643894" duration="4191000" />
+      <workItem from="1654238419104" duration="7025000" />
+      <workItem from="1654511666144" duration="4472000" />
+      <workItem from="1654538853047" duration="79000" />
+      <workItem from="1654575560681" duration="5842000" />
+      <workItem from="1654660187059" duration="8848000" />
+      <workItem from="1654748458140" duration="11938000" />
+      <workItem from="1654860634146" duration="5723000" />
+      <workItem from="1654965763407" duration="1638000" />
+      <workItem from="1654968594766" duration="17000" />
+      <workItem from="1655095263484" duration="12013000" />
+      <workItem from="1655178663744" duration="8830000" />
+      <workItem from="1655263269904" duration="14963000" />
+      <workItem from="1655354294642" duration="15721000" />
+      <workItem from="1655787501118" duration="10863000" />
+      <workItem from="1655875555471" duration="5447000" />
+      <workItem from="1655977403419" duration="8308000" />
+      <workItem from="1656046778163" duration="13818000" />
+      <workItem from="1656301317186" duration="10556000" />
+      <workItem from="1656407871267" duration="16330000" />
+      <workItem from="1656485125557" duration="13426000" />
+      <workItem from="1656576253270" duration="16403000" />
+      <workItem from="1656996018009" duration="11883000" />
+      <workItem from="1657105446967" duration="5284000" />
+      <workItem from="1657170003768" duration="12608000" />
+      <workItem from="1657274882353" duration="6554000" />
+      <workItem from="1657520536480" duration="6899000" />
+      <workItem from="1657594470076" duration="620000" />
+      <workItem from="1657608242493" duration="7895000" />
+      <workItem from="1657707929674" duration="7097000" />
+      <workItem from="1657793745535" duration="5007000" />
+      <workItem from="1657881994716" duration="1336000" />
+      <workItem from="1658116761108" duration="11668000" />
+      <workItem from="1658203495458" duration="8802000" />
+      <workItem from="1658287972162" duration="13840000" />
+      <workItem from="1658385040791" duration="3068000" />
+      <workItem from="1658462567705" duration="14757000" />
     </task>
     <task id="LOCAL-00001" summary="changes">
       <created>1619516469281</created>
@@ -814,7 +1044,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1723975000" />
+    <option name="totallyTimeSpent" value="2446876000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -828,8 +1058,8 @@
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="830" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.37249285" visible="true" weight="0.22214764" />
-      <window_info id="Structure" order="1" sideWeight="0.62750715" side_tool="true" weight="0.22214764" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.3008596" visible="true" weight="0.21073826" />
+      <window_info id="Structure" order="1" sideWeight="0.6991404" side_tool="true" weight="0.21073826" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32808024" />
@@ -849,11 +1079,11 @@
       <window_info anchor="right" id="Database" order="3" weight="0.32885906" />
     </layout>
     <layout-to-restore>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.44759208" visible="true" weight="0.21543624" />
-      <window_info id="Structure" order="1" sideWeight="0.5524079" side_tool="true" weight="0.20738254" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.3538682" visible="true" weight="0.24966443" />
+      <window_info active="true" id="Structure" order="1" sideWeight="0.6461318" side_tool="true" visible="true" weight="0.24966443" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.3286119" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32808024" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -862,7 +1092,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.3286119" />
-      <window_info anchor="bottom" id="Terminal" order="10" />
+      <window_info anchor="bottom" id="Terminal" order="10" weight="0.3295129" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -878,499 +1108,384 @@
     <option name="LAST_COMMIT_MESSAGE" value="changes" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/resources/views/lookup/xlsx.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/model/index.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="17" column="87" selection-start-line="17" selection-start-column="12" selection-end-line="17" selection-end-column="87" />
+        <state relative-caret-position="603">
+          <caret line="317" column="240" selection-start-line="317" selection-start-column="240" selection-end-line="317" selection-end-column="240" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/lookup/table-single-row.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/profile/tabs/create/execute.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="11" column="147" selection-start-line="11" selection-start-column="147" selection-end-line="11" selection-end-column="147" />
+        <state relative-caret-position="6363">
+          <caret line="303" column="63" selection-start-line="303" selection-start-column="63" selection-end-line="303" selection-end-column="63" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/lookup/first-screen.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/layouts/profile-pdf.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
-          <caret line="1" column="24" selection-start-line="1" selection-start-column="24" selection-end-line="1" selection-end-column="24" />
+        <state relative-caret-position="460">
+          <caret line="208" column="8" lean-forward="true" selection-end-line="234" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/lookup/fields/contact-fields.blade.php">
+    <entry file="file://$PROJECT_DIR$/public/js/model.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="48" column="7" lean-forward="true" selection-start-line="48" selection-start-column="7" selection-end-line="48" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/lookup/contact-dn-tab-col-2_backup.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="372" column="30" selection-start-line="372" selection-start-column="20" selection-end-line="372" selection-end-column="30" />
+        <state relative-caret-position="125748">
+          <caret line="6146" column="24" selection-start-line="6146" selection-start-column="24" selection-end-line="6146" selection-end-column="24" />
           <folding>
-            <element signature="e#0#47070#0#Blade" />
+            <element signature="e#39520#45938#0" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/lookup/second-screen.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/profile/tabs/completed/table.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
-          <caret line="17" column="27" lean-forward="true" selection-start-line="17" selection-start-column="27" selection-end-line="17" selection-end-column="28" />
+        <state relative-caret-position="1953">
+          <caret line="93" column="44" selection-start-line="93" selection-start-column="44" selection-end-line="93" selection-end-column="44" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/js/lookup.js">
+    <entry file="file://$PROJECT_DIR$/resources/views/layouts/model-pdf.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1176">
-          <caret line="56" column="29" selection-start-line="56" selection-start-column="26" selection-end-line="56" selection-end-column="29" />
-          <folding>
-            <element signature="n#!!block;n#singleClick#0" />
-            <element signature="n#!!block;n#refreshMergeList#0" />
-            <element signature="n#!!block;n#doMerge#0" />
-            <element signature="n#!!block;n#blankMergeData#0" />
-            <element signature="n#!!block;n#goBack#0" />
-            <element signature="n#!!block;n#selectAll#0" />
-            <element signature="n#!!block;n#singleCheckbox#0" />
-            <element signature="n#!!block;n#mergeBulk#0" />
-            <element signature="n#!!block;n#reviewContact#0" />
-            <element signature="n#!!block;n#reviewDupsContact#0" />
-            <element signature="n#!!block;n#showCreateCampaign#0" />
-          </folding>
+        <state relative-caret-position="1071">
+          <caret line="51" column="30" selection-start-line="51" selection-start-column="22" selection-end-line="51" selection-end-column="30" />
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/xampp/htdocs/test/index.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/model/tabs/Singlecamp/index.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
-          <caret line="1" selection-start-line="1" selection-end-line="3" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://D:/xamppnew/htdocs/test/Aspose.PDF-for-Java-master/Plugins/Aspose_Pdf_Java_for_PHP/src/Aspose/Pdf/WorkingWithDocumentConversion/PdfToDoc.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="8" column="39" selection-start-line="8" selection-start-column="31" selection-end-line="8" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://D:/xamppnew/htdocs/test/tests/index.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="42">
-          <caret line="2" selection-start-line="2" selection-end-line="30" selection-end-column="54" />
-          <folding>
-            <element signature="e#96#151#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://D:/xamppnew/htdocs/test/index.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="42">
-          <caret line="2" column="4" selection-start-line="2" selection-start-column="4" selection-end-line="2" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://D:/xamppnew/htdocs/test/Aspose.PDF-for-Java-master/Plugins/Aspose_Pdf_Java_for_PHP/tests/index.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="27" selection-start-line="27" selection-end-line="27" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/lookup/contact-dn-tab-col-2.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="5" column="47" selection-start-line="5" selection-start-column="47" selection-end-line="5" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/css/style-horizontal.min.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="879816">
-          <caret line="41896" column="14" selection-start-line="41896" selection-start-column="14" selection-end-line="41896" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/lookup/contact-tab.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="42">
-          <caret line="2" column="74" lean-forward="true" selection-start-line="2" selection-start-column="4" selection-end-line="2" selection-end-column="74" />
-          <folding>
-            <element signature="n#style#0;n#div#5;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ActivityController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="169" column="58" selection-start-line="169" selection-start-column="26" selection-end-line="169" selection-end-column="58" />
-          <folding>
-            <element signature="e#6071#14019#0#PHP" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/lookup/phone/pagination-html.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="4" column="125" selection-start-line="4" selection-start-column="117" selection-end-line="4" selection-end-column="125" />
-          <folding>
-            <element signature="e#319#662#0#HTML" />
-            <element signature="e#742#2007#0#HTML" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/lookup/table.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="23" lean-forward="true" selection-start-column="11" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/taxonomy/tabs/level/table.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
-          <caret column="209" selection-start-column="172" selection-end-column="209" />
+        <state relative-caret-position="1470">
+          <caret line="70" column="74" selection-start-line="70" selection-start-column="74" selection-end-line="70" selection-end-column="74" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/resources/views/lookup/index.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="174" column="29" selection-start-line="174" selection-start-column="29" selection-end-line="174" selection-end-column="29" />
-        </state>
+        <state relative-caret-position="-1386" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/layouts/docker-topnav.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/contact-tab.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3591">
-          <caret line="357" column="80" selection-start-line="357" selection-start-column="80" selection-end-line="357" selection-end-column="80" />
-        </state>
+        <state relative-caret-position="-14578" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/layouts/docker-leftsidebar.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/second-screen-col-2.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1235">
-          <caret line="172" column="25" selection-start-line="172" selection-start-column="25" selection-end-line="172" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/js/phone.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="4" column="60" selection-start-line="4" selection-start-column="60" selection-end-line="4" selection-end-column="60" />
+        <state relative-caret-position="252">
+          <caret line="139" column="35" lean-forward="true" selection-start-line="139" selection-start-column="35" selection-end-line="139" selection-end-column="35" />
           <folding>
-            <element signature="n#!!block;n#implementReportWithPhone#0" />
+            <element signature="n#style#0;n#!!top" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/lookup/phone/table-single-row.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/model/tabs/create/new-v1.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="47" column="40" selection-start-line="47" selection-start-column="40" selection-end-line="47" selection-end-column="40" />
+        <state relative-caret-position="605">
+          <caret line="384" column="24" selection-start-line="384" selection-start-column="20" selection-end-line="395" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ReportController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-504">
           <folding>
-            <element signature="n#style#0;n#select#0;n#td#0;n#tr#0;n#!!top" expanded="true" />
-            <element signature="n#td#1;n#tr#0;n#!!top" />
+            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/lookup/phone/table.blade.php">
+    <entry file="file://$PROJECT_DIR$/public/js/googlecharts.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="567">
-          <caret line="27" column="11" lean-forward="true" selection-start-line="27" selection-start-column="11" selection-end-line="27" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/js/init.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2079">
-          <caret line="122" column="53" selection-start-line="122" selection-start-column="53" selection-end-line="122" selection-end-column="53" />
+        <state>
+          <caret line="146" column="13" selection-start-line="146" selection-start-column="8" selection-end-line="146" selection-end-column="13" />
           <folding>
-            <element signature="e#547#1451#0" />
+            <element signature="n#!!block;n#getdataset_v1#0" />
+            <element signature="n#!!block;n#getdataset_v2#0" />
+            <element signature="n#!!block;n#getdataset#0" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/email/index.blade.php">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/email/tabs/completed/index.blade.php">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/email/tabs/new/inner-tab-content.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/taxonomy-xref/index.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-8628" />
+        <state relative-caret-position="-5418" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/email/tabs/completed/table.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/taxonomy-xref/tabs/level/table.blade.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="336">
-          <caret line="16" column="42" selection-start-line="16" selection-start-column="42" selection-end-line="16" selection-end-column="42" />
+          <caret line="16" column="35" selection-start-line="16" selection-start-column="35" selection-end-line="16" selection-end-column="35" />
+          <folding>
+            <element signature="n#style#0;n#table#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/email/tabs/completed/table_v2.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/taxonomy-xref/tabs/level/index.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="507">
-          <caret line="26" selection-start-line="26" selection-end-line="26" />
+        <state relative-caret-position="21">
+          <caret line="1" column="27" selection-start-line="1" selection-start-column="27" selection-end-line="1" selection-end-column="27" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/email/tabs/new/index.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/taxonomy-xref/tabs/level/table-single-row.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="53" column="38" selection-start-line="53" selection-start-column="38" selection-end-line="53" selection-end-column="38" />
+        <state relative-caret-position="-165" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/model/tabs/completed/table-single-row.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="110" column="105" selection-start-line="110" selection-start-column="105" selection-end-line="110" selection-end-column="105" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Console/Commands/MoSchedule.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="1085" column="157" selection-start-line="1085" selection-start-column="157" selection-end-line="1085" selection-end-column="157" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Console/Commands/ArSchedule.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5817">
+          <caret line="290" column="54" selection-start-line="290" selection-start-column="54" selection-end-line="290" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/TaxonomyXrefController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3255">
+          <caret line="174" column="42" selection-start-line="174" selection-start-column="42" selection-end-line="174" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ImportcontactController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="136" column="45" selection-start-line="136" selection-start-column="39" selection-end-line="136" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ModelController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="131">
+          <caret line="2364" column="32" selection-start-line="2364" selection-start-column="32" selection-end-line="2364" selection-end-column="32" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Helpers/Helper.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="4091" column="27" selection-start-line="4091" selection-start-column="27" selection-end-line="4091" selection-end-column="27" />
+        <state relative-caret-position="65499">
+          <caret line="3133" column="79" selection-start-line="3133" selection-start-column="79" selection-end-line="3133" selection-end-column="79" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/import/table2.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="882">
+          <caret line="42" column="84" selection-start-line="42" selection-start-column="74" selection-end-line="42" selection-end-column="84" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/profile/tabs/completed/table-single-row.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1554">
+          <caret line="74" column="111" selection-start-line="74" selection-start-column="111" selection-end-line="74" selection-end-column="111" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/lookup.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="213" column="35" selection-start-line="213" selection-start-column="12" selection-end-line="213" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/import/index.blade.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/layouts/model-eval-pdf.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="605">
+          <caret line="73" column="40" selection-start-line="73" selection-start-column="12" selection-end-line="73" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/layouts/docker-leftsidebar.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="605">
+          <caret line="313" column="49" selection-start-line="313" selection-start-column="49" selection-end-line="313" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/campaign/tabs/completed/table.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1614" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/init.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-88">
+          <caret line="144" column="20" selection-start-line="144" selection-start-column="20" selection-end-line="144" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/report/tabs/completed/table.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1512" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/importcontact.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6237">
+          <caret line="297" column="21" selection-start-line="297" selection-start-column="16" selection-end-line="297" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProfileController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-226">
+          <caret line="1574" column="135" selection-start-line="1574" selection-start-column="135" selection-end-line="1574" selection-end-column="135" />
           <folding>
-            <element signature="e#23#30#0" expanded="true" />
-            <element signature="e#39#45#0" expanded="true" />
-            <element signature="e#45#51#0" expanded="true" />
-            <element signature="e#28#35#0" expanded="true" />
-            <element signature="n#style#0;n#a#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#a#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#a#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#i#0;n#a#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#a#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#i#0;n#a#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#a#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#i#0;n#a#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#a#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#i#0;n#a#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#th#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#0;n#a#0;n#td#0;n#!!top" expanded="true" />
+            <element signature="e#47918#104480#0#PHP" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/lookup/page-settings.blade.php">
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/LookupController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="506">
-          <caret line="292" column="76" selection-start-line="292" selection-start-column="76" selection-end-line="292" selection-end-column="76" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/EmailController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="257">
-          <caret line="61" column="40" selection-start-line="61" selection-start-column="34" selection-end-line="61" selection-end-column="40" />
+        <state relative-caret-position="17">
+          <caret line="1552" column="54" selection-start-line="1552" selection-start-column="54" selection-end-line="1552" selection-end-column="54" />
           <folding>
-            <element signature="e#12395#43435#0#PHP" />
-            <element signature="e#43441#44471#0#PHP" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/campaign/tabs/create/index.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/profile/tabs/create/index.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2901">
-          <caret line="176" column="28" selection-start-line="176" selection-start-column="28" selection-end-line="176" selection-end-column="28" />
+        <state relative-caret-position="479">
+          <caret line="186" lean-forward="true" selection-start-line="186" selection-end-line="186" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/campaign/tabs/create/outer-schedule.blade.php">
+    <entry file="file://$PROJECT_DIR$/app/Console/Commands/PrSchedule.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-756">
+        <state relative-caret-position="103">
+          <caret line="338" column="51" lean-forward="true" selection-start-line="338" selection-start-column="51" selection-end-line="338" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/lookup/import/table.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="458">
+          <caret line="49" column="23" selection-start-line="49" selection-start-column="23" selection-end-line="49" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/web.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="374" column="63" selection-start-line="374" selection-start-column="51" selection-end-line="374" selection-end-column="63" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Mail/SendReportEmail.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="572">
+          <caret line="60" column="71" selection-start-line="60" selection-start-column="55" selection-end-line="60" selection-end-column="71" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/profile/tabs/create/outer-schedule.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="1566" column="71" selection-start-line="1566" selection-start-column="67" selection-end-line="1566" selection-end-column="71" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/profile/tabs/create/new-v1.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-14676" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/profile/tabs/completed/index.blade.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/layouts/modal/modals.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="525">
+          <caret line="203" column="104" selection-start-line="203" selection-start-column="104" selection-end-line="203" selection-end-column="104" />
           <folding>
-            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#div#0;n#!!top" />
+            <element signature="n#div#1;n#!!top" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/campaign/tabs/create/new-v1.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/profile/index.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="269">
-          <caret line="1338" column="37" selection-start-line="1338" selection-start-column="31" selection-end-line="1338" selection-end-column="37" />
+        <state relative-caret-position="374">
+          <caret line="247" column="33" selection-start-line="247" selection-start-column="33" selection-end-line="247" selection-end-column="33" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/campaign/tabs/create/segment.blade.php">
+    <entry file="file://$PROJECT_DIR$/app/Mail/SendProfileEmail.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-6003" />
+        <state relative-caret-position="-67">
+          <caret line="49" column="51" selection-start-line="49" selection-start-column="44" selection-end-line="49" selection-end-column="51" />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/js/campaign.js">
+    <entry file="file://$PROJECT_DIR$/app/Model/RepCmpSchedule.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-297">
-          <caret line="171" column="22" selection-start-line="171" selection-start-column="19" selection-end-line="171" selection-end-column="22" />
+        <state relative-caret-position="378">
+          <caret line="55" column="34" selection-start-line="55" selection-start-column="20" selection-end-line="55" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Model/ProfileTemplate.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="441">
+          <caret line="35" column="36" selection-start-line="35" selection-start-column="36" selection-end-line="35" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/RepCmpController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147">
+          <caret line="980" column="31" lean-forward="true" selection-start-line="980" selection-start-column="31" selection-end-line="980" selection-end-column="31" />
           <folding>
-            <element signature="e#28#1785#0" />
-            <element signature="e#2576#3373#0" />
-            <element signature="e#3492#3687#0" />
+            <element signature="n#style#0;n#small#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#i#0;n#button#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#i#0;n#button#1;n#div#0;n#div#0;n#div#1;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/profile.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="1344" column="29" selection-start-line="1344" selection-start-column="29" selection-end-line="1344" selection-end-column="29" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#h4#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
             <element signature="e#184#190#0" expanded="true" />
             <element signature="e#190#196#0" expanded="true" />
@@ -1502,128 +1617,12 @@
             <element signature="n#style#0;n#input#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#input#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#input#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/campaign/tabs/completed/table.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-378">
-          <folding>
-            <element signature="n#style#0;n#!!top" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/TaxonomyController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="337">
-          <caret line="53" column="11" lean-forward="true" selection-start-line="39" selection-start-column="8" selection-end-line="53" selection-end-column="11" />
-          <folding>
-            <element signature="e#1372#2665#0#PHP" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/lookup/second-screen-col-2.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="81" column="78" lean-forward="true" selection-start-line="81" selection-start-column="78" selection-end-line="81" selection-end-column="107" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/lookup/Sales-Detail/pagination-html.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="44" column="31" selection-start-line="44" selection-start-column="16" selection-end-line="44" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/table.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="42">
-          <caret line="2" selection-start-line="2" selection-end-line="2" />
-          <folding>
-            <element signature="n#style#0;n#table#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/LookupController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
-          <caret line="107" column="44" selection-start-line="107" selection-start-column="44" selection-end-line="107" selection-end-column="44" />
-          <folding>
-            <element signature="e#40#69#0#PHP" expanded="true" />
             <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#h4#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/campaign/tabs/ESummary/pagination-html.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="44" column="37" lean-forward="true" selection-start-line="44" selection-start-column="37" selection-end-line="44" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/taxonomy/index.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="507">
-          <caret line="350" column="13" lean-forward="true" selection-start-line="344" selection-start-column="12" selection-end-line="350" selection-end-column="13" />
-          <folding>
-            <element signature="e#15232#16525#0#HTML" />
-            <element signature="e#16575#19336#0#HTML" />
-            <element signature="e#19374#19890#0#HTML" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/campaign/index.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="231" column="259" selection-start-line="231" selection-start-column="249" selection-end-line="231" selection-end-column="259" />
-          <folding>
-            <element signature="e#254#2263#0#HTML" />
-            <element signature="e#2398#3744#0#Blade" />
-            <element signature="e#3868#4259#0#Blade" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/CampaignController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="428">
-          <caret line="96" column="33" selection-start-line="96" selection-start-column="33" selection-end-line="96" selection-end-column="33" />
-          <folding>
-            <element signature="e#3455#5548#0#PHP" />
-            <element signature="e#6605#40753#0#PHP" />
-            <element signature="e#12996#37461#0#PHP" />
-            <element signature="e#18207#37461#0#PHP" />
-            <element signature="e#25766#37486#0#PHP" />
-            <element signature="e#29442#37730#0#PHP" />
-            <element signature="e#28568#37461#0#PHP" />
-            <element signature="e#30188#37461#0#PHP" />
-            <element signature="e#31289#37461#0#PHP" />
-            <element signature="e#31788#37461#0#PHP" />
-            <element signature="e#32869#37461#0#PHP" />
-            <element signature="e#33164#37461#0#PHP" />
-            <element signature="e#33458#37461#0#PHP" />
-            <element signature="e#33754#37461#0#PHP" />
-            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#select#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/PhoneController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="446">
-          <caret line="181" column="31" lean-forward="true" selection-start-line="181" selection-start-column="31" selection-end-line="181" selection-end-column="31" />
         </state>
       </provider>
     </entry>

@@ -81,6 +81,15 @@ $interval = $date1->diff($date2);
 $category = isset($record->rpmeta->Category) ? $record->rpmeta->Category : '';
 ?>
 <tr>
+    <td class="text-center">
+        <?php
+        $is_tag = $record->tag == 1 ? 'checked' : '';
+        ?>
+        <label class="custom-control custom-checkbox m-b-0">
+            <input type="checkbox" class="custom-control-input checkbox" onclick="tagcampaign($(this),'{{ $record->row_id }}','tag');" {{ $is_tag }} value="1">
+            <span class="custom-control-label"></span>
+        </label>
+    </td>
     <td>{!! $record->t_id !!}</td>
     <td>{!! ucfirst($record->list_level) !!}</td>
     <td>{!! $record->list_short_name !!}</td>
@@ -137,7 +146,7 @@ $category = isset($record->rpmeta->Category) ? $record->rpmeta->Category : '';
     <td class="text-center">
         <?php
 
-        $ListXLSX = $record->promoexpo_folder.'\\'.$prefix.'CAL_'.$ccschstatusmap[0]['file_name'].'.'.$record->promoexpo_ext;
+        $ListXLSX = isset($ccschstatusmap[0]['file_name']) ? $record->promoexpo_folder.'\\'.$prefix.'CAL_'.$ccschstatusmap[0]['file_name'].'.'.$record->promoexpo_ext : '';
         ?>
         @if(!empty($ListXLSX) && file_exists(public_path($ListXLSX)))
             <a class="btn no-border font-16 p-0" download href="{!! $ListXLSX !!}" title="Download" id="DownloadBtn">
@@ -148,7 +157,7 @@ $category = isset($record->rpmeta->Category) ? $record->rpmeta->Category : '';
 
     <td class="text-center pl-0 pt-1">
         @php
-            $ListPDF = $record->promoexpo_folder.'\\'.$prefix.'CAL_'.$ccschstatusmap[0]['file_name'].'.pdf';
+            $ListPDF = isset($ccschstatusmap[0]['file_name']) ? $record->promoexpo_folder.'\\'.$prefix.'CAL_'.$ccschstatusmap[0]['file_name'].'.pdf' : '';
         @endphp
         @if(!empty($ListPDF) && file_exists(public_path($ListPDF)))
             <a class="btn no-border font-16 p-0" download href="{!! $ListPDF !!}" title="Download" id="DownloadBtn">
@@ -174,7 +183,7 @@ $category = isset($record->rpmeta->Category) ? $record->rpmeta->Category : '';
 
     <td class="text-center">
         @php
-            $SummaryXLSX = $record->promoexpo_folder.'\\'.$prefix.'CAM_'.$ccschstatusmap[0]['file_name'].'.xlsx';
+            $SummaryXLSX = isset($ccschstatusmap[0]['file_name']) ? $record->promoexpo_folder.'\\'.$prefix.'CAM_'.$ccschstatusmap[0]['file_name'].'.xlsx' : '';
         @endphp
         @if(!empty($SummaryXLSX) && file_exists(public_path($SummaryXLSX)))
             <a class="btn no-border font-16 p-0" download href="{!! $SummaryXLSX !!}" download title="Download" id="DownloadBtn">
@@ -185,7 +194,7 @@ $category = isset($record->rpmeta->Category) ? $record->rpmeta->Category : '';
 
     <td class="text-center pl-0 pt-1">
         @php
-            $SummaryPDF = $record->promoexpo_folder.'\\'.$prefix.'CAM_'.$ccschstatusmap[0]['file_name'].'.pdf';
+            $SummaryPDF = isset($ccschstatusmap[0]['file_name']) ? $record->promoexpo_folder.'\\'.$prefix.'CAM_'.$ccschstatusmap[0]['file_name'].'.pdf' : '';
         @endphp
         @if(!empty($SummaryPDF) && file_exists(public_path($SummaryPDF)))
             <a class="btn no-border font-16 p-0" download href="{!! $SummaryPDF !!}" download title="Download" id="DownloadBtn">
@@ -204,7 +213,7 @@ $category = isset($record->rpmeta->Category) ? $record->rpmeta->Category : '';
     <td class="text-center">
 
         <div class="checkbox">
-            <input id="{!! $record->t_id !!}" type="checkbox" class="em_report" value='{!! json_encode(['row_id' => $record->row_id,'t_id' => $record->t_id,'list_level' => $record->list_level,'list_short_name' => $record->list_short_name,'t_name' => $record->t_name,'sql' => base64_encode($record->sql),'selected_fields' => $record->selected_fields,'meta_data' => $category,'Report_Row' => $record->Report_Row,'Report_Column' => $record->Report_Column,'Report_Function' => $record->Report_Function,'Report_Sum' => $record->Report_Sum,'Report_Show' => $record->Report_Show,'Chart_Type' => trim($record->Chart_Type),'Axis_Scale' => $record->Axis_Scale,'Label_Value' => $record->Label_Value]) !!}'/>
+            <input id="{!! $record->t_id !!}" type="checkbox" class="em_report" onclick="emreport()" value='{!! json_encode(['row_id' => $record->row_id,'t_id' => $record->t_id,'list_level' => $record->list_level,'list_short_name' => $record->list_short_name,'t_name' => $record->t_name,'sql' => base64_encode($record->sql),'selected_fields' => $record->selected_fields,'meta_data' => $category,'Report_Row' => $record->Report_Row,'Report_Column' => $record->Report_Column,'Report_Function' => $record->Report_Function,'Report_Sum' => $record->Report_Sum,'Report_Show' => $record->Report_Show,'Chart_Type' => trim($record->Chart_Type),'Axis_Scale' => $record->Axis_Scale,'Label_Value' => $record->Label_Value]) !!}'/>
             <label for="{!! $record->t_id !!}"></label>
 
             <div class="space"></div>

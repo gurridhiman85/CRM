@@ -41,4 +41,26 @@ class RepCmpSchedule extends Model
             'sch_status_id'
         )->where('UL_RepCmp_Sch_status_mapping.t_type','C')->orderByDesc('UL_RepCmp_Sch_status_mapping.row_id');
     }
+
+    public function moschstatusmap(){
+        return $this->hasManyThrough(
+            RepCmpStatus::class,
+            RepCmpSchStatusMapping::class,
+            'sch_id',
+            'row_id',
+            'row_id',
+            'sch_status_id'
+        )->where('UL_RepCmp_Sch_status_mapping.t_type','M')->orderByDesc('UL_RepCmp_Sch_status_mapping.row_id');
+    }
+
+    public function prschstatusmap(){
+        return $this->hasManyThrough(
+            RepCmpStatus::class,
+            RepCmpSchStatusMapping::class,
+            'sch_id',
+            'row_id',
+            'row_id',
+            'sch_status_id'
+        )->where('UL_RepCmp_Sch_status_mapping.t_type','P')->orderByDesc('UL_RepCmp_Sch_status_mapping.row_id');
+    }
 }

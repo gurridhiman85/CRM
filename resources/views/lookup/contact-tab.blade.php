@@ -328,9 +328,9 @@ font-weight: 500;font-size:14px;">{{ $R1C3Set['Label'] }}</div>
                 <label class="l1">{{ $R7C3Set['Label'] }}</label>
             </div>
             <div class="divTableCell">
-                @if(!empty($R7C2Set['Field_Type']))
+                @if(!empty($R7C3Set['Field_Type']))
                     @include('lookup.fields.contact-fields',[
-                        'set' => $R7C2Set,
+                        'set' => $R7C3Set,
                         'extra_class' => 't6 h '
                     ])
                 @endif
@@ -695,7 +695,7 @@ font-weight: 500;font-size:14px;">{{ $R19C1Set['Label'] }}</div>
 <div class="divTable">
     <div class="divTableBody">
         <div class="divTableRow">
-            <div class="divTableCell" style="width: 11.4% !important;
+            <div class="divTableCell" style="width: 14.6% !important;
     padding: 3px 9px !important;"><label class="l1">{{ $R20C1Set['Label'] }}</label>
             </div>
             <div class="divTableCell" style="width: 100% !important;">
@@ -709,7 +709,7 @@ font-weight: 500;font-size:14px;">{{ $R19C1Set['Label'] }}</div>
         </div>
 
         <div class="divTableRow">
-            <div class="divTableCell" style="width: 11.4% !important;
+            <div class="divTableCell" style="width: 14.6% !important;
     padding: 3px 9px !important;"><label class="l1">{{ $R21C1Set['Label'] }}</label>
             </div>
             <div class="divTableCell" style="width: 100% !important;">

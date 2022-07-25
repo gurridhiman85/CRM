@@ -9,14 +9,16 @@
         <!-- ============================================================== -->
         <div class="navbar-header">
             <a class="navbar-brand" href="https://www.datasquare.com">
-                <!-- Logo icon --><b>
+                <!-- Logo icon -->
+                <b>
                     <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
                     <!-- Dark Logo icon -->
                     <!--<img src="../assets/images/logo-icon.png" alt="homepage" class="dark-logo"/> -->
-                    <img src="{!! url('/').'/img/logo.gif' !!}" class="dark-logo" alt="homepage" style="height: 65px;"/>
+                    <img src="{!! config('constant.top_left_logo1') !!}" class="dark-logo" alt="homepage" style="height: 65px;"/>
                     <!-- Light Logo icon -->
                     <!--<img src="../assets/images/logo-light-icon.png" alt="homepage" class="light-logo"/>-->
-                    <img src="{!! url('/').'/img/logo.gif' !!}" class="light-logo" alt="homepage" style="height: 65px;"/>
+
+                    <img src="{!! config('constant.top_left_logo1') !!}" class="light-logo" alt="homepage" style="height: 65px;"/>
 
                 </b>
                 <!--End Logo icon -->
@@ -24,9 +26,10 @@
                 <span>
                     <!-- dark Logo text -->
                     <!--<img src="../assets/images/logo-text.png" alt="homepage" class="dark-logo"/> -->
-                    <img src="{!! url('/').'/img/logo.gif' !!}" class="dark-logo" alt="homepage" style="   height: 65px;"/>
+                    <img src="{!! config('constant.top_left_logo1') !!}" class="dark-logo" alt="homepage" style="   height: 65px;"/>
                     <!-- Light Logo text -->
-                    <img src="{!! url('/').'/img/logo.gif' !!}" class="dark-logo" alt="homepage" style="   height: 65px;"/>
+
+                    <img src="{!! config('constant.top_left_logo1') !!}" class="dark-logo" alt="homepage" style="   height: 65px;"/>
 
 
 
@@ -53,7 +56,9 @@
 				@endif
 
 					<li class="nav-item ml-20">
-					<a class="nav-link waves-effect waves-dark" href=""><img style="height: 55px; width: 60px;" src="{!! url('/').'/img/logo1.jpg' !!}"></a>
+					<a class="nav-link waves-effect waves-dark" href="">
+                        <img style="height: 55px; width: 60px;" src="{!! config('constant.top_left_logo2') !!}">
+                    </a>
 					</li>
 
                 <!-- ============================================================== -->
@@ -365,7 +370,7 @@
 					</li>
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link waves-effect waves-dark" download href="help/CRM Square User Guide v5.4.pdf" title="Help" style="color: #1f7293;"> <i class="fas fa-question-circle" style="color: #5e92b1;"></i>
+                        <a class="nav-link waves-effect waves-dark" download href="{!! config('constant.help_pdf') !!}" title="Help" style="color: #1f7293;"> <i class="fas fa-question-circle" style="color: #5e92b1;"></i>
                         </a>
                     </li>
 
@@ -376,7 +381,8 @@
                             class="nav-link waves-effect waves-light"
                             @if(!Auth::check()) href="{{URL::to('/')}}/login" @else href="https://www.datasquare.com" @endif
                     >
-                        <img style="width: 143px;" src="{!! url('/').'/img/crmlogo.png' !!}">
+
+                        <img style="width: 143px;" src="{!! config('constant.top_right_logo') !!}">
                     </a>
 				</li>
             </ul>

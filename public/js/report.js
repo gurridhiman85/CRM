@@ -116,11 +116,11 @@ function IntervalTimer(callback, interval) {
 
 function emreport(){
     if($(".em_report:checked").length > 0){
-        $('.schreport').show();
+        //$('.schreport').show();
         $('.emreport').show();
     }
     else{
-        $('.schreport').hide();
+        //$('.schreport').hide();
         $('.emreport').hide();
     }
 }
@@ -2010,6 +2010,8 @@ function lListTemplateName(id, aAction, selectedFields) {
                 $("#accordion").html('');
                 $("#accordion").html(data.fieldsHtml);
 
+                $("#collapseFields").html('');
+                $("#collapseFields").html(data.fieldscollapsehHtml);
 
                 $('#row_variable_input').html('');
                 $('#column_variable_input').html('<option value="">Select</option>');
@@ -2028,6 +2030,7 @@ function lListTemplateName(id, aAction, selectedFields) {
                 });
 
                 initJS($('#accordion'));
+                initJS($('#collapseFields'));
 
                 var emailMS = [
                     'row_variable_input'

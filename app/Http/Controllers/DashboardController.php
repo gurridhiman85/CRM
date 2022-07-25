@@ -16,18 +16,21 @@ class DashboardController extends Controller
 {
 
 
-    public function index(){
+    public function index(Request $request){
+
         if(!Auth::check() && !Session::get('dummyuserlogin')){
             Session::put('backUrl', URL::current());
             return redirect('dlogin');
         }
-        $chartfilters1 = DB::select("SELECT distinct filter1  FROM Zchart_Details");
+
+        /*$chartfilters1 = DB::select("SELECT distinct filter1  FROM Zchart_Details");
         $chartfilters2 = DB::select("SELECT distinct filter2  FROM Zchart_Details");
         $chartfilters3 = DB::select("SELECT distinct filter3  FROM Zchart_Details");
         $chartfilters4 = DB::select("SELECT distinct filter4  FROM Zchart_Details");
-        $f1Options = $f2Options = $f3Options = $f4Options = '';
+        $f1Options[] = $f2Options = $f3Options = $f4Options = '';
         foreach ($chartfilters1 as $chartfilter1){
-            $f1Options .= '<option value="'.$chartfilter1->filter1.'">'.$chartfilter1->filter1.'</option>';
+            //$f1Options .= '<option value="'.$chartfilter1->filter1.'">'.$chartfilter1->filter1.'</option>';
+            $f1Options[] = $chartfilter1->filter1;
         }
         foreach ($chartfilters2 as $chartfilter2){
             $f2Options .= '<option value="'.$chartfilter2->filter2.'">'.$chartfilter2->filter2.'</option>';
@@ -37,12 +40,19 @@ class DashboardController extends Controller
         }
         foreach ($chartfilters4 as $chartfilter4){
             $f4Options .= '<option value="'.$chartfilter4->filter4.'">'.$chartfilter4->filter4.'</option>';
-        }
+        }*/
+
+
+        $chartLabels = DB::select("SELECT Notes1, Notes2, Notes3, Notes4  FROM ZChart_Links WHERE link = '".$request->segment(1)."'");
+        $chartLabels = collect($chartLabels)->map(function($x){ return (array) $x; })->toArray();
+
+
         return view('dashboard.index',[
-            'f1Options' => $f1Options,
+            'chartLabels' => $chartLabels,
+            /*'f1Options' => $f1Options,
             'f2Options' => $f2Options,
             'f3Options' => $f3Options,
-            'f4Options' => $f4Options
+            'f4Options' => $f4Options*/
         ]);
     }
 
@@ -52,10 +62,16 @@ class DashboardController extends Controller
         $filter3 = $request->input('filter3','All');
         $filter4 = $request->input('filter4','All');
         $filtertype = $request->input('filtertype','Donor');
-        //$page = 'Donor';
-        $aData = Zchart::where('Dashboard',$filtertype)->get()->toArray();
-        //$rResult = DB::select("SELECT * FROM ZChart where Dashboard = '$filtertype'");
-        //$aData = collect($rResult)->map(function($x){ return (array) $x; })->toArray();
+        $aData = Zchart::where('Dashboard',$filtertype)
+            ->get()
+            ->toArray();
+
+        $chartLabels = DB::select("SELECT Filter1_Label,Filter2_Label,Filter3_Label,Filter4_Label, Notes1, Notes2, Notes3, Notes4 FROM ZChart_Links where Dashboard = '$filtertype'");
+        $chartLabels = collect($chartLabels)->map(function($x){ return (array) $x; })->toArray();
+
+        $chartfilters1 = DB::select("SELECT distinct filter1  FROM Zchart_Details");
+        $chartfilters2 = DB::select("SELECT distinct filter2  FROM Zchart_Details");
+
         $linechart_data = array();
 
         foreach($aData as $key=>$data){
@@ -67,14 +83,29 @@ class DashboardController extends Controller
             $linechart_data[$key]['chart_legend2'] = trim($data['chart_legend2']);
             $linechart_data[$key]['chart_legend3'] = trim($data['chart_legend3']);
             $linechart_data[$key]['chart_legend4'] = trim($data['chart_legend4']);
+            $linechart_data[$key]['Legend1_Background_Color'] = trim($data['Legend1_Background_Color']);
+            $linechart_data[$key]['Legend2_Background_Color'] = trim($data['Legend2_Background_Color']);
+            $linechart_data[$key]['Legend3_Background_Color'] = trim($data['Legend3_Background_Color']);
+            $linechart_data[$key]['Legend4_Background_Color'] = trim($data['Legend4_Background_Color']);
+            $linechart_data[$key]['Legend5_Background_Color'] = trim($data['Legend5_Background_Color']);
+            $linechart_data[$key]['Legend6_Background_Color'] = trim($data['Legend6_Background_Color']);
+            $linechart_data[$key]['Legend1_Border_Color'] = trim($data['Legend1_Border_Color']);
+            $linechart_data[$key]['Legend2_Border_Color'] = trim($data['Legend2_Border_Color']);
+            $linechart_data[$key]['Legend3_Border_Color'] = trim($data['Legend3_Border_Color']);
+            $linechart_data[$key]['Legend4_Border_Color'] = trim($data['Legend4_Border_Color']);
+            $linechart_data[$key]['Legend5_Border_Color'] = trim($data['Legend5_Border_Color']);
+            $linechart_data[$key]['Legend6_Border_Color'] = trim($data['Legend6_Border_Color']);
+            $linechart_data[$key]['Format'] = trim($data['Format']);
+            $linechart_data[$key]['Chart_Scale'] = trim($data['Chart_Scale']);
 
             $chart_id = $data['id'];
             $aCData = Zchartdetails::where('chart_id',$chart_id)
                 ->where('Dashboard',$filtertype)
                 ->where('filter1',$filter1)
                 ->where('filter2',$filter2)
+                /*->where('filter2',$filter2)
                 ->where('filter3',$filter3)
-                ->where('filter4',$filter4)
+                ->where('filter4',$filter4)*/
                 ->orderBy('row_id')
                 ->get()
                 ->toArray();
@@ -99,10 +130,13 @@ class DashboardController extends Controller
         $html = View::make('dashboard.chart')->render();
         return $ajax->success()
             ->jscallback('loadstickypopup')
-            //->appendParam('html','<div class="row mb-1"><div class="col-md-4"><canvas id="can-1"></canvas></div><div class="col-md-4"><canvas id="can-2"></canvas></div><div class="col-md-4"><canvas id="can-3"></canvas></div></div>     <div class="row mb-1"><div class="col-md-4"><canvas id="can-4"></canvas></div><div class="col-md-4"><canvas id="can-5"></canvas></div><div class="col-md-4"><canvas id="can-6"></canvas></div></div>    <div class="row mb-1"><div class="col-md-4"><canvas id="can-7"></canvas></div><div class="col-md-4"><canvas id="can-8"></canvas></div><div class="col-md-4"><canvas id="can-9"></canvas></div></div>')
-            //->appendParam('html','<div class="row mb-1"><div class="col-md-4"><canvas id="can-1" height="300" width="550"></canvas></div><div class="col-md-4"><canvas id="can-2" height="300" width="550"></canvas></div><div class="col-md-4"><canvas id="can-3" height="300" width="550"></canvas></div></div>     <div class="row mb-1"><div class="col-md-4"><canvas id="can-4" height="300" width="550"></canvas></div><div class="col-md-4"><canvas id="can-5" height="300" width="550"></canvas></div><div class="col-md-4"><canvas id="can-6" height="300" width="550"></canvas></div></div>    <div class="row mb-1"><div class="col-md-4"><canvas id="can-7" height="300" width="550"></canvas></div><div class="col-md-4"><canvas id="can-8" height="300" width="550"></canvas></div><div class="col-md-4"><canvas id="can-9" height="300" width="550"></canvas></div></div>')
             ->appendParam('html',$html)
             ->appendParam('type','standard')
+            ->appendParam('filter1',$filter1)
+            ->appendParam('filter2',$filter2)
+            ->appendParam('chartfilters1',$chartfilters1)
+            ->appendParam('chartfilters2',$chartfilters2)
+            ->appendParam('chartLabels',$chartLabels)
             ->appendParam('linechart_data',$linechart_data)
             ->response();
     }

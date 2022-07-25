@@ -464,16 +464,17 @@
 
         <div class="divTableRow" id='customFieldRow' style="display:none;height: auto; overflow: -webkit-paged-x;">
             <div class="divTableCell fc">
-                <div style="font-size:14px;" class="ctooltip">
-                    <i class="fas fa-question-circle ds-c" aria-hidden="true"></i>
-                    <span class="ctooltiptext">Select the fields that you would like to include in the report.</span>
-                </div>
-                &nbsp;&nbsp;Fields
+                <label for="example-search-input" class="col-form-label mb-2 collapsed font-14" data-toggle="collapse"
+                       data-target="#collapseFields" aria-expanded="false">
+                    <div class="ctooltip"><i class="fas fa-question-circle ds-c font-14" aria-hidden="true"></i>
+                        <span class="ctooltiptext">Select the fields that you would like to include in the report.</span>
+                    </div>&nbsp;&nbsp;
+                    Fields <i class="fa fa-angle-right ds-c"></i>
+                </label>
             </div>
             <div class="divTableCell">
-                <div class="row" id="accordion">
-
-                </div>
+                <div class="row" id="accordion"></div>
+                <div class="row mb-3 collapse" id="collapseFields" aria-labelledby="headingFilters" data-parent="#accordionExample" style=""></div>
             </div>
         </div>
 
@@ -520,14 +521,14 @@
 
 
 <label for="example-search-input" class="col-md-2 col-form-label mb-2 pl-3 collapsed font-14" data-toggle="collapse"
-       data-target="#collapseFilters" aria-expanded="true">
+       data-target="#collapseFilters" aria-expanded="false">
     <div class="ctooltip"><i class="fas fa-question-circle ds-c font-14" aria-hidden="true"></i>
         <span class="ctooltiptext">Set filter at the contact or customer level.</span>
     </div>&nbsp;&nbsp;
     Filters <i class="fa fa-angle-right ds-c"></i>
 </label>
 
-<div id="collapseFilters" class="mb-3 collapse show" aria-labelledby="headingFilters" data-parent="#accordionExample" style="">
+<div id="collapseFilters" class="mb-3 collapse" aria-labelledby="headingFilters" data-parent="#accordionExample" style="">
     <div class="card-body pt-0">
 
         <div class="row">

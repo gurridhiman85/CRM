@@ -109,7 +109,12 @@
                     <div class="row mb-2" style="border-bottom: 1px solid #dee2e6;">
                         <div class="col-md-8">
                             <ul class="nav nav-tabs customtab2 mt-2 border-bottom-0 font-14 tab-hash tab-ajax"role="tablist" data-href="report/get" data-method="get" data-default-tab="tab_22">
-
+                                <li class="nav-item list-report" style="border-bottom: 1px solid #dee2e6;">
+                                    <a class="nav-link" data-toggle="tab" data-tabid="22" href="#tab_22" role="tab" aria-selected="true">
+                                        <span class="hidden-sm-up"></span>
+                                        <span class="hidden-xs-down">Catalog</span>
+                                    </a>
+                                </li>
                                 <li class="nav-item list-report" style="border-bottom: 1px solid #dee2e6;">
                                     <a class="nav-link" data-toggle="tab" data-tabid="20" href="#tab_20" role="tab" aria-selected="false">
                                         <span class="hidden-sm-up"></span>
@@ -124,12 +129,7 @@
                                     </a>
                                 </li>
 
-                                <li class="nav-item list-report" style="border-bottom: 1px solid #dee2e6;">
-                                    <a class="nav-link" data-toggle="tab" data-tabid="22" href="#tab_22" role="tab" aria-selected="true">
-                                        <span class="hidden-sm-up"></span>
-                                        <span class="hidden-xs-down">Completed</span>
-                                    </a>
-                                </li>
+
 
                                 <li class="nav-item older-version" style="border-bottom: 1px solid #dee2e6;display: none;">
                                     <a class="nav-link" data-row_id="" data-toggle="tab" data-tabid="25" href="#tab_25" role="tab" aria-selected="true">

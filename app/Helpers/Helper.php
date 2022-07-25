@@ -1,7 +1,9 @@
 <?php
 namespace App\Helpers;
 use App\Mail\ShareCampaignEmail;
+use App\Mail\ShareModelEmail;
 use App\Model\CampaignTemplate;
+use App\Model\ModelScoreTemplate;
 use App\Model\ReportTemplate;
 use App\Model\UAFieldMapping;
 use Auth;
@@ -257,6 +259,53 @@ class Helper
             } else {
                 $recds = $position + $taskcount;
                 $pagination .= " <b>" . $nPos . "</b> - <b>" . $recds . " of " . $total_records ."</b>";
+            }
+
+            if($next == ($lastpage + 1)){
+                $pagination .= " <a class='paginate_button disabled' style='border: 1px solid #b7dee8;cursor: pointer;' aria-controls='taskList'><i class='fa fa-chevron-right p-1' style='color: #b7dee8;'></i></a>";
+
+                $pagination .= " <a class='paginate_button disabled' style='border: 1px solid #b7dee8;cursor: pointer;' aria-controls='taskList'><i class='fas fa-angle-double-right p-1' style='color: #b7dee8;'></i></a>";
+
+            } else {
+                $pagination .= " <a class='paginate_button' style='border: 1px solid #b7dee8;cursor: pointer;' aria-controls='taskList' data-idx='".($next)."' tabindex='" .($next). "' onclick=pagination_v".$funCnt."(this,'$type')><i class='fa fa-chevron-right p-1' style='color: #b7dee8;'></i></a>";
+
+                $pagination .= " <a class='paginate_button' style='border: 1px solid #b7dee8;cursor: pointer;' aria-controls='taskList' data-idx='".($lastpage)."' tabindex='" .($lastpage). "' onclick=pagination_v".$funCnt."(this,'$type')><i class='fas fa-angle-double-right p-1' style='color: #b7dee8;'></i></a>";
+            }
+
+            $pagination .="</div>";
+        }
+        return $pagination;
+    }
+
+
+    public static function pagination_v3($total_records,$records_per_page,$page,$type,$position =0,$taskcount = 0,$funCnt = 2){
+        $start = ($page - 1) * $records_per_page;
+        $prev = $page - 1;
+        $next = $page + 1;
+        $pagination = "";
+        $lastpage = ceil($total_records / $records_per_page);
+        if($lastpage > 1){
+            $pagination .= "<div class='dataTables_paginate paging_simple_numbers mlst-pgn-poschn' id='taskList_paginate'>";
+
+            if($prev == 0){
+                $pagination .= "<a class='paginate_button disabled mr-1' style='border: 1px solid #b7dee8;cursor: pointer;' aria-controls='taskList'><i class='fas fa-angle-double-left p-1' style='color: #b7dee8;'></i></a>";
+
+                $pagination .= "<a class='paginate_button disabled' style='border: 1px solid #b7dee8;cursor: pointer;' aria-controls='taskList'><i class='fa fa-chevron-left p-1' style='color: #b7dee8;'></i></a>";
+
+            } else {
+                $pagination .= "<a class='paginate_button mr-1' style='border: 1px solid #b7dee8;cursor: pointer;' aria-controls='taskList' data-idx='1' onclick=pagination_v".$funCnt."(this,'$type')><i class='fas fa-angle-double-left p-1' style='color: #b7dee8;'></i></a>";
+
+                $pagination .= "<a class='paginate_button' style='border: 1px solid #b7dee8;cursor: pointer;' aria-controls='taskList' data-idx='".($prev)."' onclick=pagination_v".$funCnt."(this,'$type')><i class='fa fa-chevron-left p-1' style='color: #b7dee8;'></i></a>";
+            }
+            $nPos = $position + 1;
+            if(($taskcount >= $records_per_page) && $position == 0) {
+                $pagination .= " <b>" . $nPos . "</b> - <b>" . $records_per_page ."</b>";
+            } else if(($taskcount >= $records_per_page) && $position > 0) {
+                $recds = $position + $taskcount;
+                $pagination .= " <b>" . $nPos. "</b> - <b>" . $recds ."</b>";
+            } else {
+                $recds = $position + $taskcount;
+                $pagination .= " <b>" . $nPos . "</b> - <b>" . $recds ."</b>";
             }
 
             if($next == ($lastpage + 1)){
@@ -3027,18 +3076,51 @@ class Helper
         return array_pop($array);
     }
 
-    public static function print_datatable($aData)
+    public static function print_datatable_vertical($aData)
+    {
+        $strHTML = "";
+        $i = 0;
+        if (!empty($aData)) {
+
+            $strHTML = "<table class='table table-bordered table-hover color-table lkp-table sr-table'>";
+            $strHTML .= "<tbody>";
+            $rowcls = "odd";
+            $strHTML .= "<thead><tr class='$rowcls text-left pl-2'><th>Column</th><th class='text-left pl-2'>Value</th></tr></thead><tbody>";
+            foreach ($aData as $v) {
+                $rowcls = ($rowcls == "odd") ? "even" : "odd";
+
+                foreach ($v as $k=>$c) {
+                    $strHTML .= "<tr class='$rowcls'>";
+                    $strHTML .= "<td class='text-left pl-2'>" . $k . "</td>";
+                    $strHTML .= "<td class='text-left pl-2'>" . $c . "</td>";
+                    $strHTML .= "</tr>";
+                }
+
+            }
+
+            $strHTML .= "</tbody></table>";
+        }
+        return $strHTML;
+    }
+
+    public static function print_datatable($aData,$style = [])
     {
         $strHTML = "";
         $i = 0;
         if (!empty($aData)) {
             if ($i == 0) {
-                $strHTML = "<table class='table table-bordered table-hover color-table lkp-table'><thead><tr>";
+                $strHTML = "<table class='table table-bordered table-hover color-table lkp-table sr-table'><thead><tr>";
                 foreach ($aData[0] as $k => $v) {
                     if($k == 'Row_id'){
                         $strHTML .= "<th>Action</th>";
                     }else{
-                        $strHTML .= "<th>$k</th>";
+                        $pattern = '/Model/';
+                        $replacement = '$0 ';
+                        $k = preg_replace($pattern,$replacement,$k);
+                        $pattern = '/Score/';
+                        $k = preg_replace($pattern,$replacement,$k);
+                        $aln = isset($style[$k]) ? $style[$k] : 'text-align:center;';
+                        $strHTML .= "<th style='".$aln."'>".str_replace('_',' ', $k)."</th>";
                     }
                 }
                 $strHTML .= "</thead><tbody>";
@@ -3049,16 +3131,160 @@ class Helper
                 $strHTML .= "<tr class='$rowcls'>";
 
                 foreach ($v as $k=>$c) {
+                    $aln = isset($style[$k]) ? $style[$k] : 'text-align:center;';
                     if($k == 'Row_id'){
                         //$strHTML .= "<td class='label'>" . $c . "</td>";
-                        $strHTML .= "<td><a onclick='delete_row_comp(this)' class='cursor' id='" . $c . "'><img src='images/bin.jpg' style='width:15px;height:15px'></a></td></tr>";
+                        $strHTML .= "<td style='".$aln."'><a onclick='delete_row_comp(this)' class='cursor' id='" . $c . "'><img src='images/bin.jpg' style='width:15px;height:15px'></a></td></tr>";
                     }else{
-                        $strHTML .= "<td>" . $c . "</td>";
+                        $strHTML .= "<td style='".$aln."'>" . $c . "</td>";
                     }
                 }
                 $strHTML .= "</tr>";
 
             }
+            $strHTML .= "</tbody></table>";
+        }
+        return $strHTML;
+    }
+
+    public static function profile_datatable($aData)
+    {
+        $strHTML = "";
+        $i = 0;
+        if (!empty($aData)) {
+            $headings = [
+                'RowVariable' => 'Row Variable',
+                'TotalCount' => 'Universe',
+                'Responder' => 'Responder',
+                'ResponseRate' => 'Response Rate'
+            ];
+            $strHTML = "<table class='table table-bordered table-hover color-table sr-table'><thead><tr>";
+            foreach ($aData[0] as $k => $v) {
+                if($k == 'RowVariable'){
+                    continue;
+                    //$strHTML .= "<th>Action</th>";
+                }elseif ($k == 'Value'){
+                    $strHTML .= "<th class='text-left'>".str_replace( array('[',']') , ' '  , $aData[0]['RowVariable'] )."</th>";
+                }else{
+
+                    //$k = $k == 'TotalCount' ? 'Universe' : $k;
+                    $strHTML .= "<th class='text-right'>$headings[$k]</th>";
+                }
+            }
+            $strHTML .= "<th class='text-right'>Index</th>";
+            $strHTML .= "</tr></thead><tbody>";
+
+            $rowcls = "odd";
+            $totalcount = $totalResponder = $totalIndex = $index = 0;
+            foreach ($aData as $v) {
+                if (isset($v['Value']) && !empty($v['Value'])) {
+                    foreach ($v as $k => $c) {
+                        if ($k == 'ResponseRate') {
+                            $index += number_format($v['Responder'] / $v['TotalCount'], 1);
+                        }
+                    }
+                }
+            }
+            foreach ($aData as $v) {
+                $rowcls = ($rowcls == "odd") ? "even" : "odd";
+                $singleRR = 0;
+                if(isset($v['Value']) && !empty($v['Value'])){
+                    $strHTML .= "<tr class='$rowcls'>";
+                    foreach ($v as $k=>$c) {
+                        if($k == 'RowVariable'){
+                            continue;
+                        }elseif ($k == 'Value'){
+                            $strHTML .= "<td class='text-left'>" .  str_replace( array('[',']') , ' '  , $c ) . "</td>";
+                        }elseif ($k == 'ResponseRate'){
+                            $singleRR = number_format($v['Responder']/$v['TotalCount'],1);
+                            $strHTML .= "<td class='text-right'>" .  number_format($v['Responder']/$v['TotalCount'],1) . "%</td>";
+                        }elseif ($k == 'TotalCount'){
+                            $totalcount += $c;
+                            $strHTML .= "<td class='text-right'>" .  number_format(str_replace( array('[',']') , ' '  , $c )) . "</td>";
+                        } else{
+                            $totalResponder += $c;
+                            $strHTML .= "<td class='text-right'>" .  number_format(str_replace( array('[',']') , ' '  , $c ))  . "</td>";
+                        }
+                    }
+                    $totalIndex += number_format(($singleRR/$index)*100,0);
+                    $strHTML .= "<td class='text-right'>" .  number_format(($singleRR/$index)*100,0) . "</td>";
+
+                    $strHTML .= "</tr>";
+                }
+            }
+            $strHTML .= "<tr class='totalCL'><td class='text-left'>Total</td><td class='text-right'>".number_format($totalcount)."</td><td class='text-right'>".number_format($totalResponder)."</td><td class='text-right'>".number_format(($totalResponder/$totalcount),1)."%</td><td class='text-right'>".$totalIndex."</td></tr></tbody></table>";
+        }
+        return $strHTML;
+    }
+
+    public static function model_datatable($aData)
+    {
+        $strHTML = "";
+        $i = 0;
+        if (!empty($aData)) {
+            $headings = [
+                'RowVariable' => 'Row Variable',
+                'Universe' => 'Universe',
+                'PercentofUniverse' => 'Percent of Universe',
+                'PredictedResponse' => 'Predicted Response'
+            ];
+            $strHTML = "<table class='table table-bordered table-hover color-table sr-table'><thead><tr>";
+            foreach ($aData[0] as $k => $v) {
+                if($k == 'RowVariable'){
+                    continue;
+                    //$strHTML .= "<th>Action</th>";
+                }elseif ($k == 'Value'){
+                    $strHTML .= "<th class='text-left'>".str_replace( array('[',']') , ' '  , $aData[0]['RowVariable'] )."</th>";
+                }else{
+                    //$k = $k == 'Universe' ? 'Universe' : $k;
+                    $strHTML .= "<th class='text-right'>$headings[$k]</th>";
+                }
+            }
+            //$strHTML .= "<th class='text-right'>Index</th>";
+            $strHTML .= "</tr></thead><tbody>";
+
+            $rowcls = "odd";
+            $totalcount = $totalPercentofUniverse = $totalPredictiveResponse = $index = 0;
+            foreach ($aData as $v) {
+                if (isset($v['Value']) && !empty($v['Value'])) {
+                    foreach ($v as $k => $c) {
+                        if ($k == 'PredictedResponse') {
+                            $index += number_format($v['PercentofUniverse'] / $v['Universe'], 1);
+                        }
+                    }
+                }
+            }
+            foreach ($aData as $v) {
+                $rowcls = ($rowcls == "odd") ? "even" : "odd";
+                $singleRR = 0;
+                //if(isset($v['Value']) ){ //&& !empty($v['Value'])
+                    $strHTML .= ($v['Value'] == 'Total' ?  "<tr class='totalCL'>" : "<tr class='$rowcls'>");
+                    foreach ($v as $k=>$c) {
+                        if($k == 'RowVariable'){
+                            continue;
+                        }elseif ($k == 'Value'){
+                            $strHTML .= "<td class='text-left'>" .  str_replace( array('[',']') , ' '  , $c ) . "</td>";
+                        }/*elseif ($k == 'PredictedResponse'){
+                            $singleRR = number_format($v['PercentofUniverse']/$v['Universe'],1);
+                            $strHTML .= "<td class='text-right'>" .  number_format($v['PercentofUniverse']/$v['Universe'],1) . "%</td>";
+                        }*/elseif ($k == 'Universe'){
+                            $totalcount += $c;
+                            $strHTML .= "<td class='text-right'>" .  number_format(str_replace( array('[',']') , ' '  , $c )) . "</td>";
+                        } elseif ($k == 'PercentofUniverse'){
+                            $totalPercentofUniverse += $c;
+                            $strHTML .= "<td class='text-right'>" .  number_format($c)  . "%</td>";
+                        }else{
+                            $totalPredictiveResponse += $c;
+                            $strHTML .= "<td class='text-right'>" .  number_format($c,1)  . "%</td>";
+                        }
+                    }
+                    //$totalIndex += number_format(($singleRR/$index)*100,0);
+                    //$strHTML .= "<td class='text-right'>" .  number_format(($singleRR/$index)*100,0) . "</td>";
+
+                    $strHTML .= "</tr>";
+                //}
+            }
+            //$strHTML .= "<tr class='totalCL'><td class='text-left'>Total</td><td class='text-right'>".number_format($totalcount)."</td><td class='text-right'>".number_format($totalPercentofUniverse)."%</td><td class='text-right'>".$totalPredictiveResponse."%</td></tr>";
             $strHTML .= "</tbody></table>";
         }
         return $strHTML;
@@ -3136,7 +3362,6 @@ class Helper
         $user = collect($sSql)->map(function($x){ return (array) $x; })->toArray();
         return isset($user[0]) ? $user[0] : [];
     }
-
 
     public static function getSource(){
         $sSql = DB::select("Select * from Lookup");
@@ -3218,10 +3443,14 @@ class Helper
                 $result = CampaignTemplate::with('rpschedule.ccschstatusmap')->where('row_id',$eCampid)->where('t_type',$t_type)->first()->toArray();
                 $listShortName = $result['list_short_name'];
                 $file_Name = isset($result['rpschedule']['ccschstatusmap'][0]) ? $result['rpschedule']['ccschstatusmap'][0]['file_name'] : $listShortName;
-            }else{
+            }else if($t_type == 'A'){
                 $result = ReportTemplate::with('rpschedule.rpschstatusmap')->where('row_id',$eCampid)->where('t_type',$t_type)->first()->toArray();
                 $listShortName = $result['list_short_name'];
                 $file_Name = isset($result['rpschedule']['rpschstatusmap'][0]) ? $result['rpschedule']['rpschstatusmap'][0]['file_name'] : $listShortName;
+            }else if($t_type == 'M'){
+                $result = ModelScoreTemplate::with('rpschedule.moschstatusmap')->where('row_id',$eCampid)->where('t_type',$t_type)->first()->toArray();
+                $listShortName = $result['Scored_File_Name'];
+                $file_Name = isset($result['rpschedule']['moschstatusmap'][0]) ? $result['rpschedule']['moschstatusmap'][0]['file_name'] : $listShortName;
             }
 
 
@@ -3255,7 +3484,14 @@ class Helper
         $objDemo->Cc = 'gurri.dhiman85@gmail.com';
         $objDemo->Bcc = '';
 
-        $cm = $type == 'A' ? ' - Report ' : ' - Campaign ';
+        if($type == 'A')
+            $cm = ' - Report ';
+        elseif($type == 'C')
+            $cm = ' - Campaign ';
+        elseif($type == 'P')
+            $cm = ' - Profile ';
+        elseif($type == 'M')
+            $cm = ' - Model ';
         $objDemo->Sub = !empty($Sub) ? $clientname . ' - ' . $Sub : $clientname . $cm . $listShortName;
         $objDemo->limitedtextarea1 = $custom_message;
 
@@ -3267,7 +3503,14 @@ class Helper
         $objDemo->listShortName = $listShortName;
         $objDemo->clientname = $clientname;
 
-        $type == 'A' ? Mail::to($user->User_Email)->send(new ShareReportEmail($objDemo)) : Mail::to($user->User_Email)->send(new ShareCampaignEmail($objDemo));
+        if($type == 'A')
+            Mail::to($user->User_Email)->send(new ShareReportEmail($objDemo));
+        elseif($type == 'C')
+            Mail::to($user->User_Email)->send(new ShareCampaignEmail($objDemo));
+        elseif($type == 'P')
+            Mail::to($user->User_Email)->send(new ShareReportEmail($objDemo));
+        elseif($type == 'M')
+            Mail::to($user->User_Email)->send(new ShareModelEmail($objDemo));
 
         if (count(Mail::failures()) > 0) {
 
@@ -3586,7 +3829,7 @@ class Helper
                 if(!empty($sWhere)){
                     $sWhere .= ' and ';
                 }
-                $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from Sales_View where Productcat1_Des= " . implode(" OR Productcat1_Des= ", $tPC1Array) . ")";
+                $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from Sales_View where Productcat1_Des= '" . implode(" OR Productcat1_Des= '", $tPC1Array) . "'')";
                 $aAd++;
             }
         }
@@ -3598,7 +3841,7 @@ class Helper
 
             if (count($tPC2Array) > 0) {
                 $specWhere .= $aAd > 0 ? " and " : "";
-                $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from Sales_View where Productcat2_Des= " . implode(" OR Productcat2_Des= ", $tPC2Array) . ")";
+                $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from Sales_View where Productcat2_Des= '" . implode(" OR Productcat2_Des= '", $tPC2Array) . "')";
                 $aAd++;
             }
         }
@@ -3897,7 +4140,7 @@ class Helper
         if(!empty($txtSearch)){
             $query->where(function ($qry) use ($ver,$txtSearch){
                 if($ver){
-                    $qry->whereHas('rpschedule.rpschstatusmap',function ($qry) use ($txtSearch){
+                    $qry->whereHas('rpschedule.ccschstatusmap',function ($qry) use ($txtSearch){
                         $qry->where('file_name','like',"%{$txtSearch}%");
                     });
 
@@ -3908,7 +4151,10 @@ class Helper
                 $qry->orWhereHas('rpmeta',function ($subqry) use ($txtSearch){
                     $subqry->where('Category','like',"%{$txtSearch}%");
                 });
+                $qry->orWhere('list_level','like', '%'.$txtSearch.'%');
             });
+
+
 
 
         }
@@ -3931,6 +4177,7 @@ class Helper
                 $qry->orWhereHas('rpmeta',function ($subqry) use ($txtSearch){
                     $subqry->where('Category','like',"%{$txtSearch}%");
                 });
+                $qry->orWhere('list_level','like', '%'.$txtSearch.'%');
             });
 
 
@@ -4166,7 +4413,7 @@ class Helper
                                     if(!empty($sWhere)){
                                         $sWhere .= ' and ';
                                     }
-                                    $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from ".$visible_columns[$key]['Table_Name']." where Productcat1_Des= " . implode(" OR Productcat1_Des= ", $tPC1Array) . ")";
+                                    $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from ".$visible_columns[$key]['Table_Name']." where Productcat1_Des= '" . implode(" OR Productcat1_Des= '", $tPC1Array) . "')";
                                     $aAd++;
                                 }
                             }else if($keyColumn == 'Productcat2_Des') {
@@ -4176,7 +4423,7 @@ class Helper
 
                                 if (count($tPC2Array) > 0) {
                                     $specWhere .= $aAd > 0 ? " and " : "";
-                                    $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from ".$visible_columns[$key]['Table_Name']." where Productcat2_Des= " . implode(" OR Productcat2_Des= ", $tPC2Array) . ")";
+                                    $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from ".$visible_columns[$key]['Table_Name']." where Productcat2_Des= '" . implode(" OR Productcat2_Des= '", $tPC2Array) . "')";
                                     $aAd++;
                                 }
                             }else if($keyColumn == 'Product') {
@@ -4186,7 +4433,7 @@ class Helper
 
                                 if (count($tPArray) > 0) {
                                     $specWhere .= $aAd > 0 ? " and " : "";
-                                    $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from ".$visible_columns[$key]['Table_Name']." where productcat1 + '-'+product like " . implode(" OR productcat1 + '-'+product like ", $tPArray) . ")";
+                                    $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from ".$visible_columns[$key]['Table_Name']." where productcat1 + '-'+product like '%" . implode(" OR productcat1 + '-'+product like '%", $tPArray) . "%')";
                                     $aAd++;
                                 }
                             }
@@ -4263,19 +4510,19 @@ class Helper
                         /*if(!empty($sWhere)){
                             $sWhere .= ' and ';
                         }*/
-                        $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from ".$visible_column['Table_Name']." where Productcat1_Des= " . $txtSearch . ")";
+                        $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from ".$visible_column['Table_Name']." where Productcat1_Des= '" . $txtSearch . "')";
                         $aAd++;
 
                     }else if($visible_column['Field_Name'] == 'Productcat2_Des') {
 
                         $specWhere .= $aAd > 0 ? " and " : "";
-                        $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from ".$visible_column['Table_Name']." where Productcat2_Des= " . $txtSearch . ")";
+                        $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from ".$visible_column['Table_Name']." where Productcat2_Des= '" . $txtSearch . "')";
                         $aAd++;
 
                     }else if($visible_column['Field_Name'] == 'Product') {
 
                         $specWhere .= $aAd > 0 ? " and " : "";
-                        $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from ".$visible_column['Table_Name']." where productcat1 + '-'+product like " . implode(" OR productcat1 + '-'+product like ", [$txtSearch]) . ")";
+                        $specWhere .= " ds_mkc_contactid in (select distinct ds_mkc_contactid from ".$visible_column['Table_Name']." where productcat1 + '-'+product like '%" . implode(" OR productcat1 + '-'+product like '%", [$txtSearch]) . "%')";
                         $aAd++;
                     }
 
@@ -4314,7 +4561,7 @@ class Helper
             $Field_Name = $field_prefix.'-' . $Field_Name;
 
 
-            $html .= '<div class="form-group"><label class="control-label">' . $Filter['Field_Display_Name'] . '</label>';
+            $html .= '<div class="form-group '.$field_prefix.'"><label class="control-label">' . $Filter['Field_Display_Name'] . '</label>';
             if ($Filter['Filter_Field_Type'] == 'input'){
                 $html .= '<input type="text" name="'.$Field_Name.'" id="' . $Field_Name_before_prefix . '" onkeyup="applyFilters();" class="form-control form-control-sm" placeholder="'.$Filter['Field_Display_Name'].'" data-placeholder="">';
             }
@@ -4335,8 +4582,8 @@ class Helper
                 $html .= '<div class="row">
                     <div class="col-md-4 p-r-0">
                         <select name="' . $Field_Name_before_prefix . '_op_" onchange="applyFilters()" class="form-control form-control-sm" data-notallowed="true">
-                            <option value=">">&gt;</option>
-                            <option selected value="<">&lt;</option>
+                            <option selected value=">">&gt;</option>
+                            <option value="<">&lt;</option>
                         </select>
                     </div>
                     <div class="col-md-8 p-l-0">

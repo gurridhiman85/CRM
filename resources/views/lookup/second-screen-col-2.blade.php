@@ -107,7 +107,7 @@
 
                 <div class="col-md-12">
                     <div class="btn-toolbar pull-right mr-2" role="toolbar" aria-label="Toolbar with button groups">
-                        <div class="title pt-2 font-14 ">
+                        <div class="title font-14 ">
                             <input class="border-0 form-control form-control-sm text-right font-14 txtdflname" disabled="" style="width: 360px;background-color: #fff;">
                         </div>
                         <div class="all-pagination pt-2 pr-2 sub-pagination"></div>
@@ -390,7 +390,7 @@
 
         $('#updateContactBtn').on('click',function () {
             var process_type = $('#edit_type').val() == "" ? "old" : $('#edit_type').val();
-            var contactid = $.trim($('.txtds_mkc_contactid').text());
+            var contactid = $.trim($('.txtds_mkc_contactid').val());
             var elementsdata = [];
             $('#contact').find('input, select').each(function() {
                 if(typeof $(this).attr('name') !== "undefined" && !$(this).hasClass('dis')){

@@ -78,10 +78,10 @@
     }
 
 </style>
-<table id="yajra-table" class="table table-bordered table-hover color-table lkp-table" data-message="No reports available" width="100%">
+<table id="basic_table2" class="table table-bordered table-hover color-table lkp-table" data-message="No reports available" width="100%" data-order="[[ 1, &quot;desc&quot; ]]">
     <thead>
         <tr>
-            <th>Tag</th>
+            <th class="text-center">Tag</th>
             <th>ID</th>
             <th>Level</th>
             <th>Name</th>
@@ -103,112 +103,12 @@
             <th class="text-center">Action</th>
         </tr>
     </thead>
-
+    <tbody>
+        @if(count($records) > 0)
+            @foreach($records as $record)
+                @include('report.tabs.completed.table-single-row')
+            @endforeach
+        @endif
+    </tbody>
 </table>
 
-<script>
-    $(function() {
-        yajraDatatables($('#yajra-table'),                                              //element
-            {                                                                               //params
-                processing: true,
-                serverSide: true,
-                searching:  false,
-                paging: true,
-                lengthChange: false,
-                pageLength: 15,
-            },
-            "{!! route('report_completed.data') !!}",                                      //url
-            'POST',                                                                         //type
-            {                                                                               //data
-                sort_column : "{!! $sort_column !!}",
-                sort_dir : "{!! $sort_dir !!}",
-            },
-            "JSON",                                                                         //dataType
-            [ //columns
-                { data: 'Tag', name: 'Tag', sortable : false},
-                { data: 't_id', name: 't_id', sortable : false},
-                { data: 'list_level', name: 'list_level'},
-                { data: 'list_short_name', name: 'list_short_name'},
-                { data: 'Description', name: 'Description'},
-                { data: 'StartTime', name: 'StartTime'},
-                { data: 'RunTime', name: 'RunTime'},
-                { data: 'FTP', name: 'FTP'},
-                { data: 'is_public', name: 'is_public'},
-                { data: 'is_share', name: 'is_share'},
-                { data: 'Custom_SQL', name: 'Custom_SQL'},
-                { data: 'total_records', name: 'total_records'},
-                { data: 'listXLSX', name: 'listXLSX'},
-                { data: 'listPDF', name: 'listPDF'},
-                { data: 'ver', name: 'ver'},
-                { data: 'SummaryXLSX', name: 'SummaryXLSX'},
-                { data: 'SummaryPDF', name: 'SummaryPDF'},
-                { data: 'run', name: 'run'},
-                { data: 'action', name: 'action'},
-
-            ],
-            [                                                                               //columnDefs
-                {
-                    "targets": 0,
-                    "className": "text-center",
-                },
-                {
-                    "targets": 1,
-                    "className": "text-center"
-                },
-                {
-                    "targets": 5,
-                    "className": "text-center"
-                },
-
-                {
-                    "targets": 6,
-                    "className": "text-right pr-3",
-                },
-                {
-                    "targets": 7,
-                    "className": "text-center",
-                },
-                {
-                    "targets": 8,
-                    "className": "text-center",
-                },
-                {
-                    "targets": 9,
-                    "className": "text-center",
-                },
-                {
-                    "targets": 10,
-                    "className": "text-center",
-                },
-                {
-                    "targets": 11,
-                    "className": "text-right pr-3",
-                },
-                {
-                    "targets": 12,
-                    "className": "text-center",
-                },
-                {
-                    "targets": 13,
-                    "className": "text-center",
-                },
-                {
-                    "targets": 14,
-                    "className": "text-center",
-                },
-                {
-                    "targets": 15,
-                    "className": "text-center",
-                },
-                {
-                    "targets": 16,
-                    "className": "text-center",
-                },
-                {
-                    "targets": 17,
-                    "className": "text-center",
-                }
-            ]);
-
-    });
-</script>

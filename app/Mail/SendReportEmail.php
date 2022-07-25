@@ -42,12 +42,12 @@ class SendReportEmail extends Mailable
             $tname = $this->recData->data->t_name;
             $file_Name = $this->recData->file_Name;
 
-            $is_listXLSX_exist = file_exists(public_path('\\'.$folder).'\\'.$prefix.'RPL_'.$file_Name.'.xlsx');
-            $is_listPDF_exist = file_exists(public_path('\\'.$folder).'\\'.$prefix.'RPL_'.$file_Name.'.pdf');
+            $listXLSX_path = public_path('\\'.$folder).'\\'.$prefix.'RPL_'.$file_Name.'.xlsx';
+            $listPDF_path = public_path('\\'.$folder).'\\'.$prefix.'RPL_'.$file_Name.'.pdf';
 
             $Report_Row = $this->recData->data->Report_Row;
-            $is_summaryXLSX_exist = file_exists(public_path('\\'.$folder).'\\'.$prefix.'RPS_'.$file_Name.'.xlsx');
-            $is_summaryPDF_exist = file_exists(public_path('\\'.$folder).'\\'.$prefix.'RPS_'.$file_Name.'.pdf');
+            $summaryXLSX_path = public_path('\\'.$folder).'\\'.$prefix.'RPS_'.$file_Name.'.xlsx';
+            $summaryPDF_path = public_path('\\'.$folder).'\\'.$prefix.'RPS_'.$file_Name.'.pdf';
 
             $mail = $this->view('mails.report')
                 ->from('admin@crmsquare.com','CRM Square Administrator')
@@ -58,28 +58,28 @@ class SendReportEmail extends Mailable
             if(!empty($this->recData->Bcc)) $mail = $mail->bcc($this->recData->Bcc);
 
 
-            if($is_listXLSX_exist && in_array($EmailAttachment,['onlylist','both'])){
-                $mail = $mail->attach(public_path('\\'.$folder).'\\'.$prefix.'RPL_'.$file_Name.'.xlsx', [
+            if(file_exists($listXLSX_path) && in_array($EmailAttachment,['onlylist','both'])){
+                $mail = $mail->attach($listXLSX_path, [
                     'as' => $prefix.'RPL_'.$file_Name.'.xlsx',
                     'mime' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 ]);
             }
 
-            if($is_listPDF_exist && in_array($EmailAttachment,['onlylist','both'])){
-                $mail = $mail->attach(public_path('\\'.$folder).'\\'.$prefix.'RPL_'.$file_Name.'.pdf', [
+            if(file_exists($listPDF_path) && in_array($EmailAttachment,['onlylist','both'])){
+                $mail = $mail->attach($listPDF_path, [
                     'as' => $prefix.'RPL_'.$file_Name.'.pdf',
                     'mime' => 'application/pdf',
                 ]);
             }
 
-            if(!empty($Report_Row) && $is_summaryXLSX_exist && in_array($EmailAttachment,['onlyreport','both'])){
-                $mail = $mail->attach(public_path('\\'.$folder).'\\'.$prefix.'RPS_'.$tname.'.xlsx', [
+            if(!empty($Report_Row) && $summaryXLSX_path && in_array($EmailAttachment,['onlyreport','both'])){
+                $mail = $mail->attach($summaryXLSX_path, [
                     'as' => $prefix.'RPS_'.$tname.'.xlsx',
                     'mime' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 ]);
             }
-            if(!empty($Report_Row) && $is_summaryPDF_exist && in_array($EmailAttachment,['onlyreport','both'])){
-                $mail = $mail->attach(public_path('\\'.$folder).'\\'.$prefix.'RPS_'.$file_Name.'.pdf', [
+            if(!empty($Report_Row) && $summaryPDF_path && in_array($EmailAttachment,['onlyreport','both'])){
+                $mail = $mail->attach($summaryPDF_path, [
                     'as' => $prefix.'RPS_'.$file_Name.'.pdf',
                     'mime' => 'application/pdf',
                 ]);

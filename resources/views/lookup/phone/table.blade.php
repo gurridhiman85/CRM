@@ -1,31 +1,19 @@
-<table id="basic_table2" class="table table-bordered table-hover color-table lkp-table no-wrap" data-order="[[ 0, &quot;desc&quot; ]]">
+<table id="basic_table2" class="table table-bordered no-wrap table-hover color-table lkp-table" style="width: 100%;" data-message="No campaign available" > <!-- data-order="[[1,'desc']]" -->
     <thead>
         <tr>
-            <th class="text-center" style="width:16% !important;">Status</th>
-            <th class="text-center">Call</th>
-            <th>Campaign</th>
-            <th>Contact</th> <!--data-visible="false"-->
-            <th>HH ID</th>
-            <th>Extended Name</th>
-            <th>Phone</th>
-            <th data-visible="false">Email</th>
-
-            <th data-visible="false">Email2</th>
-            <th data-visible="false">Address</th>
-            <th data-visible="false">City</th>
-            <th data-visible="false">State</th>
-            <th data-visible="false">Zip</th>
-            <th data-visible="false">Company</th>
-            <th data-visible="false">Updated</th>
-            <th>ZSS_Segment</th>
-            <th>3-yr Gifts</th>
-            <th>BH Gifts</th>
-            <th>This Yr Gifts $</th>
-            <th>Last 2Yrs Gifts $</th>
-            <th>Life Gifts $</th>
-            <th>Last Visit-Days</th>
-            <th>Email Segment</th>
-            <th style="width: 30% !important;">Comments</th>
+            @foreach($visible_columns as $visible_column)
+                @if(in_array($visible_column['Field_Visibility'],[1,2]))
+                    <th
+                            class="{!! $visible_column['Class_Name'] !!}"
+                            onclick="custom_sorting($(this));"
+                            data-field_name="{!! $visible_column['Field_Name'] !!}"
+                            @if($visible_column['Field_Visibility'] == 1)
+                            data-visible="false"
+                            @endif>
+                        {!! $visible_column['Field_Display_Name'] !!}
+                    </th>
+                @endif
+            @endforeach
         </tr>
     </thead>
     <tbody>
@@ -33,10 +21,6 @@
             @include('lookup.phone.table-single-row')
         @endforeach
     </tbody>
-
 </table>
-<style>
-    option.badge {
-        text-align: left;
-    }
-</style>
+
+

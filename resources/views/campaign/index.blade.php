@@ -199,36 +199,17 @@
                     <div class="row mb-2" style="border-bottom: 1px solid #dee2e6;">
                         <div class="col-md-8">
                             <ul class="nav nav-tabs customtab2 mt-2 border-bottom-0 font-14 tab-hash tab-ajax" role="tablist" data-href="campaign/get" data-method="post" data-default-tab="tab_2">
-
-                                <li class="nav-item list-report" style="border-bottom: 1px solid #dee2e6;">
-                                    <a class="nav-link" data-toggle="tab" data-tabid="0" href="#tab_0" role="tab" aria-selected="false" onclick="filtertoggle(0,'');">
-                                        <span class="hidden-sm-up"></span>
-                                        <span class="hidden-xs-down">Running</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item list-report" style="border-bottom: 1px solid #dee2e6;">
-                                    <a class="nav-link" data-toggle="tab" data-tabid="1" href="#tab_1" role="tab" aria-selected="false" onclick="filtertoggle(0,'')">
-                                        <span class="hidden-sm-up"></span>
-                                        <span class="hidden-xs-down">Scheduled</span>
-                                    </a>
-                                </li>
                                 <li class="nav-item list-report" style="border-bottom: 1px solid #dee2e6;">
                                     <a class="nav-link" data-toggle="tab" data-tabid="2" href="#tab_2" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
                                         <span class="hidden-sm-up"></span>
-                                        <span class="hidden-xs-down">Completed</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item older-version" style="border-bottom: 1px solid #dee2e6;display: none;">
-                                    <a class="nav-link" data-row_id="" data-toggle="tab" data-tabid="3" href="#tab_3" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
-                                        <span class="hidden-sm-up"></span>
-                                        <span class="hidden-xs-down">Older Versions</span>
+                                        <span class="hidden-xs-down">Catalog</span>
                                     </a>
                                 </li>
                                 @foreach($lLevelFilters as $key => $lLevelFilter)
                                     <?php
                                      $keyWS = str_replace(' ','_',$key);
                                     ?>
-                                    <li class="nav-item" style="border-bottom: 1px solid #dee2e6;">
+                                    <li class="nav-item list-report" style="border-bottom: 1px solid #dee2e6;">
                                         <a class="nav-link" data-toggle="tab" data-tabid="{!! $keyWS !!}" href="#tab_{!! $keyWS !!}" role="tab" aria-selected="true" onclick="filtertoggle(1,'{!! $keyWS !!}'); setlevel('{!! $keyWS !!}',{{ json_encode($alllevels) }})">
                                             <span class="hidden-sm-up"></span>
                                             <span class="hidden-xs-down">{!! ucfirst($key) !!}</span>
@@ -258,6 +239,26 @@
                                     <a class="nav-link" data-toggle="tab" data-tabid="7" href="#tab_7" role="tab" aria-selected="true" onclick="filtertoggle(1,'SingleCamp')">
                                         <span class="hidden-sm-up"></span>
                                         <span class="hidden-xs-down">Single Campaign</span>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item list-report" style="border-bottom: 1px solid #dee2e6;">
+                                    <a class="nav-link" data-toggle="tab" data-tabid="0" href="#tab_0" role="tab" aria-selected="false" onclick="filtertoggle(0,'');">
+                                        <span class="hidden-sm-up"></span>
+                                        <span class="hidden-xs-down">Running</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item list-report" style="border-bottom: 1px solid #dee2e6;">
+                                    <a class="nav-link" data-toggle="tab" data-tabid="1" href="#tab_1" role="tab" aria-selected="false" onclick="filtertoggle(0,'')">
+                                        <span class="hidden-sm-up"></span>
+                                        <span class="hidden-xs-down">Scheduled</span>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item older-version" style="border-bottom: 1px solid #dee2e6;display: none;">
+                                    <a class="nav-link" data-row_id="" data-toggle="tab" data-tabid="3" href="#tab_3" role="tab" aria-selected="true" onclick="filtertoggle(0,'')">
+                                        <span class="hidden-sm-up"></span>
+                                        <span class="hidden-xs-down">Older Versions</span>
                                     </a>
                                 </li>
 
@@ -407,7 +408,7 @@
                                                         <label class="control-label">{!! $lLevelF['Field_Display_Name'] !!}</label>
                                                         <select name="{!! $Field_Name !!}" id="{!! $Field_ID !!}" class="form-control form-control-sm" multiple="multiple" data-placeholder="Select Values">
                                                             @foreach($lLevelF as $LF)
-                                                                @if($LF == $lLevelF['Field_Display_Name']) @continue @endif
+                                                                @if($LF == $lLevelF['Field_Display_Name']  || $LF == 'select') @continue @endif
                                                                 @php $LF = !is_numeric($LF) ? trim($LF) : $LF; @endphp
                                                                 <option value="{!! trim($LF) !!}">{!! trim($LF) !!}</option>
                                                             @endforeach
@@ -418,7 +419,7 @@
                                             @endforeach
                                         </div>
                                     </div>
-                                    <div class="form-actions pull-right" >
+                                    <div class="form-actions mt-2 pull-right" >
                                         <input type="hidden" name="searchterm" class="form-control form-control-sm" placeholder="" data-placeholder="">
                                         <button type="submit" class="btn btn-info">Apply</button>
                                         <button type="button" class="btn border-secondary waves-effect waves-light btn-outline-secondary " onclick="clearFilters();" style="border-color: #dee2e6;">Clear</button>
@@ -489,12 +490,13 @@
                             'background-clip: padding-box;' +
                             'border: 1px solid #e9ecef;' +
                             'font-size: .76563rem;' +
-                            'min-height: 30px;'
+                            'min-height: 30px;' /*+
+                            'color: #cdcdcd;'*/
                         );
                     },1000);
                 }
             });
-
+            filtertoggle(0,'');
             var params = parseHashUrl();
             if(params.tab){
                 var tab = params.tab.split('_');
@@ -509,6 +511,8 @@
 
             //clearFilters();
             $.each(alllevels,function (index,value) {
+                value.replace
+                var value = value.replace(" ", "_");
                 if($.trim(level) == value){
                     $('.' + value).removeAttr('style');
                 }else{
@@ -540,11 +544,9 @@
                     $('.Edetail').hide();
                     $('.Metadata').hide();
                     $('[title="Campaign"]').hide();
-                    $('[title="Create New"]').hide();
                 }
             }else{
                 $('[title="Campaign"]').show();
-                $('[title="Create New"]').show();
                 $('[title=Filters]').hide()
                 $('#DownloadBtn').hide()
             }

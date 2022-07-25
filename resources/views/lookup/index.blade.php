@@ -136,7 +136,8 @@
                             'background-clip: padding-box;' +
                             'border: 1px solid #e9ecef;' +
                             'font-size: .76563rem;' +
-                            'min-height: 30px;'
+                            'min-height: 30px;' /*+
+                            'color: #cdcdcd;'*/
                         );
                     },1000);
                 }
@@ -160,36 +161,7 @@
 
         });
 
-        function custom_sorting(obj) {
-            var field_name = obj.data('field_name');
-            var action = obj.attr('class');
-            var aria_sort = obj.attr('aria-sort');
 
-            if(aria_sort == undefined){
-                action = 'ASC'
-            }else if(aria_sort == 'descending'){
-                action = 'ASC'
-            }else if(aria_sort == 'ascending'){
-                action = 'DESC'
-            }else{
-                action = 'ASC'
-            }
-
-            var url = $('.tab-ajax').data('href');
-            var method = $('.tab-ajax').data('method');
-            var tabid = $('.tab-ajax li a.active').data('tabid');
-            var target = $('.tab-ajax li a.active');
-            var filters = getFilters($('#filter_form'));
-            $(target.attr('href')).css("opacity", "0.3");
-            ACFn.sendAjax(url, method, {
-                tabid: tabid,
-                filters: filters,
-                show_entries: 15,
-                sort_column: field_name,
-                sort_dir: action,
-                mergeKeys : JSON.parse(localStorage.getItem('MergeKeys')),
-            }, target);
-        }
     </script>
     <script src="elite/js/custom.js?ver={!! time() !!}" type="text/javascript"></script>
     <script src="js/lookup.js?ver={!! time() !!}" type="text/javascript"></script>

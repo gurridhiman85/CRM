@@ -47,7 +47,7 @@ foreach( $ImportData[0] as $key=>$cell ){
             <tr>
 
                 @foreach( $columnsData as $key=>$column )
-                    <th class="{{ $column['is_match'] == 1 ? 'matched' : 'unmatched' }}" data-class="{{ $key }}_col" data-col-key="{{ $key }}">
+                    <th data-orderable="false" class="{{ $column['is_match'] == 1 ? 'matched' : 'unmatched' }}" data-class="{{ $key }}_col" data-col-key="{{ $key }}">
                         {!! $column['html'] !!}
                     </th>
                 @endforeach

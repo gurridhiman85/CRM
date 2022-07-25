@@ -59,7 +59,7 @@
 \App\Library\AssetLib::library('popper','bootstrap','sweetalert','sweet-alert.init');
 ?>
 @section('footer_js')
-    @include('assetlib.js')
+    @include('assetlib.jss')
 @show
 
 <script type="text/javascript">

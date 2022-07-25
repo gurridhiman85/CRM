@@ -683,7 +683,7 @@
                     parent.$('#schedulePopup').modal('hide');
                     setTimeout(function () {
                         window.parent.$('.clr-btn').trigger('click');
-                        $('#tab_26, #tab_27, #tab_28 , #tab_29').html('');
+                        $('#tab_9, #tab_10, #tab_11 , #tab_12').html('');
                     },1500)
                     localStorage.removeItem('record');
                     localStorage.removeItem('params');
@@ -695,7 +695,7 @@
                     parent.$('#schedulePopup').modal('hide');
                     setTimeout(function () {
                         window.parent.$('.clr-btn').trigger('click');
-                        $('#tab_26, #tab_27, #tab_28 , #tab_29').html('');
+                        $('#tab_9, #tab_10, #tab_11 , #tab_12').html('');
                     },1500)
                 }
             })
@@ -746,7 +746,7 @@
                             window.parent.$('#schedulePopup').modal('hide');
                             setTimeout(function () {
                                 window.parent.$('.clr-btn').trigger('click');
-                                $('#tab_26, #tab_27, #tab_28 , #tab_29').html('');
+                                $('#tab_9, #tab_10, #tab_11 , #tab_12').html('');
                             },1500)
 
                             localStorage.removeItem('record');
@@ -759,7 +759,7 @@
                             window.parent.$('#schedulePopup').modal('hide');
                             setTimeout(function () {
                                 window.parent.$('.clr-btn').trigger('click');
-                                $('#tab_26, #tab_27, #tab_28 , #tab_29').html('');
+                                $('#tab_9, #tab_10, #tab_11 , #tab_12').html('');
                             },1500)
                         }
                     })
@@ -842,7 +842,7 @@
                             window.parent.$('#schedulePopup').modal('hide');
                             setTimeout(function () {
                                 window.parent.$('.clr-btn').trigger('click');
-                                $('#tab_26, #tab_27, #tab_28 , #tab_29').html('');
+                                $('#tab_9, #tab_10, #tab_11 , #tab_12').html('');
                             },1500)
 
                             localStorage.removeItem('record');
@@ -855,7 +855,7 @@
                             window.parent.$('#schedulePopup').modal('hide');
                             setTimeout(function () {
                                 window.parent.$('.clr-btn').trigger('click');
-                                $('#tab_26, #tab_27, #tab_28 , #tab_29').html('');
+                                $('#tab_9, #tab_10, #tab_11 , #tab_12').html('');
                             },1500)
                         }
                     })

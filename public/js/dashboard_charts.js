@@ -1,31 +1,114 @@
 
 $(document).ready(function(){
     var pagename = $('.dashboard-page li a.active').data('page');
-    $('.dashboard-nav').text(pagename + ' Dashboard');
-    $('#filtertype').val(pagename);
-    setTimeout(function () {
-        $('body').find('#dashboard_form').submit();
-    },1500)
+    if(pagename !== undefined){
+        $('.dashboard-nav').text(pagename + ' Dashboard');
+        $('#filtertype').val(pagename);
+        setTimeout(function () {
+            $('body').find('#dashboard_form').submit();
+        },1500)
+    }
 
-    $('body').find('.ajax-Select').on('change',function(){
-        $('body').find('#dashboard_form').submit();
 
+    $('body').find('#dashboardfilter1').on('change',function(){
+        $('body').find('#filter1').val($(this).val());
+        $('body').find('#dashboard_form').submit();
     });
+    $('body').find('#dashboardfilter2').on('change',function(){
+        $('body').find('#filter2').val($(this).val());
+        $('body').find('#dashboard_form').submit();
+    });
+
+    /*$('body').find('.ajax-Select').on('change',function(){
+        $('body').find('#dashboard_form').submit();
+    });*/
 
     ACFn.loadstickypopup = function (F, R) {
 
         $('.dash').html(R.html);
 
         if (R.type && R.type == 'standard') {
+            $('#dashboardfilter1').html('');
+            $('#dashboardfilter2').html('');
+            $.each(R.chartfilters1, function (i,col) {
 
+
+                $('#dashboardfilter1')
+                    .append($('<option>', {value: $.trim(col.filter1)})
+                        .text($.trim(col.filter1)));
+
+                $('#dashboardfilter1 option[value="' + R.filter1 + '"]').attr('selected', true);
+            });
+
+            $.each(R.chartfilters2, function (i,col) {
+
+
+                $('#dashboardfilter2')
+                    .append($('<option>', {value: $.trim(col.filter2)})
+                        .text($.trim(col.filter2)));
+
+                $('#dashboardfilter2 option[value="' + R.filter2 + '"]').attr('selected', true);
+            });
+
+            $.each(R.chartLabels, function (i,col) {
+
+                if(col.Notes1 != "") {
+                    $('.Notes1').show();
+                    $('#Notes1_Value').val(col.Notes1);
+                }
+                else
+                    $('.Notes1').hide();
+
+                if(col.Notes2 != "") {
+                    $('.Notes2').show();
+                    $('#Notes2_Value').text(col.Notes2);
+                }
+                else
+                    $('.Notes2').hide();
+
+                if(col.Notes3 != "") {
+                    $('.Notes3').show();
+                    $('#Notes3_Value').text(col.Notes3);
+                }
+                else
+                    $('.Notes3').hide();
+
+                if(col.Notes4 != "") {
+                    $('.Notes4').show();
+                    $('#Notes4_Value').text(col.Notes4);
+                }
+                else
+                    $('.Notes4').hide();
+
+            });
 
             $.each(R.linechart_data, function (i) {
+                var legendColors = [];
                 var position = R.linechart_data[i].chart_position;
                 var title = R.linechart_data[i].chart_title;
                 var legend1 = R.linechart_data[i].chart_legend1;
                 var legend2 = R.linechart_data[i].chart_legend2;
                 var legend3 = R.linechart_data[i].chart_legend3;
                 var legend4 = R.linechart_data[i].chart_legend4;
+                legendColors.push({
+                    'legend1_Background_Color' : R.linechart_data[i].Legend1_Background_Color,
+                    'legend2_Background_Color' : R.linechart_data[i].Legend2_Background_Color,
+                    'legend3_Background_Color' : R.linechart_data[i].Legend3_Background_Color,
+                    'legend4_Background_Color' : R.linechart_data[i].Legend4_Background_Color,
+                    'legend5_Background_Color' : R.linechart_data[i].Legend5_Background_Color,
+                    'legend6_Background_Color' : R.linechart_data[i].Legend6_Background_Color,
+
+                    'legend1_Border_Color' : R.linechart_data[i].Legend1_Border_Color,
+                    'legend2_Border_Color' : R.linechart_data[i].Legend2_Border_Color,
+                    'legend3_Border_Color' : R.linechart_data[i].Legend3_Border_Color,
+                    'legend4_Border_Color' : R.linechart_data[i].Legend4_Border_Color,
+                    'legend5_Border_Color' : R.linechart_data[i].Legend5_Border_Color,
+                    'legend6_Border_Color' : R.linechart_data[i].Legend6_Border_Color,
+                    'Chart_Scale' : R.linechart_data[i].Chart_Scale,
+                    'Format' : R.linechart_data[i].Format,
+
+                });
+
                 var label = [];
                 var value1 = [];
                 var value2 = [];
@@ -41,50 +124,49 @@ $(document).ready(function(){
                 if($('#can-' + position).length > 0){
                     var tagName = $('#can-' + position).get(0).tagName
                     if (R.linechart_data[i].chart_type == 'pie') {
-                        addpiechart(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4);
+                        addpiechart(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4,legendColors);
                     }
                     if (R.linechart_data[i].chart_type == 'doughnut') {
-                        addDoughnutPiechart(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4);
+                        addDoughnutPiechart(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4,legendColors);
 
                     }
                     if (R.linechart_data[i].chart_type == 'line') {
-                        addlinechart(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4);
+                        addlinechart(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4,legendColors);
                         $('#can-title-' + position).text(title);
                     }
                     if (R.linechart_data[i].chart_type == 'combochart') {
-                        addcombochart(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4);
+                        addcombochart(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4,legendColors);
                         $('#can-title-' + position).text(title);
                     }
 
                     if (R.linechart_data[i].chart_type == 'combochart1') {
-                        addcombochart1(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4);
+                        addcombochart1(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4,legendColors);
                         $('#can-title-' + position).text(title);
                     }
 
                     if (R.linechart_data[i].chart_type == 'combochart2') {
-                        addcombochart2(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4);
+                        addcombochart2(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4,legendColors);
                         $('#can-title-' + position).text(title);
                     }
 
 
                     if (R.linechart_data[i].chart_type == 'bar') {
-                        addbarchart(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4);
+                        addbarchart(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4,legendColors);
                         $('#can-title-' + position).text(title);
                     }
 
                     if (R.linechart_data[i].chart_type == 'stackedbar') {
-                        addStackedBarChart(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4);
+                        addStackedBarChart(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4,legendColors);
                         $('#can-title-' + position).text(title);
                     }
 
                     if (R.linechart_data[i].chart_type == 'verticalbar') {
-                        addVerticalBarChart(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4);
+                        addVerticalBarChart(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4,legendColors);
                         $('#can-title-' + position).text(title);
                     }
 
                     if (R.linechart_data[i].chart_type == 'progressiveline') {
-                        console.log('position---',position)
-                        addProgressiveLineChart(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4);
+                        addProgressiveLineChart(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4,legendColors);
                         $('#can-title-' + position).text(title);
                     }
 
@@ -93,7 +175,7 @@ $(document).ready(function(){
                         $('#can-title-' + position).text(title);
                     }
                     if (R.linechart_data[i].chart_type == 'arealine') {
-                        addarealinechart(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4);
+                        addarealinechart(position, title, legend1, legend2, legend3, legend4, label, value1, value2, value3, value4,legendColors);
                         $('#can-title-' + position).text(title);
                     }
 
@@ -113,8 +195,6 @@ $(document).ready(function(){
                         $('#can-title-' + position).text(title);
                     }
                 }
-
-
             });
             /* morries();
 
@@ -227,6 +307,9 @@ function analyticsBox(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val
         if(val2[i] == 'fa-user'){
             colorCls = 'round-success';
         }
+        if(val2[i] == 'fa-calendar-alt'){
+            colorCls = 'btn-info';
+        }
         /*boxhtml += '<div class="col-md-6 ' + cls + '">\n' +
             '                <div class="card mb-1">\n' +
             '                    <div class="card-body p-3 pl-4">\n' +
@@ -328,7 +411,7 @@ function morries(){
 
 
 }
-var fontsize = 10;
+var fontsize = 12;
 const MONTHS = [
     'January',
     'February',
@@ -373,7 +456,7 @@ const COLORS = [
 
 const CHART_BORDER_COLORS = {
     red: 'rgb(255, 99, 132)',
-    orange: 'rgb(255, 159, 64)',
+    orange: '#00c292',
     yellow: 'rgb(255, 205, 86)',
     green: 'rgb(75, 192, 192)',
     blue: 'rgb(54, 162, 235)',
@@ -395,12 +478,12 @@ const CHART_COLORS = {
     blue: 'rgb(54, 162, 235, 0.2)',
     purple: 'rgb(153, 102, 255, 0.2)',
     grey: 'rgb(201, 203, 207, 0.2)',
-    light_blue : 'rgba(3, 169, 243, 0.2)',
+    light_blue : 'rgba(54, 162, 235, 1)',
     light_purple1 : '#b9cfff',
     light_yellow : 'rgba(255, 205, 86, 0.2)',
     light_orange : 'rgba(251, 150, 120, 0.2)',
     light_purple : '#f1edff',
-    light_green : 'rgba(0, 194, 146, 0.2)',
+    light_green : 'rgba(204, 243, 233, 1)',
 };
 
 const NAMED_COLORS = [
@@ -457,23 +540,57 @@ function totalfromVal(arrval) {
     $.each(arrval,function (i,v) {
         total = parseFloat(total) + parseFloat(v);
     });
+    total = total.toLocaleString();
 
     return total;
 }
 
-function addlinechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4) {
+function addlinechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4,legendColors) {
     function createConfig(gridlines, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4) {
         var values = [val1,val2,val3,val4];
         var dataset = [];
         $.each(values,function (i,val) {
             if(arrayIsEmpty(val) != true){
+                var brcolors = [];
+                var bgcolors = [];
+                for(var k = 0; k < val.length; k++){
+                    var brcolor;
+                    var bgcolor;
+                    if(val[k] > 0){
+                        if(i == 0){
+                            brcolor = (legendColors[0]['legend1_Border_Color'] != "" ? legendColors[0]['legend1_Border_Color'] : CHART_BORDER_COLORS.light_green);
+
+                            bgcolor = (legendColors[0]['legend1_Background_Color'] != "" ? legendColors[0]['legend1_Background_Color'] : CHART_COLORS.light_green);
+
+                        }else if(i == 1){
+                            brcolor = (legendColors[0]['legend2_Border_Color'] != "" ? legendColors[0]['legend2_Border_Color'] : CHART_BORDER_COLORS.light_purple);
+
+                            bgcolor = (legendColors[0]['legend2_Background_Color'] != "" ? legendColors[0]['legend2_Background_Color'] : CHART_COLORS.light_purple);
+
+                        }else if(i == 2){
+                            brcolor = (legendColors[0]['legend3_Border_Color'] != "" ? legendColors[0]['legend3_Border_Color'] : CHART_BORDER_COLORS.yellow);
+
+                            bgcolor = (legendColors[0]['legend3_Background_Color'] != "" ? legendColors[0]['legend3_Background_Color'] : CHART_COLORS.yellow);
+
+                        }else{
+                            brcolor = (legendColors[0]['legend4_Border_Color'] != "" ? legendColors[0]['legend4_Border_Color'] : CHART_BORDER_COLORS.green);
+
+                            bgcolor = (legendColors[0]['legend4_Background_Color'] != "" ? legendColors[0]['legend4_Background_Color'] : CHART_COLORS.green);
+                        }
+                    }else{
+                        brcolor = CHART_BORDER_COLORS.red;;
+                        bgcolor = CHART_COLORS.red;;
+                    }
+                    bgcolors[k] = bgcolor;
+                    brcolors[k] = brcolor;
+                }
                 var l = (i == 0) ? leg1 : ((i == 1) ? leg2 : (i == 2) ? leg3 : leg4);
                 if($.trim(l) != ""){
                     dataset.push({
                         type: 'line',
                         label: (i == 0) ? leg1 : ((i == 1) ? leg2 : (i == 2) ? leg3 : leg4),
-                        backgroundColor: (i == 0) ? CHART_COLORS.red : ((i == 1) ? CHART_COLORS.blue : (i == 2) ? CHART_COLORS.yellow : CHART_COLORS.green),
-                        borderColor: (i == 0) ? CHART_BORDER_COLORS.red : ((i == 1) ? CHART_BORDER_COLORS.blue : (i == 2) ? CHART_BORDER_COLORS.yellow : CHART_BORDER_COLORS.green),
+                        backgroundColor: bgcolors,
+                        borderColor: brcolors,
                         borderWidth : 1,
                         data: val,
                     })
@@ -490,6 +607,7 @@ function addlinechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val
 
                 datasets: dataset
             },
+            //plugins: [ChartDataLabels],
             options: {
                 elements: {
                     point:{
@@ -499,7 +617,7 @@ function addlinechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val
                 responsive: true,
                 plugins: {
                     legend: {
-                        display : true,
+                        display : checklegend(leg1, leg2, leg3, leg4),
                         align : 'end',
                         position : 'top',
                         labels : {
@@ -507,7 +625,7 @@ function addlinechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val
                             boxWidth : 5,
                             boxHeight : 5,
                             font: {
-                                size: 8
+                                size: 12
                             }
                         },
                     },
@@ -524,29 +642,31 @@ function addlinechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val
                 },
                 scales: {
                     x: {
+                        type : 'category',
                         grid: {
                             display: false,
                         },
                         ticks: {
                             font: {
-                                size: 10,
+                                size: 12,
                             },
-                            color: '#a2a2a2',
+                            color: '#212529',
                         }
                     },
                     y: {
+                        type : legendColors[0]['Chart_Scale'] != "" ? legendColors[0]['Chart_Scale'] : 'linear',
                         grid: {
-                            display: false,
-                        },
-                        ticks: {
-                            min: 0,
-                            max: 100,
-                            stepSize: 10,
-                            font: {
-                                size: 10,
+                            drawBorder: true,
+                            color: function(context) {
+                                if (context.tick.value > 0) {
+                                    return false;
+                                } else if (context.tick.value < 0) {
+                                    return false;
+                                }
+
+                                return '#d2d2d2';
                             },
-                            color: '#a2a2a2'
-                        }
+                        },
                     }
                 }
             }
@@ -571,22 +691,56 @@ function addlinechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val
 
 }
 
-function addarealinechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4) {
+function addarealinechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4,legendColors) {
     function createConfig(gridlines, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4) {
         var values = [val1,val2,val3,val4];
         var dataset = [];
         $.each(values,function (i,val) {
             if(arrayIsEmpty(val) != true){
+                var brcolors = [];
+                var bgcolors = [];
+                for(var k = 0; k < val.length; k++){
+                    var brcolor;
+                    var bgcolor;
+                    if(val[k] > 0){
+                        if(i == 0){
+                            brcolor = (legendColors[0]['legend1_Border_Color'] != "" ? legendColors[0]['legend1_Border_Color'] : CHART_BORDER_COLORS.light_green);
+
+                            bgcolor = (legendColors[0]['legend1_Background_Color'] != "" ? legendColors[0]['legend1_Background_Color'] : CHART_COLORS.light_green);
+
+                        }else if(i == 1){
+                            brcolor = (legendColors[0]['legend2_Border_Color'] != "" ? legendColors[0]['legend2_Border_Color'] : CHART_BORDER_COLORS.light_purple);
+
+                            bgcolor = (legendColors[0]['legend2_Background_Color'] != "" ? legendColors[0]['legend2_Background_Color'] : CHART_COLORS.light_purple);
+
+                        }else if(i == 2){
+                            brcolor = (legendColors[0]['legend3_Border_Color'] != "" ? legendColors[0]['legend3_Border_Color'] : CHART_BORDER_COLORS.yellow);
+
+                            bgcolor = (legendColors[0]['legend3_Background_Color'] != "" ? legendColors[0]['legend3_Background_Color'] : CHART_COLORS.yellow);
+
+                        }else{
+                            brcolor = (legendColors[0]['legend4_Border_Color'] != "" ? legendColors[0]['legend4_Border_Color'] : CHART_BORDER_COLORS.green);
+
+                            bgcolor = (legendColors[0]['legend4_Background_Color'] != "" ? legendColors[0]['legend4_Background_Color'] : CHART_COLORS.green);
+                        }
+                    }else{
+                        brcolor = CHART_BORDER_COLORS.red;;
+                        bgcolor = CHART_COLORS.red;;
+                    }
+                    bgcolors[k] = bgcolor;
+                    brcolors[k] = brcolor;
+                }
                 var l = (i == 0) ? leg1 : ((i == 1) ? leg2 : (i == 2) ? leg3 : leg4);
                 if($.trim(l) != ""){
                     dataset.push({
                         type: 'line',
                         label: (i == 0) ? leg1 : ((i == 1) ? leg2 : (i == 2) ? leg3 : leg4),
-                        backgroundColor: (i == 0) ? CHART_COLORS.light_blue : ((i == 1) ? CHART_COLORS.blue : (i == 2) ? CHART_COLORS.yellow : CHART_COLORS.green),
-                        borderColor: (i == 0) ? CHART_BORDER_COLORS.light_blue : ((i == 1) ? CHART_BORDER_COLORS.blue : (i == 2) ? CHART_BORDER_COLORS.yellow : CHART_BORDER_COLORS.green),
+                        backgroundColor: bgcolors,
+                        borderColor: brcolors,
                         borderWidth : 1,
                         data: val,
-                        fill: true
+                        fill: true,
+
                     })
                 }
 
@@ -601,6 +755,7 @@ function addarealinechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2,
 
                 datasets: dataset
             },
+            //plugins: [ChartDataLabels],
             options: {
                 elements: {
                     point: {
@@ -613,7 +768,7 @@ function addarealinechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2,
                 responsive: true,
                 plugins: {
                     legend: {
-                        display : true,
+                        display : checklegend(leg1, leg2, leg3, leg4),
                         align : 'end',
                         position : 'top',
                         labels : {
@@ -621,7 +776,7 @@ function addarealinechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2,
                             boxWidth : 5,
                             boxHeight : 5,
                             font: {
-                                size: 8
+                                size: 12
                             }
                         },
                     },
@@ -640,21 +795,32 @@ function addarealinechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2,
                 },
                 scales: {
                     x: {
+                        type : 'category',
                         grid: {
                             display: false,
                         },
                         ticks: {
                             font: {
-                                size: 10,
+                                size: 12,
                                 weight: 300,
                                 fontFamily: "Arial"
                             },
-                            color: '#a2a2a2',
+                            color: '#212529',
                         },
                     },
                     y: {
+                        type : legendColors[0]['Chart_Scale'] != "" ? legendColors[0]['Chart_Scale'] : 'linear',
                         grid: {
-                            display: false,
+                            drawBorder: true,
+                            color: function(context) {
+                                if (context.tick.value > 0) {
+                                    return false;
+                                } else if (context.tick.value < 0) {
+                                    return false;
+                                }
+
+                                return '#d2d2d2';
+                            },
                         },
                         gridLines: gridlines,
                         ticks: {
@@ -663,14 +829,16 @@ function addarealinechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2,
                             stepSize: 10,
                             fontSize: 12,
                             font: {
-                                size: 10,
+                                size: 12,
                                 weight: 300,
                                 fontFamily: "Arial"
                             },
-                            color: '#a2a2a2',
+                            color: '#212529',
 
                         }
                     }
+
+
                 }
             }
         };
@@ -694,14 +862,15 @@ function addarealinechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2,
 
 }
 
-function addpiechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4) {
+function addpiechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4,legendColors) {
     var randomScalingFactor = function () {
         return Math.round(Math.random() * 100);
     };
 
     $('#can-title-' + pos).html('<small class="pull-right">\n' +
-        '                                    <i class="fa fa-sort-desc"></i> Total: ' + totalfromVal(val1) + '\n' +
+        '                                    <i class="fa fa-sort-desc"></i> Total: ' + legendColors[0]['Format'] + totalfromVal(val1) + '\n' +
         '                                    </small>' + title);
+
 
     var config = {
         type: 'pie',
@@ -709,17 +878,51 @@ function addpiechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3
             datasets: [{
                 data: val1,
                 backgroundColor: [
-                    CHART_BORDER_COLORS.red,
-                    CHART_BORDER_COLORS.orange,
-                    CHART_BORDER_COLORS.yellow,
-                    CHART_BORDER_COLORS.blue,
-                    CHART_BORDER_COLORS.green,
+                    legendColors[0]['legend1_Background_Color'] != "" ? legendColors[0]['legend1_Background_Color'] : CHART_BORDER_COLORS.red,
+                    legendColors[0]['legend2_Background_Color'] != "" ? legendColors[0]['legend2_Background_Color'] : CHART_BORDER_COLORS.orange,
+                    legendColors[0]['legend3_Background_Color'] != "" ? legendColors[0]['legend3_Background_Color'] : CHART_BORDER_COLORS.yellow,
+                    legendColors[0]['legend4_Background_Color'] != "" ? legendColors[0]['legend4_Background_Color'] : CHART_BORDER_COLORS.blue,
+                    legendColors[0]['legend5_Background_Color'] != "" ? legendColors[0]['legend5_Background_Color'] : CHART_BORDER_COLORS.green,
+                    legendColors[0]['legend6_Background_Color'] != "" ? legendColors[0]['legend6_Background_Color'] : CHART_BORDER_COLORS.light_green,
+                    CHART_BORDER_COLORS.grey,
+                    CHART_BORDER_COLORS.purple
+
                 ],
-                label: 'Dataset 1'
+
+                label: 'Dataset 1',
+                datalabels : {
+                    formatter: (value, ctx) => {
+                        let datasets = ctx.chart.data.datasets; // Tried `.filter(ds => !ds._meta.hidden);` without success
+                        if (ctx.datasetIndex === datasets.length - 1) {
+                            let sum = 0;
+                            let dataArr = ctx.chart.data.datasets[0].data;
+                            dataArr.map(data => {
+                                sum += data != null ? parseInt(data) : parseInt(0);
+                            });
+                            let percentage = (value*100 / sum).toFixed(0)+"%";
+                            return percentage;
+
+                        }
+                        else {
+                            return '';
+                        }
+
+                    },
+                    anchor: 'center',
+                    align: 'top',
+                    labels: {
+                        title: {
+                            font: {
+                                size: 11
+                            }
+                        },
+                    }
+                }
             }],
             labels: label
 
         },
+        plugins: [ChartDataLabels],
         options: {
             responsive: true,
             maintainAspectRatio : true,
@@ -761,14 +964,14 @@ function addpiechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3
     var colorNames = Object.keys(CHART_COLORS);
 }
 
-function addDoughnutPiechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4) {
+function addDoughnutPiechart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4,legendColors) {
 
     var randomScalingFactor = function () {
         return Math.round(Math.random() * 100);
     };
 
     $('#can-title-' + pos).html('<small class="pull-right">\n' +
-        '                                    <i class="fa fa-sort-desc"></i> Total: ' + totalfromVal(val1) + '\n' +
+        '                                    <i class="fa fa-sort-desc"></i> Total: ' + legendColors[0]['Format'] + totalfromVal(val1) + '\n' +
         '                                    </small>' + title);
     var config = {
         type: 'doughnut',
@@ -776,17 +979,49 @@ function addDoughnutPiechart(pos, title, leg1, leg2, leg3, leg4, label, val1, va
             datasets: [{
                 data: val1,
                 backgroundColor: [
-                    CHART_BORDER_COLORS.red,
-                    CHART_BORDER_COLORS.orange,
-                    CHART_BORDER_COLORS.yellow,
-                    CHART_BORDER_COLORS.blue,
-                    CHART_BORDER_COLORS.green,
+                    (legendColors[0]['legend1_Background_Color'] != "" ? legendColors[0]['legend1_Background_Color'] : CHART_BORDER_COLORS.red),
+                    (legendColors[0]['legend2_Background_Color'] != "" ? legendColors[0]['legend2_Background_Color'] : CHART_BORDER_COLORS.orange),
+                    (legendColors[0]['legend3_Background_Color'] != "" ? legendColors[0]['legend3_Background_Color'] : CHART_BORDER_COLORS.yellow),
+                    (legendColors[0]['legend4_Background_Color'] != "" ? legendColors[0]['legend4_Background_Color'] : CHART_BORDER_COLORS.blue),
+                    (legendColors[0]['legend5_Background_Color'] != "" ? legendColors[0]['legend5_Background_Color'] : CHART_BORDER_COLORS.green),
+                    (legendColors[0]['legend6_Background_Color'] != "" ? legendColors[0]['legend6_Background_Color'] : CHART_BORDER_COLORS.light_green),
+                    CHART_BORDER_COLORS.grey,
+                    CHART_BORDER_COLORS.purple
                 ],
-                label: 'Dataset 1'
+                label: 'Dataset 1',
+                datalabels : {
+                    formatter: (value, ctx) => {
+                        let datasets = ctx.chart.data.datasets; // Tried `.filter(ds => !ds._meta.hidden);` without success
+                        if (ctx.datasetIndex === datasets.length - 1) {
+                            let sum = 0;
+                            let dataArr = ctx.chart.data.datasets[0].data;
+                            dataArr.map(data => {
+                                sum += data != null ? parseInt(data) : parseInt(0);
+                            });
+                            let percentage = (value*100 / sum).toFixed(0)+"%";
+                            return percentage;
+
+                        }
+                        else {
+                            return '';
+                        }
+
+                    },
+                    anchor: 'center',
+                    align: 'top',
+                    labels: {
+                        title: {
+                            font: {
+                                size: 11
+                            }
+                        },
+                    }
+                }
             }],
             labels: label
 
         },
+        plugins: [ChartDataLabels],
         options: {
             responsive: true,
             maintainAspectRatio : true,
@@ -828,7 +1063,7 @@ function addDoughnutPiechart(pos, title, leg1, leg2, leg3, leg4, label, val1, va
     var colorNames = Object.keys(CHART_COLORS);
 }
 
-function addcombochart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4) {
+function addcombochart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4,legendColors) {
     var timeFormat = 'MM/DD/YYYY HH:mm';
 
     function newDateString(days) {
@@ -837,17 +1072,94 @@ function addcombochart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, va
     var values = [val1,val2,val3,val4];
     var dataset = [];
     $.each(values,function (i,val) {
+
         if(arrayIsEmpty(val) != true){
+            var brcolors = [];
+            var bgcolors = [];
+            for(var k = 0; k < val.length; k++){
+                var brcolor;
+                var bgcolor;
+                if(val[k] > 0){
+                    if(i == 0){
+                        brcolor = (legendColors[0]['legend1_Border_Color'] != "" ? legendColors[0]['legend1_Border_Color'] : CHART_BORDER_COLORS.light_green);
+
+                        bgcolor = (legendColors[0]['legend1_Background_Color'] != "" ? legendColors[0]['legend1_Background_Color'] : CHART_COLORS.light_green);
+
+                    }else if(i == 1){
+                        brcolor = (legendColors[0]['legend2_Border_Color'] != "" ? legendColors[0]['legend2_Border_Color'] : CHART_BORDER_COLORS.light_purple);
+
+                        bgcolor = (legendColors[0]['legend2_Background_Color'] != "" ? legendColors[0]['legend2_Background_Color'] : CHART_COLORS.light_purple);
+
+                    }else if(i == 2){
+                        brcolor = (legendColors[0]['legend3_Border_Color'] != "" ? legendColors[0]['legend3_Border_Color'] : CHART_BORDER_COLORS.yellow);
+
+                        bgcolor = (legendColors[0]['legend3_Background_Color'] != "" ? legendColors[0]['legend3_Background_Color'] : CHART_COLORS.yellow);
+
+                    }else{
+                        brcolor = (legendColors[0]['legend4_Border_Color'] != "" ? legendColors[0]['legend4_Border_Color'] : CHART_BORDER_COLORS.green);
+
+                        bgcolor = (legendColors[0]['legend4_Background_Color'] != "" ? legendColors[0]['legend4_Background_Color'] : CHART_COLORS.green);
+                    }
+                }else{
+                    brcolor = CHART_BORDER_COLORS.red;;
+                    bgcolor = CHART_COLORS.red;;
+                }
+                bgcolors[k] = bgcolor;
+                brcolors[k] = brcolor;
+            }
             var l = (i == 0) ? leg1 : ((i == 1) ? leg2 : (i == 2) ? leg3 : leg4);
             if($.trim(l) != "") {
                 dataset.push({
                     type: 'bar',
                     label: (i == 0) ? leg1 : ((i == 1) ? leg2 : (i == 2) ? leg3 : leg4),
-                    backgroundColor: (i == 0) ? CHART_COLORS.light_orange : ((i == 1) ? CHART_COLORS.light_purple : (i == 2) ? CHART_COLORS.yellow : CHART_COLORS.green),
-                    hoverBackgroundColor: (i == 0) ? CHART_COLORS.light_orange : ((i == 1) ? CHART_COLORS.light_purple : (i == 2) ? CHART_COLORS.yellow : CHART_COLORS.green),
-                    borderColor: (i == 0) ? CHART_BORDER_COLORS.light_orange : ((i == 1) ? CHART_BORDER_COLORS.light_purple : (i == 2) ? CHART_BORDER_COLORS.yellow : CHART_BORDER_COLORS.green),
+                    backgroundColor: bgcolors,
+                    hoverBackgroundColor: bgcolors,
+                    borderColor: brcolors,
                     borderWidth: 1,
                     data: val,
+                    datalabels : {
+                        /*formatter: (value, ctx) => {
+                            let datasets = ctx.chart.data.datasets; // Tried `.filter(ds => !ds._meta.hidden);` without success
+                            if (ctx.datasetIndex === datasets.length - 1) {
+                                let sum = 0;
+                                datasets.map(dataset => {
+                                    sum += parseInt(dataset.data[ctx.dataIndex]);
+                                });
+                                return sum.toLocaleString(/!* ... *!/);
+                            }
+                            else {
+                                return '';
+                            }
+
+                        },*/
+                        anchor: (context) => {
+                            const anchor = [];
+                            if(context.dataset.data[context.dataIndex] >= 0){
+                                anchor.push('end');
+                            }else{
+                                anchor.push('start');
+                            }
+
+                            return anchor;
+                        },
+                        align: (context) => {
+                            const align = [];
+                            if(context.dataset.data[context.dataIndex] >= 0){
+                                align.push('top');
+                            }else{
+                                align.push('bottom');
+                            }
+
+                            return align;
+                        },
+                        labels: {
+                            title: {
+                                font: {
+                                    size: 11
+                                }
+                            },
+                        }
+                    }
                 })
             }
         }
@@ -858,6 +1170,7 @@ function addcombochart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, va
             labels: label,
             datasets: dataset
         },
+        plugins: [ChartDataLabels],
         options: {
             title: {
                 text: title,
@@ -873,7 +1186,7 @@ function addcombochart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, va
             },*/
             plugins: {
                 legend: {
-                    display : true,
+                    display : checklegend(leg1, leg2, leg3, leg4),
                     align : 'end',
                     position : 'top',
                     labels : {
@@ -896,7 +1209,6 @@ function addcombochart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, va
                     grid: {
                         display: false,
                     },
-                    type: 'category',
                     display: true,
                     time: {
                         format: timeFormat,
@@ -904,27 +1216,26 @@ function addcombochart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, va
                     },
                     ticks: {
                         font: {
-                            size: 10,
-                            weight: 300,
-                            fontFamily: "Arial"
+                            size: 12,
+                            weight: 100,
+                            fontFamily: "Poppins, sans-serif"
                         },
-                        color: '#a2a2a2',
+                        color: '#212529',
                     }
                 },
                 y: {
+                    type : legendColors[0]['Chart_Scale'] != "" ? legendColors[0]['Chart_Scale'] : 'linear',
                     grid: {
-                        display: false,
-                    },
-                    ticks: {
-                        min: 0,
-                        max: 100,
-                        stepSize: 10,
-                        font: {
-                            size: 10,
-                            weight: 300,
-                            fontFamily: "Arial"
+                        drawBorder: true,
+                        color: function(context) {
+                            if (context.tick.value > 0) {
+                                return false;
+                            } else if (context.tick.value < 0) {
+                                return false;
+                            }
+
+                            return '#d2d2d2';
                         },
-                        color: '#a2a2a2'
                     }
                 }
             },
@@ -937,7 +1248,7 @@ function addcombochart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, va
     var colorNames = Object.keys(CHART_COLORS);
 }
 
-function addcombochart1(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4) {
+function addcombochart1(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4,legendColors) {
     var timeFormat = 'MM/DD/YYYY HH:mm';
 
     function newDateString(days) {
@@ -948,26 +1259,104 @@ function addcombochart1(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, v
     var dataset = [];
     $.each(values,function (i,val) {
         if(arrayIsEmpty(val) != true){
+
+            var brcolors = [];
+            var bgcolors = [];
+            for(var k = 0; k < val.length; k++){
+                var brcolor;
+                var bgcolor;
+                if(val[k] > 0){
+                    if(i == 0){
+                        brcolor = (legendColors[0]['legend1_Border_Color'] != "" ? legendColors[0]['legend1_Border_Color'] : CHART_BORDER_COLORS.light_green);
+
+                        bgcolor = (legendColors[0]['legend1_Background_Color'] != "" ? legendColors[0]['legend1_Background_Color'] : CHART_COLORS.light_green);
+
+                    }else if(i == 1){
+                        brcolor = (legendColors[0]['legend2_Border_Color'] != "" ? legendColors[0]['legend2_Border_Color'] : CHART_BORDER_COLORS.light_purple);
+
+                        bgcolor = (legendColors[0]['legend2_Background_Color'] != "" ? legendColors[0]['legend2_Background_Color'] : CHART_COLORS.light_purple);
+
+                    }else if(i == 2){
+                        brcolor = (legendColors[0]['legend3_Border_Color'] != "" ? legendColors[0]['legend3_Border_Color'] : CHART_BORDER_COLORS.yellow);
+
+                        bgcolor = (legendColors[0]['legend3_Background_Color'] != "" ? legendColors[0]['legend3_Background_Color'] : CHART_COLORS.yellow);
+
+                    }else{
+                        brcolor = (legendColors[0]['legend4_Border_Color'] != "" ? legendColors[0]['legend4_Border_Color'] : CHART_BORDER_COLORS.green);
+
+                        bgcolor = (legendColors[0]['legend4_Background_Color'] != "" ? legendColors[0]['legend4_Background_Color'] : CHART_COLORS.green);
+                    }
+                }else{
+                    brcolor = CHART_BORDER_COLORS.red;;
+                    bgcolor = CHART_COLORS.red;;
+                }
+                bgcolors[k] = bgcolor;
+                brcolors[k] = brcolor;
+            }
+
             var l = (i == 0) ? leg1 : ((i == 1) ? leg2 : (i == 2) ? leg3 : leg4);
             if($.trim(l) != "") {
                 dataset.push({
                     type: 'bar',
                     label: (i == 0) ? leg1 : ((i == 1) ? leg2 : (i == 2) ? leg3 : leg4),
-                    backgroundColor: (i == 0) ? CHART_COLORS.red : ((i == 1) ? CHART_COLORS.blue : (i == 2) ? CHART_COLORS.yellow : CHART_COLORS.green),
-                    borderColor: (i == 0) ? CHART_BORDER_COLORS.red : ((i == 1) ? CHART_BORDER_COLORS.blue : (i == 2) ? CHART_BORDER_COLORS.yellow : CHART_BORDER_COLORS.green),
+                    backgroundColor: bgcolors,
+                    borderColor: brcolors,
                     borderWidth: 1,
                     data: val,
+                    datalabels : {
+                        formatter: (value, ctx) => {
+                            let datasets = ctx.chart.data.datasets; // Tried `.filter(ds => !ds._meta.hidden);` without success
+                            if (ctx.datasetIndex === datasets.length - 1) {
+                                let sum = 0;
+                                datasets.map(dataset => {
+                                    sum += dataset.data[ctx.dataIndex] != null ? parseInt(dataset.data[ctx.dataIndex]) : parseInt(0);
+                                });
+                                return sum.toLocaleString(/* ... */);
+                            }
+                            else {
+                                return '';
+                            }
+
+                        },
+                        anchor: (context) => {
+                            const anchor = [];
+                            if(context.dataset.data[context.dataIndex] >= 0){
+                                anchor.push('end');
+                            }else{
+                                anchor.push('start');
+                            }
+
+                            return anchor;
+                        },
+                        align: (context) => {
+                            const align = [];
+                            if(context.dataset.data[context.dataIndex] >= 0){
+                                align.push('top');
+                            }else{
+                                align.push('bottom');
+                            }
+
+                            return align;
+                        },
+                        labels: {
+                            title: {
+                                font: {
+                                    size: 11
+                                }
+                            },
+                        }
+                    }
                 });
             }
         }
     });
-
     var config = {
         type: 'bar',
         data: {
             labels: label,
             datasets: dataset
         },
+        plugins: [ChartDataLabels],
         options: {
             title: {
                 text: title,
@@ -984,7 +1373,7 @@ function addcombochart1(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, v
             },*/
             plugins: {
                 legend: {
-                    display : true,
+                    display : checklegend(leg1, leg2, leg3, leg4),
                     align : 'end',
                     position : 'top',
                     labels : {
@@ -1015,27 +1404,37 @@ function addcombochart1(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, v
                     },
                     ticks: {
                         font: {
-                            size: 10,
+                            size: 12,
                             weight: 300,
                             fontFamily: "Arial"
                         },
-                        color: '#a2a2a2',
+                        color: '#212529',
                     }
                 },
                 y: {
+                    type : legendColors[0]['Chart_Scale'] != "" ? legendColors[0]['Chart_Scale'] : 'linear',
                     grid: {
-                        display: false,
+                        drawBorder: true,
+                        color: function(context) {
+                            if (context.tick.value > 0) {
+                                return false;
+                            } else if (context.tick.value < 0) {
+                                return false;
+                            }
+
+                            return '#d2d2d2';
+                        },
                     },
                     ticks: {
                         min: 0,
                         max: 50,
                         stepSize: fontsize,
                         font: {
-                            size: 10,
+                            size: 12,
                             weight: 300,
                             fontFamily: "Arial"
                         },
-                        color: '#a2a2a2',
+                        color: '#212529',
                     }
                 }
             },
@@ -1048,7 +1447,7 @@ function addcombochart1(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, v
     var colorNames = Object.keys(CHART_COLORS);
 }
 
-function addcombochart2(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4) {
+function addcombochart2(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4,legendColors) {
     var timeFormat = 'MM/DD/YYYY HH:mm';
 
     function newDateString(days) {
@@ -1059,15 +1458,92 @@ function addcombochart2(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, v
     var dataset = [];
     $.each(values,function (i,val) {
         if(arrayIsEmpty(val) != true){
+            var brcolors = [];
+            var bgcolors = [];
+            for(var k = 0; k < val.length; k++){
+                var brcolor;
+                var bgcolor;
+                if(val[k] > 0){
+                    if(i == 0){
+                        brcolor = (legendColors[0]['legend1_Border_Color'] != "" ? legendColors[0]['legend1_Border_Color'] : CHART_BORDER_COLORS.light_green);
+
+                        bgcolor = (legendColors[0]['legend1_Background_Color'] != "" ? legendColors[0]['legend1_Background_Color'] : CHART_COLORS.light_green);
+
+                    }else if(i == 1){
+                        brcolor = (legendColors[0]['legend2_Border_Color'] != "" ? legendColors[0]['legend2_Border_Color'] : CHART_BORDER_COLORS.light_purple);
+
+                        bgcolor = (legendColors[0]['legend2_Background_Color'] != "" ? legendColors[0]['legend2_Background_Color'] : CHART_COLORS.light_purple);
+
+                    }else if(i == 2){
+                        brcolor = (legendColors[0]['legend3_Border_Color'] != "" ? legendColors[0]['legend3_Border_Color'] : CHART_BORDER_COLORS.yellow);
+
+                        bgcolor = (legendColors[0]['legend3_Background_Color'] != "" ? legendColors[0]['legend3_Background_Color'] : CHART_COLORS.yellow);
+
+                    }else{
+                        brcolor = (legendColors[0]['legend4_Border_Color'] != "" ? legendColors[0]['legend4_Border_Color'] : CHART_BORDER_COLORS.green);
+
+                        bgcolor = (legendColors[0]['legend4_Background_Color'] != "" ? legendColors[0]['legend4_Background_Color'] : CHART_COLORS.green);
+                    }
+                }else{
+                    brcolor = CHART_BORDER_COLORS.red;;
+                    bgcolor = CHART_COLORS.red;;
+                }
+                bgcolors[k] = bgcolor;
+                brcolors[k] = brcolor;
+            }
+
             var l = (i == 0) ? leg1 : ((i == 1) ? leg2 : (i == 2) ? leg3 : leg4);
             if($.trim(l) != "") {
                 dataset.push({
                     type: 'bar',
                     label: (i == 0) ? leg1 : ((i == 1) ? leg2 : (i == 2) ? leg3 : leg4),
-                    backgroundColor: (i == 0) ? CHART_COLORS.red : ((i == 1) ? CHART_COLORS.blue : (i == 2) ? CHART_COLORS.yellow : CHART_COLORS.green),
-                    borderColor: (i == 0) ? CHART_BORDER_COLORS.red : ((i == 1) ? CHART_BORDER_COLORS.blue : (i == 2) ? CHART_BORDER_COLORS.yellow : CHART_BORDER_COLORS.green),
+                    backgroundColor: bgcolor,
+                    borderColor: brcolors,
                     borderWidth: 1,
                     data: val,
+                    datalabels : {
+                        formatter: (value, ctx) => {
+                            let datasets = ctx.chart.data.datasets; // Tried `.filter(ds => !ds._meta.hidden);` without success
+                            if (ctx.datasetIndex === datasets.length - 1) {
+                                let sum = 0;
+                                datasets.map(dataset => {
+                                    sum += dataset.data[ctx.dataIndex] != null ? parseInt(dataset.data[ctx.dataIndex]) : parseInt(0);
+                                });
+                                return sum.toLocaleString(/* ... */);
+                            }
+                            else {
+                                return '';
+                            }
+
+                        },
+                        anchor: (context) => {
+                            const anchor = [];
+                            if(context.dataset.data[context.dataIndex] >= 0){
+                                anchor.push('end');
+                            }else{
+                                anchor.push('start');
+                            }
+
+                            return anchor;
+                        },
+                        align: (context) => {
+                            const align = [];
+                            if(context.dataset.data[context.dataIndex] >= 0){
+                                align.push('top');
+                            }else{
+                                align.push('bottom');
+                            }
+
+                            return align;
+                        },
+                        labels: {
+                            title: {
+                                font: {
+                                    size: 11
+                                }
+                            },
+                        }
+                    }
                 });
             }
         }
@@ -1078,6 +1554,7 @@ function addcombochart2(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, v
             labels: label,
             datasets: dataset
         },
+        plugins: [ChartDataLabels],
         options: {
             title: {
                 text: title,
@@ -1093,7 +1570,7 @@ function addcombochart2(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, v
             },*/
             plugins: {
                 legend: {
-                    display : true,
+                    display : checklegend(leg1, leg2, leg3, leg4),
                     align : 'end',
                     position : 'top',
                     labels : {
@@ -1124,27 +1601,37 @@ function addcombochart2(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, v
                     },
                     ticks: {
                         font: {
-                            size: 10,
+                            size: 12,
                             weight: 300,
                             fontFamily: "Arial"
                         },
-                        color: '#a2a2a2',
+                        color: '#212529',
                     }
                 },
                 y: {
+                    type : legendColors[0]['Chart_Scale'] != "" ? legendColors[0]['Chart_Scale'] : 'linear',
                     grid: {
-                        display: false,
+                        drawBorder: true,
+                        color: function(context) {
+                            if (context.tick.value > 0) {
+                                return false;
+                            } else if (context.tick.value < 0) {
+                                return false;
+                            }
+
+                            return '#d2d2d2';
+                        },
                     },
                     ticks: {
                         min: 0,
                         max: 500,
                         stepSize: 100,
                         font: {
-                            size: 10,
+                            size: 12,
                             weight: 300,
                             fontFamily: "Arial"
                         },
-                        color: '#a2a2a2',
+                        color: '#212529',
                     }
 
                 }
@@ -1158,7 +1645,7 @@ function addcombochart2(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, v
     var colorNames = Object.keys(CHART_COLORS);
 }
 
-function addbarchart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4) {
+function addbarchart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4,legendColors) {
     var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     var color = Chart.helpers.color;
     var barChartData = {
@@ -1209,7 +1696,7 @@ function addbarchart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3
     });
 }
 
-function addStackedBarChart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4) {
+function addStackedBarChart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4,legendColors) {
     const DATA_COUNT = 7;
     const NUMBER_CFG = {count: DATA_COUNT, min: -100, max: 100};
 
@@ -1217,14 +1704,97 @@ function addStackedBarChart(pos, title, leg1, leg2, leg3, leg4, label, val1, val
     var dataset = [];
     $.each(values,function (i,val) {
         if(arrayIsEmpty(val) != true){
+            var brcolors = [];
+            var bgcolors = [];
+            for(var k = 0; k < val.length; k++){
+                var brcolor;
+                var bgcolor;
+                if(val[k] > 0){
+                    if(i == 0){
+                        brcolor = (legendColors[0]['legend1_Border_Color'] != "" ? legendColors[0]['legend1_Border_Color'] : CHART_BORDER_COLORS.light_green);
+
+                        bgcolor = (legendColors[0]['legend1_Background_Color'] != "" ? legendColors[0]['legend1_Background_Color'] : CHART_COLORS.light_green);
+
+                    }else if(i == 1){
+                        brcolor = (legendColors[0]['legend2_Border_Color'] != "" ? legendColors[0]['legend2_Border_Color'] : CHART_BORDER_COLORS.light_purple);
+
+                        bgcolor = (legendColors[0]['legend2_Background_Color'] != "" ? legendColors[0]['legend2_Background_Color'] : CHART_COLORS.light_purple);
+
+                    }else if(i == 2){
+                        brcolor = (legendColors[0]['legend3_Border_Color'] != "" ? legendColors[0]['legend3_Border_Color'] : CHART_BORDER_COLORS.yellow);
+
+                        bgcolor = (legendColors[0]['legend3_Background_Color'] != "" ? legendColors[0]['legend3_Background_Color'] : CHART_COLORS.yellow);
+
+                    }else{
+                        brcolor = (legendColors[0]['legend4_Border_Color'] != "" ? legendColors[0]['legend4_Border_Color'] : CHART_BORDER_COLORS.green);
+
+                        bgcolor = (legendColors[0]['legend4_Background_Color'] != "" ? legendColors[0]['legend4_Background_Color'] : CHART_COLORS.green);
+                    }
+                }else{
+                    brcolor = CHART_BORDER_COLORS.red;;
+                    bgcolor = CHART_COLORS.red;;
+                }
+                bgcolors[k] = bgcolor;
+                brcolors[k] = brcolor;
+            }
             var l = (i == 0) ? leg1 : ((i == 1) ? leg2 : (i == 2) ? leg3 : leg4);
             if($.trim(l) != "") {
                 dataset.push({
                     label: (i == 0) ? leg1 : ((i == 1) ? leg2 : (i == 2) ? leg3 : leg4),
-                    backgroundColor: (i == 0) ? CHART_COLORS.red : ((i == 1) ? CHART_COLORS.blue : (i == 2) ? CHART_COLORS.yellow : CHART_COLORS.green),
-                    borderColor: (i == 0) ? CHART_BORDER_COLORS.red : ((i == 1) ? CHART_BORDER_COLORS.blue : (i == 2) ? CHART_BORDER_COLORS.yellow : CHART_BORDER_COLORS.green),
+                    backgroundColor: bgcolors,
+                    borderColor: brcolors,
                     borderWidth: 1,
                     data: val,
+                    datalabels : {
+                        formatter: (value, ctx) => {
+                            let datasets = ctx.chart.data.datasets; // Tried `.filter(ds => !ds._meta.hidden);` without success
+                            if (ctx.datasetIndex === datasets.length - 1) {
+
+                                let sum = 0;
+                                datasets.map(dataset => {
+                                    sum += dataset.data[ctx.dataIndex] != null ?
+                                        parseInt(dataset.data[ctx.dataIndex]) :
+                                        parseInt(0);
+                                });
+
+                                return sum.toLocaleString(/* ... */);
+                            }
+                            else {
+                                return '';
+                            }
+
+                        },
+                        anchor: (context) => {
+                            const anchor = [];
+                            if(context.dataset.data[context.dataIndex] >= 0){
+                                anchor.push('end');
+                            }else if(context.dataset.data[context.dataIndex] == null){
+                                anchor.push('end');
+                            }else{
+                                anchor.push('start');
+                            }
+                            return anchor;
+                        },
+                        align: (context) => {
+                            const align = [];
+                            if(context.dataset.data[context.dataIndex] >= 0){
+                                align.push('top');
+                            }else if(context.dataset.data[context.dataIndex] == null){
+                                align.push('top');
+                            }else{
+                                align.push('bottom');
+                            }
+                            return align;
+                        },
+                        labels: {
+                            title: {
+                                font: {
+                                    size: 11
+                                }
+                            },
+                        }
+
+                    }
                 });
             }
         }
@@ -1234,15 +1804,17 @@ function addStackedBarChart(pos, title, leg1, leg2, leg3, leg4, label, val1, val
         labels: label,
         datasets: dataset
     };
+
     var delayed;
     const config = {
         type: 'bar',
         data: data,
+        plugins: [ChartDataLabels],
         options: {
             responsive: true,
             plugins: {
                 legend: {
-                    display : true,
+                    display : checklegend(leg1, leg2, leg3, leg4),
                     align : 'end',
                     position : 'top',
                     labels : {
@@ -1283,26 +1855,28 @@ function addStackedBarChart(pos, title, leg1, leg2, leg3, leg4, label, val1, val
                     },
                     ticks: {
                         font: {
-                            size: 10,
+                            size: 12,
                             weight: 300,
                             fontFamily: "Arial"
                         },
-                        color: '#a2a2a2',
+                        color: '#212529',
                     },
                 },
                 y: {
+                    type : legendColors[0]['Chart_Scale'] != "" ? legendColors[0]['Chart_Scale'] : 'linear',
                     stacked: true,
                     grid: {
-                        display: false,
-                    },
-                    ticks: {
-                        font: {
-                            size: 10,
-                            weight: 300,
-                            fontFamily: "Arial"
+                        drawBorder: true,
+                        color: function(context) {
+                            if (context.tick.value > 0) {
+                                return false;
+                            } else if (context.tick.value < 0) {
+                                return false;
+                            }
+
+                            return '#e4e4e4';
                         },
-                        color: '#a2a2a2',
-                    }
+                    },
                 }
             }
         }
@@ -1312,7 +1886,7 @@ function addStackedBarChart(pos, title, leg1, leg2, leg3, leg4, label, val1, val
     var myChart = new Chart(ctx, config);
 }
 
-function addProgressiveLineChart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4) {
+function addProgressiveLineChart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4,legendColors) {
     const data = [];
     const data2 = [];
     let prev = 100;
@@ -1358,14 +1932,48 @@ function addProgressiveLineChart(pos, title, leg1, leg2, leg3, leg4, label, val1
 
     var values = [val1,val2,val3,val4];
     var dataset = [];
+
     $.each(values,function (i,val) {
         if(arrayIsEmpty(val) != true){
+            var brcolors = [];
+            var bgcolors = [];
+            for(var k = 0; k < val.length; k++){
+                var brcolor;
+                var bgcolor;
+                if(val[k] > 0){
+                    if(i == 0){
+                        brcolor = (legendColors[0]['legend1_Border_Color'] != "" ? legendColors[0]['legend1_Border_Color'] : CHART_BORDER_COLORS.light_green);
+
+                        bgcolor = (legendColors[0]['legend1_Background_Color'] != "" ? legendColors[0]['legend1_Background_Color'] : CHART_COLORS.light_green);
+
+                    }else if(i == 1){
+                        brcolor = (legendColors[0]['legend2_Border_Color'] != "" ? legendColors[0]['legend2_Border_Color'] : CHART_BORDER_COLORS.light_purple);
+
+                        bgcolor = (legendColors[0]['legend2_Background_Color'] != "" ? legendColors[0]['legend2_Background_Color'] : CHART_COLORS.light_purple);
+
+                    }else if(i == 2){
+                        brcolor = (legendColors[0]['legend3_Border_Color'] != "" ? legendColors[0]['legend3_Border_Color'] : CHART_BORDER_COLORS.yellow);
+
+                        bgcolor = (legendColors[0]['legend3_Background_Color'] != "" ? legendColors[0]['legend3_Background_Color'] : CHART_COLORS.yellow);
+
+                    }else{
+                        brcolor = (legendColors[0]['legend4_Border_Color'] != "" ? legendColors[0]['legend4_Border_Color'] : CHART_BORDER_COLORS.green);
+
+                        bgcolor = (legendColors[0]['legend4_Background_Color'] != "" ? legendColors[0]['legend4_Background_Color'] : CHART_COLORS.green);
+                    }
+                }else{
+                    brcolor = CHART_BORDER_COLORS.red;;
+                    bgcolor = CHART_COLORS.red;;
+                }
+                bgcolors[k] = bgcolor;
+                brcolors[k] = brcolor;
+            }
             var l = (i == 0) ? leg1 : ((i == 1) ? leg2 : (i == 2) ? leg3 : leg4);
             if($.trim(l) != "") {
                 dataset.push({
                     label: (i == 0) ? leg1 : ((i == 1) ? leg2 : (i == 2) ? leg3 : leg4),
-                    backgroundColor: (i == 0) ? CHART_BORDER_COLORS.red : ((i == 1) ? CHART_BORDER_COLORS.blue : (i == 2) ? CHART_BORDER_COLORS.yellow : CHART_BORDER_COLORS.green),
-                    borderColor: (i == 0) ? CHART_BORDER_COLORS.red : ((i == 1) ? CHART_BORDER_COLORS.blue : (i == 2) ? CHART_BORDER_COLORS.yellow : CHART_BORDER_COLORS.green),
+                    backgroundColor: bgcolors,
+                    borderColor: brcolors,
                     borderWidth: 1,
                     data: val,
                     radius: 0,
@@ -1425,35 +2033,35 @@ function addProgressiveLineChart(pos, title, leg1, leg2, leg3, leg4, label, val1
                     },
                     ticks: {
                         font: {
-                            size: 10,
+                            size: 12,
                             weight: 300,
                             fontFamily: "Arial"
                         },
-                        color: '#a2a2a2',
+                        color: '#212529',
                     },
                 },
                 y: {
+                    //type : legendColors[0]['Chart_Scale'] != "" ? legendColors[0]['Chart_Scale'] : 'linear',
                     grid: {
                         display: false,
                     },
                     ticks: {
                         font: {
-                            size: 10,
+                            size: 12,
                             weight: 300,
                             fontFamily: "Arial"
                         },
-                        color: '#a2a2a2',
+                        color: '#212529',
                     }
                 }
             }
         }
     };
-    console.log('pos-------',pos);
     var ctx = document.getElementById('can-' + pos).getContext('2d');
     var myChart = new Chart(ctx, config);
 }
 
-function addVerticalBarChart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4) {
+function addVerticalBarChart(pos, title, leg1, leg2, leg3, leg4, label, val1, val2, val3, val4,legendColors) {
     const DATA_COUNT = 7;
     const NUMBER_CFG = {count: DATA_COUNT, min: -100, max: 100};
 
@@ -1461,21 +2069,101 @@ function addVerticalBarChart(pos, title, leg1, leg2, leg3, leg4, label, val1, va
 
     var values = [val1,val2,val3,val4];
     var dataset = [];
+
     $.each(values,function (i,val) {
         if(arrayIsEmpty(val) != true){
+            var brcolors = [];
+            var bgcolors = [];
+            for(var k = 0; k < val.length; k++){
+                var brcolor;
+                var bgcolor;
+                if(val[k] > 0){
+                    if(i == 0){
+                        brcolor = (legendColors[0]['legend1_Border_Color'] != "" ? legendColors[0]['legend1_Border_Color'] : CHART_BORDER_COLORS.light_green);
+
+                        bgcolor = (legendColors[0]['legend1_Background_Color'] != "" ? legendColors[0]['legend1_Background_Color'] : CHART_COLORS.light_green);
+
+                    }else if(i == 1){
+                        brcolor = (legendColors[0]['legend2_Border_Color'] != "" ? legendColors[0]['legend2_Border_Color'] : CHART_BORDER_COLORS.light_purple);
+
+                        bgcolor = (legendColors[0]['legend2_Background_Color'] != "" ? legendColors[0]['legend2_Background_Color'] : CHART_COLORS.light_purple);
+
+                    }else if(i == 2){
+                        brcolor = (legendColors[0]['legend3_Border_Color'] != "" ? legendColors[0]['legend3_Border_Color'] : CHART_BORDER_COLORS.yellow);
+
+                        bgcolor = (legendColors[0]['legend3_Background_Color'] != "" ? legendColors[0]['legend3_Background_Color'] : CHART_COLORS.yellow);
+
+                    }else{
+                        brcolor = (legendColors[0]['legend4_Border_Color'] != "" ? legendColors[0]['legend4_Border_Color'] : CHART_BORDER_COLORS.green);
+
+                        bgcolor = (legendColors[0]['legend4_Background_Color'] != "" ? legendColors[0]['legend4_Background_Color'] : CHART_COLORS.green);
+                    }
+                }else{
+                    brcolor = CHART_BORDER_COLORS.red;;
+                    bgcolor = CHART_COLORS.red;;
+                }
+                bgcolors[k] = bgcolor;
+                brcolors[k] = brcolor;
+            }
             var l = (i == 0) ? leg1 : ((i == 1) ? leg2 : (i == 2) ? leg3 : leg4);
             if($.trim(l) != "") {
                 dataset.push({
                     label: (i == 0) ? leg1 : ((i == 1) ? leg2 : (i == 2) ? leg3 : leg4),
-                    backgroundColor: (i == 0) ? CHART_COLORS.light_green : ((i == 1) ? CHART_COLORS.blue : (i == 2) ? CHART_COLORS.yellow : CHART_COLORS.green),
-                    borderColor: (i == 0) ? CHART_BORDER_COLORS.light_green : ((i == 1) ? CHART_BORDER_COLORS.blue : (i == 2) ? CHART_BORDER_COLORS.yellow : CHART_BORDER_COLORS.green),
+                    backgroundColor: bgcolors,
+                    borderColor: brcolors,
                     borderWidth: 1,
                     data: val,
                     radius: 0,
+                    datalabels : {
+                        formatter: (value, ctx) => {
+                            let datasets = ctx.chart.data.datasets; // Tried `.filter(ds => !ds._meta.hidden);` without success
+                            if (ctx.datasetIndex === datasets.length - 1) {
+                                let sum = 0;
+                                datasets.map(dataset => {
+                                    sum += dataset.data[ctx.dataIndex] != null ? parseInt(dataset.data[ctx.dataIndex]) : parseInt(0);
+                                });
+                                return sum.toLocaleString(/* ... */) + '%';
+                            }
+
+
+                            else {
+                                return '';
+                            }
+
+                        },
+                        anchor: (context) => {
+                            const anchor = [];
+                            if(context.dataset.data[context.dataIndex] >= 0){
+                                anchor.push('end');
+                            }else{
+                                anchor.push('start');
+                            }
+
+                            return anchor;
+                        },
+                        align: (context) => {
+                            const align = [];
+                            if(context.dataset.data[context.dataIndex] >= 0){
+                                align.push('top');
+                            }else{
+                                align.push('bottom');
+                            }
+
+                            return align;
+                        },
+                        labels: {
+                            title: {
+                                font: {
+                                    size: 11
+                                }
+                            },
+                        }
+                    }
                 });
             }
         }
     });
+
     const data = {
         labels: label,
         datasets: dataset
@@ -1484,11 +2172,12 @@ function addVerticalBarChart(pos, title, leg1, leg2, leg3, leg4, label, val1, va
     const config = {
         type: 'bar',
         data: data,
+        plugins: [ChartDataLabels],
         options: {
             responsive: true,
             plugins: {
                 legend: {
-                    display : true,
+                    display : checklegend(leg1, leg2, leg3, leg4),
                     align : 'end',
                     position : 'top',
                     labels : {
@@ -1508,30 +2197,47 @@ function addVerticalBarChart(pos, title, leg1, leg2, leg3, leg4, label, val1, va
             },
             scales: {
                 x: {
+
                     grid: {
                         display: false,
                     },
                     ticks: {
                         font: {
-                            size: 10,
+                            size: 12,
                             weight: "300",
                             fontFamily: "Arial"
                         },
-                        color: '#a2a2a2',
+                        color: '#212529',
                     },
                 },
-                y: {
+                /*y: {
                     grid: {
-                        display: false,
+                        display: true,
                     },
                     ticks: {
                         font: {
-                            size: 10,
+                            size: 12,
                             weight: "300",
                             fontFamily: "Arial"
                         },
-                        color: '#a2a2a2',
+                        color: '#212529',
                     }
+                },*/
+
+                y: {
+                    type : legendColors[0]['Chart_Scale'] != "" ? legendColors[0]['Chart_Scale'] : 'linear',
+                    grid: {
+                        drawBorder: true,
+                        color: function(context) {
+                            if (context.tick.value > 0) {
+                                return false;
+                            } else if (context.tick.value < 0) {
+                                return false;
+                            }
+
+                            return '#d2d2d2';
+                        },
+                    },
                 }
             }
         },
@@ -1539,4 +2245,17 @@ function addVerticalBarChart(pos, title, leg1, leg2, leg3, leg4, label, val1, va
 
     var ctx = document.getElementById('can-' + pos).getContext('2d');
     var myChart = new Chart(ctx, config);
+}
+
+function checklegend(l1,l2,l3,l4) {
+    var lc = 0;
+    if(l1 != "")
+        lc++;
+    if(l2 != "")
+        lc++;
+    if(l3 != "")
+        lc++;
+    if(l4 != "")
+        lc++;
+    return lc > 1 ? true : false;
 }
