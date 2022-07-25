@@ -1,0 +1,5 @@
+lcd D:\sftpuser\Miscsftp1\DB_CRMLV_v16D_AB\public\Public
+put Dev_CAL_prepopulateExeExtra2_20210819.csv
+mv Dev_CAL_prepopulateExeExtra2_20210819.csv 
+ quit
+ 

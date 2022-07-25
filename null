@@ -1,0 +1,10 @@
+'*' is not recognized as an internal or external command,
+operable program or batch file.
+'*' is not recognized as an internal or external command,
+operable program or batch file.
+'*' is not recognized as an internal or external command,
+operable program or batch file.
+Running scheduled command: "C:\Program Files (x86)\iis express\PHP\v7.2\php.exe" "artisan" generate:dashboardlinks > "NUL" 2>&1
+Running scheduled command: "C:\Program Files (x86)\iis express\PHP\v7.2\php.exe" "artisan" generate:dashboardlinks > "NUL" 2>&1
+'*' is not recognized as an internal or external command,
+operable program or batch file.
